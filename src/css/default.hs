@@ -22,7 +22,7 @@ theStylesheet =
     body ? do color         "#333"
               margin        0 auto 0 auto
               width         $   px 600
-              fontSize      $   px 15
+              fontSize      $   px 16
               fontFamily    ["Helvetica Neue Light", "Helvetica Neue", "Helvetica"] [sansSerif]
               fontWeight    $   weight 300
               lineHeight    $   em 1.5
