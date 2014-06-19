@@ -1,0 +1,7 @@
+*.exe
+*.o
+*.hi
+
+/_site/
+/_cache/
+/site
