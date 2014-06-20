@@ -78,13 +78,16 @@ h2
 
 a
 {
-  color           : rgb(8,129,179);
-  text-decoration : none;
+  color                      : rgb(8,129,179);
+  text-decoration            : none;
+  transition-property        : color;
+  transition-duration        : 1.0s;
+  transition-timing-function : ease;
 }
 
 a:hover
 {
-  text-decoration : underline;
+  color : rgb(243,48,136);
 }
 
 a:visited

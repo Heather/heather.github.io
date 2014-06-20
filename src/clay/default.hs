@@ -67,8 +67,12 @@ theStylesheet = do -- Overall site-wide styling rules.
     
     a ? do color            "#0881B3"
            textDecoration   none
+           transitionProperty "color"
+           transitionDuration $ sec 1
+           transitionTimingFunction ease
 
-    a # hover   ? textDecoration underline
+    a # hover ? do color "#F33088"
+
     a # visited ? color "#0881B3"
     
     ".recent-posts" ? li ? do listStyleType none
