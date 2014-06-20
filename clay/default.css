@@ -32,13 +32,32 @@ div#header #navigation a
   text-transform  : uppercase;
 }
 
-div#footer
+div#social
 {
-  color      : rgb(85,85,85);
-  font-size  : 12px;
-  margin-top : 30px;
-  padding    : 12px 0px 12px 0px;
-  text-align : right;
+  list-style : none outside none;
+  text-align : center;
+}
+
+div#social li
+{
+  width      : 64px;
+  height     : 64px;
+  display    : inline-block;
+  font-size  : 96px;
+  font-style : oblique;
+}
+
+div#social li a
+{
+  color                      : rgb(68,68,102);
+  transition-property        : color;
+  transition-duration        : 1.0s;
+  transition-timing-function : ease;
+}
+
+div#social li a:hover
+{
+  color : rgb(243,48,136);
 }
 
 

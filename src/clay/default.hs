@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-}
+﻿{-# LANGUAGE OverloadedStrings #-}
 module Main where
 
 import System.Environment
@@ -39,11 +39,20 @@ theStylesheet = do -- Overall site-wide styling rules.
                                       textDecoration none
                                       textTransform  uppercase
 
-    div # "#footer" ? do color      "#555"
-                         fontSize   $ px 12
-                         marginTop  $ px 30
-                         padding    12 0 12 0
-                         textAlign  $ alignSide sideRight
+    div # "#social" ? do listStyle none outside none
+                         textAlign  $ alignSide sideCenter
+                         li ? do width   $ px 64
+                                 height  $ px 64
+                                 display $ inlineBlock
+                                 
+                                 fontSize  $ px 96
+                                 fontStyle $ oblique
+                                 
+                                 a ? do color "#446"
+                                        transitionProperty "color"
+                                        transitionDuration $ sec 1
+                                        transitionTimingFunction ease
+                                 a # hover ? color "#F33088"
 
     div # "#logo" ? do
         a ? do float           $ floatLeft

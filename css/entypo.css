@@ -1,0 +1,82 @@
+﻿.entypo-music:before {
+  font-family: Entypo;
+  content: "🎵";
+}
+.entypo-code:before {
+  font-family: Entypo;
+  content: "";
+}
+.entypo-social-github:before {
+  font-family: Entypo Social;
+  content: "";
+}
+.entypo-social-c-github:before {
+  font-family: Entypo Social;
+  content: "";
+}
+.entypo-social-twitter:before {
+  font-family: Entypo Social;
+  content: "";
+}
+.entypo-social-c-twitter:before {
+  font-family: Entypo Social;
+  content: "";
+}
+.entypo-social-google:before {
+  font-family: Entypo Social;
+  content: ;
+}
+.entypo-social-c-google:before {
+  font-family: Entypo Social;
+  content: ;
+}
+.entypo-social-tumblr:before {
+  font-family: Entypo Social;
+  content: "";
+}
+.entypo-social-c-tumblr:before {
+  font-family: Entypo Social;
+  content: "";
+}
+.entypo-social-lastfm:before {
+  font-family: Entypo Social;
+  content: "";
+}
+.entypo-social-c-lastfm:before {
+  font-family: Entypo Social;
+  content: "";
+}
+.entypo-social-instagram:before {
+  font-family: Entypo Social;
+  content: "";
+}
+.entypo-social-skype:before {
+  font-family: Entypo Social;
+  content: "";
+}
+.entypo-social-c-skype:before {
+  font-family: Entypo Social;
+  content: "";
+}
+
+@font-face {
+  font-family: 'Entypo';
+  font-weight: normal;
+  font-style: normal;
+  src: url("../fonts/entypo.eot");
+  src: url("../fonts/entypo.eot?#iefix")         format('embedded-opentype')
+    , url("../fonts/entypo.woff")                format('woff')
+    , url("../fonts/entypo.ttf")                 format('truetype')
+    , url("../fonts/entypo.svg#'entypo'")        format('svg');
+}
+
+@font-face {
+  font-family: 'Entypo Social';
+  font-weight: normal;
+  font-style: normal;
+  src: url("../fonts/entypo-social.eot");
+  src: url("../fonts/entypo-social.eot?#iefix")         format('embedded-opentype')
+    , url("../fonts/entypo-social.woff")                format('woff')
+    , url("../fonts/entypo-social.ttf")                 format('truetype')
+    , url("../fonts/entypo-social.svg#'entypo-social'") format('svg');
+}
