@@ -1,11 +1,4 @@
-div#logo a
-{
+div#logo a {
     transition-property:color;
     transition-duration: 0.5s;transition-timing-function: linear;
-        color: white;
-}
-
-div#logo a:hover
-{
-   color: #F33088;
 }

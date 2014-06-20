@@ -54,7 +54,7 @@ div#logo a
 
 div#logo a:hover
 {
-  text-decoration : underline;
+  color : rgb(243,48,136);
 }
 
 div.info
