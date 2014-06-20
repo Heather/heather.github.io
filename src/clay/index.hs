@@ -26,6 +26,8 @@ theStylesheet = do
     div # ".mleft"  ? do float      floatLeft
                          minWidth   $ px 200
     div # ".mright" ? do float floatRight
+                         top $ px $ -100
+                         position relative
 
     div # "#contacts" ? do fontSize   $ px 15
                            textAlign  $ alignSide sideLeft

@@ -12,7 +12,9 @@ div.mleft
 
 div.mright
 {
-  float : right;
+  float    : right;
+  top      : -100px;
+  position : relative;
 }
 
 div#contacts
