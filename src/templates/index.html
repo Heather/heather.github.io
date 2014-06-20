@@ -3,7 +3,9 @@
 
 <div class="mlr">
     <div class="mleft">
-        <img src="/images/logo.png" />
+        <ul class="recent-posts">
+            $partial("templates/post-list.html")$
+        </ul>
     </div>
     <div class="mright">
         <div id="contacts">
@@ -12,12 +14,7 @@
                     <a href="/">Home</a>
                 </li>
             <ul/>
+            <img src="/images/logo.png" />
         </div>
     </div>
 </div>
-
-<hr/>
-
-<ul class="recent-posts">
-    $partial("templates/post-list.html")$
-</ul>
