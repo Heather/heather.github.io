@@ -39,21 +39,6 @@ theStylesheet = do -- Overall site-wide styling rules.
                                       textDecoration none
                                       textTransform  uppercase
 
-    div # "#social" ? do listStyle none outside none
-                         textAlign  $ alignSide sideCenter
-                         li ? do width   $ px 64
-                                 height  $ px 64
-                                 display $ inlineBlock
-                                 
-                                 fontSize  $ px 96
-                                 fontStyle $ oblique
-                                 
-                                 a ? do color "#446"
-                                        transitionProperty "color"
-                                        transitionDuration $ sec 1
-                                        transitionTimingFunction ease
-                                 a # hover ? color "#F33088"
-
     div # "#logo" ? do
         a ? do float           $ floatLeft
                fontSize        $ px 32
@@ -65,8 +50,22 @@ theStylesheet = do -- Overall site-wide styling rules.
                transitionProperty "color"
                transitionDuration $ sec 0.5
                transitionTimingFunction linear
-               
-        a # hover ? color "#F33088"
+        a # hover ? color "#F53088"
+
+    div # "#social" ? do listStyle none outside none
+                         textAlign  $ alignSide sideCenter
+                         li ? do width   $ px 64
+                                 height  $ px 64
+                                 display $ inlineBlock
+                                 
+                                 fontSize  $ px 96
+                                 fontStyle $ oblique
+                                 
+                                 a ? do color "#444"
+                                        transitionProperty "color"
+                                        transitionDuration $ sec 1
+                                        transitionTimingFunction ease
+                                 a # hover ? color "#F53088"
         
     div # ".info" ? do color    $ rgb 170 170 170
                        fontSize $ px 14
@@ -81,7 +80,6 @@ theStylesheet = do -- Overall site-wide styling rules.
            transitionTimingFunction ease
 
     a # hover ? do color "#F33088"
-
     a # visited ? color "#0881B3"
     
     ".recent-posts" ? li ? do listStyleType none

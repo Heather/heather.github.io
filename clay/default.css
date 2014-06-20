@@ -32,6 +32,25 @@ div#header #navigation a
   text-transform  : uppercase;
 }
 
+
+div#logo a
+{
+  float                      : left;
+  font-size                  : 32px;
+  font-weight                : bold;
+  text-decoration            : none;
+  color                      : rgb(232,42,55);
+  height                     : 30px;
+  transition-property        : color;
+  transition-duration        : 0.5s;
+  transition-timing-function : linear;
+}
+
+div#logo a:hover
+{
+  color : rgb(245,48,136);
+}
+
 div#social
 {
   list-style : none outside none;
@@ -49,7 +68,7 @@ div#social li
 
 div#social li a
 {
-  color                      : rgb(68,68,102);
+  color                      : rgb(68,68,68);
   transition-property        : color;
   transition-duration        : 1.0s;
   transition-timing-function : ease;
@@ -57,26 +76,7 @@ div#social li a
 
 div#social li a:hover
 {
-  color : rgb(243,48,136);
-}
-
-
-div#logo a
-{
-  float                      : left;
-  font-size                  : 32px;
-  font-weight                : bold;
-  text-decoration            : none;
-  color                      : rgb(232,42,55);
-  height                     : 30px;
-  transition-property        : color;
-  transition-duration        : 0.5s;
-  transition-timing-function : linear;
-}
-
-div#logo a:hover
-{
-  color : rgb(243,48,136);
+  color : rgb(245,48,136);
 }
 
 div.info
