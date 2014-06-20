@@ -70,8 +70,8 @@ theStylesheet = do -- Overall site-wide styling rules.
     div # ".info" ? do color    $ rgb 170 170 170
                        fontSize $ px 14
         
-    h1 ? fontSize (px 20)
-    h2 ? fontSize (px 15)
+    h1 ? fontSize (px 22)
+    h2 ? fontSize (px 18)
     
     a ? do color            "#0881B3"
            textDecoration   none
@@ -83,6 +83,7 @@ theStylesheet = do -- Overall site-wide styling rules.
     a # visited ? color "#0881B3"
     
     ".recent-posts" ? li ? do listStyleType none
+                              fontSize (px 20)
                               color "#aaa"
 
     ".band" ? do height     $ px 5

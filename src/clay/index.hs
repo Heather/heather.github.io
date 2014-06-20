@@ -21,7 +21,7 @@ main =
 theStylesheet :: Css
 theStylesheet = do
 
-    div # ".mlr" ? do minHeight $ px 200
+    div # ".mlr" ? do minHeight $ px 300
 
     div # ".mleft"  ? do float      floatLeft
                          minWidth   $ px 200

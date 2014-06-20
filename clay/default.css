@@ -87,12 +87,12 @@ div.info
 
 h1
 {
-  font-size : 20px;
+  font-size : 22px;
 }
 
 h2
 {
-  font-size : 15px;
+  font-size : 18px;
 }
 
 a
@@ -118,6 +118,7 @@ a:visited
 .recent-posts li
 {
   list-style-type : none;
+  font-size       : 20px;
   color           : rgb(170,170,170);
 }
 
