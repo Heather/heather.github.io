@@ -52,6 +52,11 @@ theStylesheet = do -- Overall site-wide styling rules.
                textDecoration  $ none
                color           "#E82A37"
                height          $ px 30
+               
+               transitionProperty "color"
+               transitionDuration $ sec 0.5
+               transitionTimingFunction linear
+               
         a # hover ? color "#F33088"
         
     div # ".info" ? do color    $ rgb 170 170 170

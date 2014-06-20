@@ -44,12 +44,15 @@ div#footer
 
 div#logo a
 {
-  float           : left;
-  font-size       : 32px;
-  font-weight     : bold;
-  text-decoration : none;
-  color           : rgb(232,42,55);
-  height          : 30px;
+  float                      : left;
+  font-size                  : 32px;
+  font-weight                : bold;
+  text-decoration            : none;
+  color                      : rgb(232,42,55);
+  height                     : 30px;
+  transition-property        : color;
+  transition-duration        : 0.5s;
+  transition-timing-function : linear;
 }
 
 div#logo a:hover
