@@ -24,7 +24,7 @@ theStylesheet = do
     div # ".mlr" ? do minHeight $ px 200
 
     div # ".mleft"  ? do float      floatLeft
-                         minWidth   $ px 500
+                         minWidth   $ px 200
     div # ".mright" ? do float floatRight
 
     div # "#contacts" ? do fontSize   $ px 15
