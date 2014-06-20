@@ -7,6 +7,7 @@
         <meta name="description" content="Heather">
         <link rel="shortcut icon" type="image/ico" href="favicon.ico" />
         <link rel="stylesheet" type="text/css" href="../css/default.css" />
+        <link rel="stylesheet" type="text/css" href="../pandoc/syntax.css" />
     </head>
     <body>
         <div class="band"></div>
@@ -21,28 +22,47 @@
 
 <div class="info">Posted on 19 June 2014</div>
 
-<p>Try it</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell">theStylesheet <span class="fu">=</span> <span class="kw">do</span> <span class="co">-- Overall site-wide styling rules.</span>
+<p>That’s how Hakyll looks like…</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell">match <span class="st">&quot;posts/*&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+    route <span class="fu">$</span> setExtension <span class="st">&quot;html&quot;</span>
+    compile <span class="fu">$</span> pandocCompiler
+        <span class="fu">&gt;&gt;=</span> loadAndApplyTemplate <span class="st">&quot;templates/post.html&quot;</span>    postCtx
+        <span class="fu">&gt;&gt;=</span> loadAndApplyTemplate <span class="st">&quot;templates/default.html&quot;</span> postCtx
+        <span class="fu">&gt;&gt;=</span> relativizeUrls
 
-    body <span class="fu">?</span> <span class="kw">do</span> color         <span class="st">&quot;#333&quot;</span>
-              margin        <span class="dv">0</span> auto <span class="dv">0</span> auto
-              width         <span class="fu">$</span>   pct <span class="dv">80</span>
-              fontSize      <span class="fu">$</span>   px <span class="dv">16</span>
-              fontFamily    [<span class="st">&quot;Helvetica Neue Light&quot;</span>, <span class="st">&quot;Helvetica Neue&quot;</span>, <span class="st">&quot;Helvetica&quot;</span>] [sansSerif]
-              fontWeight    <span class="fu">$</span>   weight <span class="dv">300</span>
-              lineHeight    <span class="fu">$</span>   em <span class="dv">1</span><span class="fu">.</span><span class="dv">5</span>
+create [<span class="st">&quot;index.html&quot;</span>] <span class="fu">$</span> <span class="kw">do</span>
+    route idRoute
+    compile <span class="fu">$</span> <span class="kw">do</span>
+        posts <span class="ot">&lt;-</span> recentFirst <span class="fu">=&lt;&lt;</span> loadAll <span class="st">&quot;posts/*&quot;</span>
+        <span class="kw">let</span> indexCtx <span class="fu">=</span>
+                listField <span class="st">&quot;posts&quot;</span> postCtx (return posts) <span class="ot">`mappend`</span>
+                constField <span class="st">&quot;title&quot;</span> <span class="st">&quot;Home&quot;</span> <span class="ot">`mappend`</span>
+                defaultContext
 
-    div <span class="st"># &quot;#header&quot; ? do marginBottom    $  px 44</span>
-                         marginTop       <span class="fu">$</span>  px <span class="dv">44</span>
-                         height          <span class="fu">$</span>  px <span class="dv">45</span>
-                         <span class="st">&quot;#navigation&quot;</span>   <span class="fu">?</span>
-                            <span class="kw">do</span> height (px <span class="dv">45</span>)
-                               a <span class="fu">?</span> <span class="kw">do</span> color         <span class="fu">$</span> black
-                                      fontSize      <span class="fu">$</span> px <span class="dv">18</span>
-                                      fontWeight    <span class="fu">$</span> bold
-                                      marginLeft    <span class="fu">$</span> px <span class="dv">12</span>
-                                      textDecoration none
-                                      textTransform  uppercase</code></pre>
+        makeItem <span class="st">&quot;&quot;</span>
+            <span class="fu">&gt;&gt;=</span> loadAndApplyTemplate <span class="st">&quot;templates/index.html&quot;</span> indexCtx
+            <span class="fu">&gt;&gt;=</span> loadAndApplyTemplate <span class="st">&quot;templates/default.html&quot;</span> homeCtx
+            <span class="fu">&gt;&gt;=</span> relativizeUrls</code></pre>
+<p>That’s how Clay CSS looks like…</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell">body <span class="fu">?</span> <span class="kw">do</span> color         <span class="st">&quot;#333&quot;</span>
+          margin        <span class="dv">0</span> auto <span class="dv">0</span> auto
+          width         <span class="fu">$</span>   pct <span class="dv">80</span>
+          fontSize      <span class="fu">$</span>   px <span class="dv">16</span>
+          fontFamily    [<span class="st">&quot;Helvetica Neue Light&quot;</span>, <span class="st">&quot;Helvetica Neue&quot;</span>, <span class="st">&quot;Helvetica&quot;</span>] [sansSerif]
+          fontWeight    <span class="fu">$</span>   weight <span class="dv">300</span>
+          lineHeight    <span class="fu">$</span>   em <span class="dv">1</span><span class="fu">.</span><span class="dv">5</span>
+
+div <span class="st"># &quot;#header&quot; ? do marginBottom    $  px 44</span>
+                     marginTop       <span class="fu">$</span>  px <span class="dv">44</span>
+                     height          <span class="fu">$</span>  px <span class="dv">45</span>
+                     <span class="st">&quot;#navigation&quot;</span>   <span class="fu">?</span>
+                        <span class="kw">do</span> height (px <span class="dv">45</span>)
+                           a <span class="fu">?</span> <span class="kw">do</span> color         <span class="fu">$</span> black
+                                  fontSize      <span class="fu">$</span> px <span class="dv">18</span>
+                                  fontWeight    <span class="fu">$</span> bold
+                                  marginLeft    <span class="fu">$</span> px <span class="dv">12</span>
+                                  textDecoration none
+                                  textTransform  uppercase</code></pre>
 
 <hr />
 <br />

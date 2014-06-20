@@ -28,6 +28,15 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/index.html" indexCtx
                 >>= loadAndApplyTemplate "templates/default.html" homeCtx
                 >>= relativizeUrls
+                
+    create ["atom.xml"] $ do
+        route idRoute
+        compile $ do
+            let feedCtx = postCtx `mappend`
+                    constField "description" "This is the post description"
+
+            posts <- fmap (take 10) . recentFirst =<< loadAll "posts/*"
+            renderAtom feedConfiguration feedCtx posts
 
     match "templates/*" $ compile templateCompiler
 
@@ -40,3 +49,12 @@ postCtx :: Context String
 postCtx =
     dateField "date" "%e %B %Y" `mappend`
     defaultContext
+
+feedConfiguration :: FeedConfiguration
+feedConfiguration = FeedConfiguration
+    { feedTitle       = "Heather"
+    , feedDescription = "blog"
+    , feedAuthorName  = "Heather"
+    , feedAuthorEmail = "heather@live.ru"
+    , feedRoot        = "http://heather.github.io"
+    }

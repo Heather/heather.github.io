@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Heather</title>
+    <link href="http://heather.github.io/atom.xml" rel="self" />
+    <link href="http://heather.github.io" />
+    <id>http://heather.github.io/atom.xml</id>
+    <author>
+        <name>Heather</name>
+        <email>heather@live.ru</email>
+    </author>
+    <updated>2014-06-19T00:00:00Z</updated>
+    <entry>
+    <title>Hakyll and Clay</title>
+    <link href="http://heather.github.io/posts/2014-06-19-hakyll-and-clay.html" />
+    <id>http://heather.github.io/posts/2014-06-19-hakyll-and-clay.html</id>
+    <published>2014-06-19T00:00:00Z</published>
+    <updated>2014-06-19T00:00:00Z</updated>
+    <summary type="html"><![CDATA[This is the post description]]></summary>
+</entry>
+
+</feed>
