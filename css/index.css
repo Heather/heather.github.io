@@ -1,0 +1,25 @@
+
+div.mlr
+{
+  min-height : 200px;
+}
+
+div.mleft
+{
+  float     : left;
+  min-width : 500px;
+}
+
+div.mright
+{
+  float : right;
+}
+
+div#contacts
+{
+  font-size  : 15px;
+  text-align : left;
+}
+
+
+/* Generated with Clay, http://fvisser.nl/clay */

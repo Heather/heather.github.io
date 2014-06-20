@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Heather - Hakyll and Clay</title>
+        <meta name="description" content="Heather">
+        <link rel="shortcut icon" type="image/ico" href="favicon.ico" />
+        <link rel="stylesheet" type="text/css" href="../css/default.css" />
+    </head>
+    <body>
+        <div class="band"></div>
+        <div id="header">
+            <div id="logo">
+                <a href="../">Mi Mi Mi</a>
+            </div>
+        </div>
+        <div id="content">
+            <h1>Hakyll and Clay</h1>
+
+
+<div class="info">Posted on 19 June 2014</div>
+
+<p>Try it</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell">theStylesheet <span class="fu">=</span> <span class="kw">do</span> <span class="co">-- Overall site-wide styling rules.</span>
+
+    body <span class="fu">?</span> <span class="kw">do</span> color         <span class="st">&quot;#333&quot;</span>
+              margin        <span class="dv">0</span> auto <span class="dv">0</span> auto
+              width         <span class="fu">$</span>   pct <span class="dv">80</span>
+              fontSize      <span class="fu">$</span>   px <span class="dv">16</span>
+              fontFamily    [<span class="st">&quot;Helvetica Neue Light&quot;</span>, <span class="st">&quot;Helvetica Neue&quot;</span>, <span class="st">&quot;Helvetica&quot;</span>] [sansSerif]
+              fontWeight    <span class="fu">$</span>   weight <span class="dv">300</span>
+              lineHeight    <span class="fu">$</span>   em <span class="dv">1</span><span class="fu">.</span><span class="dv">5</span>
+
+    div <span class="st"># &quot;#header&quot; ? do marginBottom    $  px 44</span>
+                         marginTop       <span class="fu">$</span>  px <span class="dv">44</span>
+                         height          <span class="fu">$</span>  px <span class="dv">45</span>
+                         <span class="st">&quot;#navigation&quot;</span>   <span class="fu">?</span>
+                            <span class="kw">do</span> height (px <span class="dv">45</span>)
+                               a <span class="fu">?</span> <span class="kw">do</span> color         <span class="fu">$</span> black
+                                      fontSize      <span class="fu">$</span> px <span class="dv">18</span>
+                                      fontWeight    <span class="fu">$</span> bold
+                                      marginLeft    <span class="fu">$</span> px <span class="dv">12</span>
+                                      textDecoration none
+                                      textTransform  uppercase</code></pre>
+
+<hr />
+<br />
+
+<div class="twitter">
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Cynede" data-lang="en" data-text="Hakyll" and Clay data-count="none">Tweeter</a>
+<script>
+    !function(d,s,id){
+        var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+        if(!d.getElementById(id)){
+            js=d.createElement(s);
+            js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);
+        }
+    }(document, 'script', 'twitter-wjs');
+</script>
+</div>
+
+        </div>
+        <div id="footer">
+            ♡ Made with Hakyll and Clay ♡
+        </div>
+    </body>
+</html>

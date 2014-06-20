@@ -17,11 +17,11 @@ main =
        _  -> putCss theStylesheet
 
 theStylesheet :: Css
-theStylesheet =
-  do -- Overall site-wide styling rules.
+theStylesheet = do -- Overall site-wide styling rules.
+
     body ? do color         "#333"
               margin        0 auto 0 auto
-              width         $   px 600
+              width         $   pct 80
               fontSize      $   px 16
               fontFamily    ["Helvetica Neue Light", "Helvetica Neue", "Helvetica"] [sansSerif]
               fontWeight    $   weight 300
@@ -38,11 +38,13 @@ theStylesheet =
                                       marginLeft    $ px 12
                                       textDecoration none
                                       textTransform  uppercase
+
     div # "#footer" ? do color      "#555"
                          fontSize   $ px 12
                          marginTop  $ px 30
                          padding    12 0 12 0
                          textAlign  $ alignSide sideRight
+
     div # "#logo" ? do
         a ? do float           $ floatLeft
                fontSize        $ px 32
