@@ -1,4 +1,8 @@
-﻿.entypo-music:before {
+﻿.entypo-mail:before {
+  font-family: Entypo;
+  content: "✉";
+}
+.entypo-music:before {
   font-family: Entypo;
   content: "🎵";
 }
@@ -6,57 +10,25 @@
   font-family: Entypo;
   content: "";
 }
+.entypo-rss:before {
+  font-family: Entypo;
+  content: "";
+}
 .entypo-social-github:before {
   font-family: Entypo Social;
   content: "";
-}
-.entypo-social-c-github:before {
-  font-family: Entypo Social;
-  content: "";
 }
 .entypo-social-twitter:before {
   font-family: Entypo Social;
   content: "";
 }
-.entypo-social-c-twitter:before {
-  font-family: Entypo Social;
-  content: "";
-}
-.entypo-social-google:before {
-  font-family: Entypo Social;
-  content: ;
-}
-.entypo-social-c-google:before {
-  font-family: Entypo Social;
-  content: ;
-}
 .entypo-social-tumblr:before {
   font-family: Entypo Social;
   content: "";
 }
-.entypo-social-c-tumblr:before {
-  font-family: Entypo Social;
-  content: "";
-}
 .entypo-social-lastfm:before {
   font-family: Entypo Social;
   content: "";
-}
-.entypo-social-c-lastfm:before {
-  font-family: Entypo Social;
-  content: "";
-}
-.entypo-social-instagram:before {
-  font-family: Entypo Social;
-  content: "";
-}
-.entypo-social-skype:before {
-  font-family: Entypo Social;
-  content: "";
-}
-.entypo-social-c-skype:before {
-  font-family: Entypo Social;
-  content: "";
 }
 
 @font-face {
