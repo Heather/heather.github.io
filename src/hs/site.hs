@@ -4,7 +4,7 @@ import           Hakyll
 
 main :: IO ()
 main = hakyll $ do
-    match "css/*.hs" $ do
+    match "clay/*.hs" $ do
         route   $ setExtension "css"
         compile $ getResourceString >>= withItemBody (unixFilter "runghc" [])
 

@@ -1,7 +1,7 @@
 /bin/bash
 
 #Clean
-rm -rf css
+rm -rf clay
 rm -rf posts
 rm -rf index.html
 
