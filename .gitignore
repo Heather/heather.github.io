@@ -5,6 +5,8 @@
 *.sublime-project
 *.sublime-workspace
 
+/src/site
+
 /_site/
 /_cache/
 /site
