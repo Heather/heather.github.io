@@ -32,8 +32,8 @@ main = hakyll $ do
     create ["atom.xml"] $ do
         route idRoute
         compile $ do
-            let feedCtx = postCtx `mappend`
-                    constField "description" "This is the post description"
+            let feedCtx = postCtx `mappend` -- no idea
+                    constField "description" "Heather"
 
             posts <- fmap (take 10) . recentFirst =<< loadAll "posts/*"
             renderAtom feedConfiguration feedCtx posts
