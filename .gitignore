@@ -6,6 +6,7 @@
 *.sublime-workspace
 
 /src/site
+/src/site/r
 
 /_site/
 /_cache/
