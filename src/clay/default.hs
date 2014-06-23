@@ -54,18 +54,17 @@ theStylesheet = do -- Overall site-wide styling rules.
     
     div # "#social" ? do listStyle none outside none
                          textAlign  $ alignSide sideCenter
-                         li ? do width   $ px 64
+                         li ? do width   $ pct 10
                                  height  $ px 64
                                  display $ inlineBlock
-                                 
-                                 fontSize  $ px 96
-                                 fontStyle $ oblique
                                  
                                  a ? do color "#444"
                                         transitionProperty "color"
                                         transitionDuration $ sec 1
                                         transitionTimingFunction ease
                                  a # hover ? color "#F53088"
+                                 
+                                 ".mega-octicon" ? fontSize (px 64)
         
     div # ".info" ? do color    $ rgb 170 170 170
                        fontSize $ px 14

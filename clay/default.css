@@ -59,11 +59,9 @@ div#social
 
 div#social li
 {
-  width      : 64px;
-  height     : 64px;
-  display    : inline-block;
-  font-size  : 96px;
-  font-style : oblique;
+  width   : 10%;
+  height  : 64px;
+  display : inline-block;
 }
 
 div#social li a
@@ -77,6 +75,11 @@ div#social li a
 div#social li a:hover
 {
   color : rgb(245,48,136);
+}
+
+div#social li .mega-octicon
+{
+  font-size : 64px;
 }
 
 div.info
