@@ -2,3 +2,7 @@ name: heather.github.io
 description: Heather blog
 dependencies:
   browser: any
+  angular: any
+  shadow_dom: any
+transformers:
+- angular

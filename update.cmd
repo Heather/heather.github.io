@@ -1,7 +1,6 @@
 @echo off
 
 ::Clean
-rm -rf build
 rm -rf clay
 rm -rf posts
 rm -rf index.html
@@ -16,7 +15,10 @@ chcp 65001
 ghc --make src/hs/site.hs -o src/site.exe
 
 ::Dart
-cp -rf build/web web/
+rm -rf web/*.js
+rm -rf web/packages
+cp -rf build/web/packages web/
+cp -rf build/web/*.js web/
 
 ::Build
 pushd .
