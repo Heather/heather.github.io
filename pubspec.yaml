@@ -1,2 +1,4 @@
+name: heather.github.io
+description: Heather blog
 dependencies:
   browser: any

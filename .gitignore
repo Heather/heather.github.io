@@ -1,12 +1,16 @@
 *.exe
 *.o
 *.hi
+*.lock
 
 *.sublime-project
 *.sublime-workspace
 
 /src/site
 /src/site/r
+
+/packages/
+/build/
 
 /_site/
 /_cache/
