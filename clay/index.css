@@ -2,21 +2,22 @@
 div#parent
 {
   position : relative;
+  z-index  : 1000;
 }
 
-div#parent #canvas
+#canvas
 {
   z-index  : 99;
-  top      : -128px;
-  left     : -128px;
-  position : relative;
+  height   : 100%;
+  width    : 100%;
+  position : absolute;
+  top      : 5px;
+  left     : 0px;
 }
 
 div#top
 {
-  position : relative;
-  top      : -550px;
-  z-index  : 100;
+  z-index : 100;
 }
 
 div.mlr
@@ -37,17 +38,13 @@ div.mright
   position : relative;
 }
 
-div#contacts
-{
-  font-size  : 15px;
-  text-align : left;
-}
-
 div#social
 {
-  position : relative;
-  top      : -515px;
   z-index  : 100;
+  position : absolute;
+  bottom   : 10px;
+  width    : 80%;
+  height   : 100px;
 }
 
 

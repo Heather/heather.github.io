@@ -22,6 +22,7 @@ theStylesheet = do -- Overall site-wide styling rules.
     body ? do color         "#333"
               margin        0 auto 0 auto
               width         $   pct 80
+              height        $   pct 100
               fontSize      $   px 16
               fontFamily    ["Helvetica Neue Light", "Helvetica Neue", "Helvetica"] [sansSerif]
               fontWeight    $   weight 300
@@ -84,7 +85,8 @@ theStylesheet = do -- Overall site-wide styling rules.
     a # visited ? color "#0881B3"
     
     ".recent-posts" ? li ? do listStyleType none
-                              fontSize (px 18)
+                              fontSize (px 24)
+                              fontWeight bold
                               color "#aaa"
 
     ".band" ? do height     $ px 5
@@ -93,9 +95,6 @@ theStylesheet = do -- Overall site-wide styling rules.
                  position absolute
                  left   $ px 0
                  top    $ px 0
-
-    ".twitter" ? do marginLeft auto
-                    width $ px 56
 
     hr ? do margin 60 0 7 0
             borderWidth 0

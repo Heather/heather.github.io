@@ -22,14 +22,16 @@ theStylesheet :: Css
 theStylesheet = do
 
     div # "#parent" ? do position relative
-                         "#canvas" ? do zIndex 99
-                                        top $ px $ -128
-                                        left $ px $ -128
-                                        position relative
+                         zIndex 1000
+    "#canvas" ? do zIndex 99
+                   height $ pct 100
+                   width  $ pct 100
+                   position absolute
+                   top  5
+                   left 0
+                                        
 
-    div # "#top" ? do position relative
-                      top $ px $ -550
-                      zIndex 100
+    div # "#top" ? zIndex 100
 
     div # ".mlr" ? do minHeight $ px 300
 
@@ -38,11 +40,9 @@ theStylesheet = do
     div # ".mright" ? do float floatRight
                          top $ px $ -100
                          position relative
-
-    div # "#contacts" ? do fontSize   $ px 15
-                           textAlign  $ alignSide sideLeft
                            
-    div # "#social" ? do position relative
-                         top $ px $ -515
-                         zIndex 100
-
+    div # "#social" ? do zIndex 100
+                         position absolute
+                         bottom $ px 10
+                         width  $ pct 80
+                         height $ px 100
