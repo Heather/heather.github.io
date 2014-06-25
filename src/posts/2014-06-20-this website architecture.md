@@ -63,7 +63,7 @@ div # "#header" ? do marginBottom    $  px 44
 
 JS level has made with [Dart](https://www.dartlang.org/), [AngularDart](https://angulardart.org) and [Rikulo](http://rikulo.org/)
 
-``` dart
+``` javascript
 import 'dart:html';
 
 import 'package:angular/angular.dart';
