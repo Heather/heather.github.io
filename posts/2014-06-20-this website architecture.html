@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         
-        <title>Heather - Hakyll and Clay</title>
+        <title>Heather - This website architecture</title>
         <meta name="description" content="Heather">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
@@ -24,12 +24,14 @@
             </div>
         </div>
         <div id="content">
-            <h1>Hakyll and Clay</h1>
+            <h1>This website architecture</h1>
 
 
 <div class="info">Posted on 20 June 2014</div>
 
-<p>That’s how Hakyll looks like…</p>
+<p>It’s just my Blog where I run all the possible experiments…</p>
+<p>Core level has done with <a href="http://jaspervdj.be/hakyll/">Hakyll</a></p>
+<p>Hakyll builds all the html pages, atom.xml and some other candies</p>
 <pre class="sourceCode haskell"><code class="sourceCode haskell">match <span class="st">&quot;posts/*&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
     route <span class="fu">$</span> setExtension <span class="st">&quot;html&quot;</span>
     compile <span class="fu">$</span> pandocCompiler
@@ -50,7 +52,11 @@ create [<span class="st">&quot;index.html&quot;</span>] <span class="fu">$</span
             <span class="fu">&gt;&gt;=</span> loadAndApplyTemplate <span class="st">&quot;templates/index.html&quot;</span> indexCtx
             <span class="fu">&gt;&gt;=</span> loadAndApplyTemplate <span class="st">&quot;templates/default.html&quot;</span> homeCtx
             <span class="fu">&gt;&gt;=</span> relativizeUrls</code></pre>
-<p>That’s how Clay CSS looks like…</p>
+<p>My CSS made with <a href="https://github.com/sebastiaanvisser/clay">Clay</a></p>
+<blockquote>
+<p>Clay is a CSS preprocessor like LESS and Sass, but implemented as an embedded domain specific language (EDSL) in Haskell.</p>
+<p>This means that all CSS selectors and style rules are first class Haskell functions, which makes reuse and composability easy.</p>
+</blockquote>
 <pre class="sourceCode haskell"><code class="sourceCode haskell">body <span class="fu">?</span> <span class="kw">do</span> color         <span class="st">&quot;#333&quot;</span>
           margin        <span class="dv">0</span> auto <span class="dv">0</span> auto
           width         <span class="fu">$</span>   pct <span class="dv">80</span>
@@ -70,6 +76,19 @@ div <span class="st"># &quot;#header&quot; ? do marginBottom    $  px 44</span>
                                   marginLeft    <span class="fu">$</span> px <span class="dv">12</span>
                                   textDecoration none
                                   textTransform  uppercase</code></pre>
+<p>JS level has made with <a href="https://www.dartlang.org/">Dart</a>, <a href="https://angulardart.org">AngularDart</a> and <a href="http://rikulo.org/">Rikulo</a></p>
+<pre class="dart"><code>import 'dart:html';
+
+import 'package:angular/angular.dart';
+import 'package:angular/application_factory.dart';
+
+import 'package:dquery/dquery.dart';
+import 'package:bootjack/bootjack.dart';
+
+void main() {
+    Bootjack.useDefault();
+    applicationFactory().run();
+}</code></pre>
 
 <hr />
 

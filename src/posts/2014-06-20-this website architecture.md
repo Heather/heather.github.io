@@ -1,9 +1,12 @@
 ---
-title: Hakyll and Clay
-twittertext: Hakyll and Clay
+title: This website architecture
 ---
 
-That's how Hakyll looks like...
+It's just my Blog where I run all the possible experiments...
+
+Core level has done with [Hakyll](http://jaspervdj.be/hakyll/)
+
+Hakyll builds all the html pages, atom.xml and some other candies
 
 ``` haskell
 match "posts/*" $ do
@@ -28,7 +31,13 @@ create ["index.html"] $ do
             >>= relativizeUrls
 ```
 
-That's how Clay CSS looks like...
+My CSS made with [Clay](https://github.com/sebastiaanvisser/clay)
+
+> Clay is a CSS preprocessor like LESS and Sass, 
+> but implemented as an embedded domain specific language (EDSL) in Haskell. 
+> 
+> This means that all CSS selectors and style rules are first class Haskell functions, 
+> which makes reuse and composability easy.
 
 ``` haskell
 body ? do color         "#333"
@@ -50,4 +59,21 @@ div # "#header" ? do marginBottom    $  px 44
                                   marginLeft    $ px 12
                                   textDecoration none
                                   textTransform  uppercase
+```
+
+JS level has made with [Dart](https://www.dartlang.org/), [AngularDart](https://angulardart.org) and [Rikulo](http://rikulo.org/)
+
+``` dart
+import 'dart:html';
+
+import 'package:angular/angular.dart';
+import 'package:angular/application_factory.dart';
+
+import 'package:dquery/dquery.dart';
+import 'package:bootjack/bootjack.dart';
+
+void main() {
+    Bootjack.useDefault();
+    applicationFactory().run();
+}
 ```
