@@ -2937,7 +2937,7 @@ z=this.YK
 if(typeof z!=="number")return z.V()
 x=this.ZC
 if(typeof x!=="number")return x.V()
-J.mi(y,"Mi Mi Mi",z/2,x/2-100)}}for(w=0;w<21;++w){v=this.Wo[w]
+J.mi(y,"Mi Mi Mi",z/2+100,x/2)}}for(w=0;w<21;++w){v=this.Wo[w]
 z=this.JZ
 z.font=H.d(v)+"px MatrixCode"
 z.textBaseline="top"

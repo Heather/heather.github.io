@@ -109,7 +109,7 @@ class Dartrix {
     showMessage(double alpha){
         _ctx..font = 'bold 75px Verdana'
             ..fillStyle = 'rgba(67,199,40, ${alpha})'
-            ..fillText(MESSAGE , _width/2, _height/2-100);
+            ..fillText(MESSAGE , _width/2+100, _height/2);
     }
 
     onResize() {

@@ -84,7 +84,7 @@ theStylesheet = do -- Overall site-wide styling rules.
     a # visited ? color "#0881B3"
     
     ".recent-posts" ? li ? do listStyleType none
-                              fontSize (px 20)
+                              fontSize (px 18)
                               color "#aaa"
 
     ".band" ? do height     $ px 5
