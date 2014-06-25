@@ -8,19 +8,27 @@
         <name>Heather</name>
         <email>heather@live.ru</email>
     </author>
-    <updated>2014-06-20T00:00:00Z</updated>
+    <updated>2014-06-25T00:00:00Z</updated>
     <entry>
-    <title>CV</title>
-    <link href="http://heather.github.io/posts/2014-06-20-hire-me.html" />
-    <id>http://heather.github.io/posts/2014-06-20-hire-me.html</id>
+    <title>Idris snippet</title>
+    <link href="http://heather.github.io/posts/2014-06-25-idris.html" />
+    <id>http://heather.github.io/posts/2014-06-25-idris.html</id>
+    <published>2014-06-25T00:00:00Z</published>
+    <updated>2014-06-25T00:00:00Z</updated>
+    <summary type="html"><![CDATA[Heather]]></summary>
+</entry>
+<entry>
+    <title>Hakyll and Clay</title>
+    <link href="http://heather.github.io/posts/2014-06-20-hakyll-and-clay.html" />
+    <id>http://heather.github.io/posts/2014-06-20-hakyll-and-clay.html</id>
     <published>2014-06-20T00:00:00Z</published>
     <updated>2014-06-20T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 <entry>
-    <title>Hakyll and Clay</title>
-    <link href="http://heather.github.io/posts/2014-06-19-hakyll-and-clay.html" />
-    <id>http://heather.github.io/posts/2014-06-19-hakyll-and-clay.html</id>
+    <title>CV</title>
+    <link href="http://heather.github.io/posts/2014-06-19-hire-me.html" />
+    <id>http://heather.github.io/posts/2014-06-19-hire-me.html</id>
     <published>2014-06-19T00:00:00Z</published>
     <updated>2014-06-19T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
