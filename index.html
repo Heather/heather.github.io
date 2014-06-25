@@ -7,12 +7,14 @@
         
         <title>Heather - Home</title>
         <meta name="description" content="Heather">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         <link href="./atom.xml" rel="alternate" title="Heather" type="application/atom+xml">
         <link rel="shortcut icon" type="image/ico" href="favicon.ico" />
+        <link rel="stylesheet" href="web/packages/bootjack/css/bootstrap.css">
         <link rel="stylesheet" type="text/css" media="all" href="./css/octicons.css">
         <link rel="stylesheet" type="text/css" media="all" href="./css/syntax.css" />
-        <link rel="stylesheet" type="text/css" media="all" href="./clay/default.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="./clay/default.css" />        
     </head>
     <body>
         <div class="band"></div>
@@ -51,6 +53,29 @@
                 </a>
                 <h3>Hello {{name}}!</h3>
                     Name: <input type="text" ng-model="name" />
+                    
+                <button class="btn btn-primary" data-target="#modal" data-toggle="modal">Launch</button>
+                <div id="modal" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">×</button>
+                      <h3 style="margin: 0">Bootjack</h3>
+                    </div>
+                    <div class="modal-body">
+                      <ul style="margin: 0">
+                        <li>Abundant style resources</li>
+                        <li>Stylish UI components</li>
+                        <li>Non-invasive integration</li>
+                      </ul>
+                    </div>
+                    <div class="modal-footer" style="margin: 0">
+                      <button class="btn btn-success" data-dismiss="modal">OK</button>
+                    </div>
+                  </div>
+                </div>
+                </div>
+                    
             </div>
         </div>
     </div>
@@ -99,7 +124,7 @@
         </div>
 
     <script type="application/javascript" src="web/packages/shadow_dom/shadow_dom.min.js"></script>
-    <script type="application/dart" src="web/angular.dart"></script>
+    <script type="application/dart" src="web/core.dart"></script>
     <script type="application/javascript" src="web/packages/browser/dart.js"></script>
     </body>
 </html>

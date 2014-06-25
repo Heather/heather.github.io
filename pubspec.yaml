@@ -4,5 +4,7 @@ dependencies:
   browser: any
   angular: any
   shadow_dom: any
+  dquery: any
+  bootjack: any
 transformers:
 - angular
