@@ -1,4 +1,24 @@
 
+div#parent
+{
+  position : relative;
+}
+
+div#parent #canvas
+{
+  z-index  : 99;
+  top      : -128px;
+  left     : -128px;
+  position : relative;
+}
+
+div#top
+{
+  position : relative;
+  top      : -550px;
+  z-index  : 100;
+}
+
 div.mlr
 {
   min-height : 300px;
@@ -21,6 +41,13 @@ div#contacts
 {
   font-size  : 15px;
   text-align : left;
+}
+
+div#social
+{
+  position : relative;
+  top      : -515px;
+  z-index  : 100;
 }
 
 

@@ -1,19 +1,23 @@
 <link rel="stylesheet" type="text/css" href="/clay/index.css" />
 
-<div class="mlr">
-    <div class="mleft">
-        <ul class="recent-posts">
-            $partial("templates/post-list.html")$
-        </ul>
-    </div>
-    <div class="mright">
-        <a href="/">
-            <img src="/images/logo.png"/>
-        </a>
-        <h3>Hello {{name}}!</h3>
-            Name: <input type="text" ng-model="name"/>
+<div id = "parent">
+    <canvas id="canvas">
+    </canvas>
+    <div id="top">
+        <div class="mlr">
+            <div class="mleft">
+                <ul class="recent-posts">
+                    $partial("templates/post-list.html")$
+                </ul>
+            </div>
+            <div class="mright">
+                <a href="/">
+                    <img src="/images/logo.png"/>
+                </a>
+                <h3>Hello {{name}}!</h3>
+                    Name: <input type="text" ng-model="name"/>
+            </div>
+        </div>
     </div>
 </div>
-
-<script type="application/javascript" src="web/packages/shadow_dom/shadow_dom.min.js"></script>
-<script type="application/dart" src="web/angular.dart"></script>
+<script type="application/dart" src="web/dartrix.dart"></script>

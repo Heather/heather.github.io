@@ -24,10 +24,14 @@
         <div id="content">
             <link rel="stylesheet" type="text/css" href="./clay/index.css" />
 
-<div class="mlr">
-    <div class="mleft">
-        <ul class="recent-posts">
-            <ul>
+<div id="parent">
+    <canvas id="canvas">
+    </canvas>
+    <div id="top">
+        <div class="mlr">
+            <div class="mleft">
+                <ul class="recent-posts">
+                    <ul>
     
         <li>
             <a href="./posts/2014-06-20-hire-me.html">Hire me maybe</a> - 20 June 2014
@@ -39,19 +43,19 @@
     
 </ul>
 
-        </ul>
-    </div>
-    <div class="mright">
-        <a href="./">
-            <img src="./images/logo.png" />
-        </a>
-        <h3>Hello {{name}}!</h3>
-            Name: <input type="text" ng-model="name" />
+                </ul>
+            </div>
+            <div class="mright">
+                <a href="./">
+                    <img src="./images/logo.png" />
+                </a>
+                <h3>Hello {{name}}!</h3>
+                    Name: <input type="text" ng-model="name" />
+            </div>
+        </div>
     </div>
 </div>
-
-<script type="application/javascript" src="web/packages/shadow_dom/shadow_dom.min.js"></script>
-<script type="application/dart" src="web/angular.dart"></script>
+<script type="application/dart" src="web/dartrix.dart"></script>
 
         </div>
         
@@ -89,7 +93,13 @@
               </li>
             </ul>
         </div>
+        
+        <div id="footer">
 
+        </div>
+
+    <script type="application/javascript" src="web/packages/shadow_dom/shadow_dom.min.js"></script>
+    <script type="application/dart" src="web/angular.dart"></script>
     <script type="application/javascript" src="web/packages/browser/dart.js"></script>
     </body>
 </html>

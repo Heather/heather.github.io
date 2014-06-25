@@ -26,10 +26,12 @@ theStylesheet = do -- Overall site-wide styling rules.
               fontFamily    ["Helvetica Neue Light", "Helvetica Neue", "Helvetica"] [sansSerif]
               fontWeight    $   weight 300
               lineHeight    $   em 1.5
+              overflowX     hidden
 
     div # "#header" ? do marginBottom    $  px 44
                          marginTop       $  px 44
                          height          $  px 45
+                         zIndex          100
                          "#navigation"   ?
                             do height (px 45)
                                a ? do color         $ black
