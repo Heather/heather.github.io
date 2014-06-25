@@ -1,5 +1,5 @@
 ---
-title: This website architecture
+title: Blog architecture
 ---
 
 It's just my Blog where I run all the possible experiments...
