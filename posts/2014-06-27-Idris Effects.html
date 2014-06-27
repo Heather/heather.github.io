@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         
-        <title>Heather - I feel like I do all the things completely wrong</title>
+        <title>Heather - Idris Effects</title>
         <meta name="description" content="Heather">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
@@ -24,13 +24,32 @@
             </div>
         </div>
         <div id="content">
-            <h1>I feel like I do all the things completely wrong</h1>
+            <h1>Idris Effects</h1>
 
 
 <div class="info">Posted on 27 June 2014</div>
 
-<p>And… I don’t know if I need to add some more comments, I’m confused, Everything is complication there…</p>
-<p>I feel like so…</p>
+<p>For now this code works as package manager:</p>
+<pre class="shell"><code>&gt;Synthia install Heather/Control.Eternal.Idris
+
+Cloning into 'C:\Idris\Control.Eternal.Idris'...
+remote: Reusing existing pack: 221, done.
+Receiving objects: 100% (221/221), 20.70 KiB, done.
+Resolving deltas: 100% (104/104), done.
+Type checking .\Control\Eternal\System\Process.idr
+Type checking .\Control\Eternal\System.idr
+Type checking .\Control\Eternal\Parse.idr
+Type checking .\Control\Eternal\Logic.idr
+Type checking .\Control\Eternal\Operators\List.idr
+Type checking .\Control\Eternal\Operators\Nat.idr
+Type checking .\Control\Eternal\Operators\String.idr
+Type checking .\Control\Eternal\Operators\FSharp.idr
+Type checking .\Control\Eternal\Operators.idr
+Type checking .\Control\Eternal.idr
+Installing Control\Eternal.ibc to ....\cabal\idris-</code></pre>
+<p>In the future I will finish processing deps</p>
+<p>Yaml is <a href="https://github.com/Heather/Idris.Yaml">Idris.Yaml</a> library for parsing config files and it already works <br /> But there are still being a lot of things to do to make it sane</p>
+<p>Github repository: https://github.com/Heather/Synthia <br /> Code in current state:</p>
 <pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">Main</span>
 
 <span class="kw">import </span><span class="dt">Control.Eternal</span>

@@ -1,10 +1,36 @@
 ---
-title: I feel like I do all the things completely wrong
+title: Idris Effects
 ---
 
-And... I don't know if I need to add some more comments, I'm confused, Everything is complication there...
+For now this code works as package manager:
 
-I feel like so...
+``` shell
+>Synthia install Heather/Control.Eternal.Idris
+
+Cloning into 'C:\Idris\Control.Eternal.Idris'...
+remote: Reusing existing pack: 221, done.
+Receiving objects: 100% (221/221), 20.70 KiB, done.
+Resolving deltas: 100% (104/104), done.
+Type checking .\Control\Eternal\System\Process.idr
+Type checking .\Control\Eternal\System.idr
+Type checking .\Control\Eternal\Parse.idr
+Type checking .\Control\Eternal\Logic.idr
+Type checking .\Control\Eternal\Operators\List.idr
+Type checking .\Control\Eternal\Operators\Nat.idr
+Type checking .\Control\Eternal\Operators\String.idr
+Type checking .\Control\Eternal\Operators\FSharp.idr
+Type checking .\Control\Eternal\Operators.idr
+Type checking .\Control\Eternal.idr
+Installing Control\Eternal.ibc to ....\cabal\idris-
+```
+
+In the future I will finish processing deps
+
+Yaml is [Idris.Yaml](https://github.com/Heather/Idris.Yaml) library for parsing config files and it already works <br/>
+But there are still being a lot of things to do to make it sane
+
+Github repository: https://github.com/Heather/Synthia <br/>
+Code in current state:
 
 ``` haskell
 module Main
