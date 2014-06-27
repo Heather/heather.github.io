@@ -49,6 +49,8 @@ theStylesheet = do -- Overall site-wide styling rules.
                textDecoration  $ none
                color           "#E82A37"
                height          $ px 30
+               position relative
+               zIndex 100
                
                transitionProperty "color"
                transitionDuration $ sec 0.5
