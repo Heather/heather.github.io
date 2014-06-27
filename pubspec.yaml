@@ -1,5 +1,7 @@
 name: heather.github.io
 description: Heather blog
+author: Heather <heather@live.ru>
+homepage: http://heather.github.io
 dependencies:
   browser: any
   angular: any
