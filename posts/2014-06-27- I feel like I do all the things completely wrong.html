@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html ng-app>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        
+        <title>Heather - I feel like I do all the things completely wrong</title>
+        <meta name="description" content="Heather">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link href="../atom.xml" rel="alternate" title="Heather" type="application/atom+xml">
+        <link rel="shortcut icon" type="image/ico" href="favicon.ico" />
+        <link rel="stylesheet" href="../web/packages/bootjack/css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/octicons.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/syntax.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="../clay/default.css" />        
+    </head>
+    <body>
+        <div class="band"></div>
+        <div id="header">
+            <div id="logo">
+                <a href="../">Is every person here a mental case?</a>
+            </div>
+        </div>
+        <div id="content">
+            <h1>I feel like I do all the things completely wrong</h1>
+
+
+<div class="info">Posted on 27 June 2014</div>
+
+<p>And… I don’t know if I need to add some more comments, I’m confused, Everything is complication there…</p>
+<p>I feel like so…</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">Main</span>
+
+<span class="kw">import </span><span class="dt">Control.Eternal</span>
+<span class="kw">import </span><span class="dt">Control.IOExcept</span>
+
+<span class="kw">import </span><span class="dt">Effect.StdIO</span>
+<span class="kw">import </span><span class="dt">Effect.File</span>
+<span class="kw">import </span><span class="dt">Effect.System</span>
+
+<span class="kw">import </span><span class="dt">Yaml</span>
+
+<span class="kw">import </span><span class="dt">Effects</span>
+<span class="kw">import </span><span class="dt">System</span>
+
+<span class="co">{- let start from simple -}</span>
+ls <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">String</span>
+ls path <span class="fu">=</span> readProcess' (<span class="st">&quot;ls &quot;</span> <span class="fu">++</span> path) <span class="dt">False</span> 
+
+<span class="co">{- ETERNAL EFFECT WILL DO LS and stuff in EternalIO -}</span>
+<span class="kw">data</span> <span class="dt">Eternal</span> <span class="fu">:</span> <span class="dt">Effect</span> <span class="kw">where</span>
+     <span class="dt">LS</span> <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { () } <span class="dt">Eternal</span> <span class="dt">String</span>
+<span class="kw">instance</span> <span class="dt">Handler</span> <span class="dt">Eternal</span> <span class="dt">IO</span> <span class="kw">where</span>
+    handle () (<span class="dt">LS</span> s) k <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> ls s; k x ()
+<span class="kw">instance</span> <span class="dt">Handler</span> <span class="dt">Eternal</span> (<span class="dt">IOExcept</span> a) <span class="kw">where</span>
+    handle () (<span class="dt">LS</span> s) k <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> ioe_lift <span class="fu">$</span> ls s; k x ()
+
+<span class="dt">ETERNAL</span> <span class="fu">:</span> <span class="dt">EFFECT</span>
+<span class="dt">ETERNAL</span> <span class="fu">=</span> <span class="dt">MkEff</span> () <span class="dt">Eternal</span>
+
+els <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> <span class="dt">String</span>
+els s <span class="fu">=</span> call <span class="fu">$</span> <span class="dt">LS</span> s
+
+<span class="dt">EternalIO</span> <span class="fu">:</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span>
+<span class="dt">EternalIO</span> st t <span class="fu">=</span> { [<span class="dt">FILE_IO</span> st, <span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> t 
+
+<span class="co">{- WE NEED ETERNAL POWER! -}</span>
+readFile <span class="fu">:</span> <span class="dt">EternalIO</span> (<span class="dt">OpenFile</span> <span class="dt">Read</span>) (<span class="dt">List</span> <span class="dt">String</span>)
+readFile <span class="fu">=</span> readAcc [] <span class="kw">where</span>
+  readAcc <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">EternalIO</span> (<span class="dt">OpenFile</span> <span class="dt">Read</span>) (<span class="dt">List</span> <span class="dt">String</span>)
+  readAcc acc <span class="fu">=</span> <span class="kw">if</span> (not <span class="fu">!</span>eof) <span class="kw">then</span> readAcc <span class="fu">$</span> <span class="fu">!</span><span class="ot">readLine ::</span> acc
+                              <span class="kw">else</span> return  <span class="fu">$</span> reverse acc
+
+<span class="co">{- IT'S NOT JUST SYSTEM CALL, IT'S POWERFUL THING!-}</span>
+sys <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
+sys ss <span class="fu">=</span> <span class="kw">do</span> system ss
+            return ()
+
+<span class="co">{- THAT'S HOW NEW PACKAGES IS ISNTALLED -}</span>
+finalInstall <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
+finalInstall repoDir synss flist <span class="fu">=</span>
+    <span class="kw">case</span> (synss <span class="st"># 0) of</span>
+        <span class="dt">Just</span> syn <span class="ot">=&gt;</span> <span class="kw">do</span> <span class="co">{- PROCESS PACKAGE INSTALLATION -}</span>
+            <span class="kw">let</span> truesyn <span class="fu">=</span> repoDir <span class="fu">++</span> syn
+            sys <span class="fu">$</span> <span class="st">&quot;pushd &quot;</span> <span class="fu">++</span> repoDir <span class="fu">++</span> <span class="st">&quot; &amp; Synthia --install &quot;</span> <span class="fu">++</span> truesyn
+            
+            <span class="co">{- Finishing installation -}</span>
+            <span class="kw">let</span> makeF <span class="fu">=</span> filter (<span class="fu">==</span> <span class="st">&quot;Makefile&quot;</span>) flist
+            <span class="kw">case</span> (makeF <span class="st"># 0) of</span>
+                <span class="dt">Just</span> _ <span class="ot">=&gt;</span> sys <span class="fu">$</span> <span class="st">&quot;pushd &quot;</span> <span class="fu">++</span> repoDir <span class="fu">++</span> <span class="st">&quot; &amp; make &amp; make install&quot;</span>
+                _ <span class="ot">=&gt;</span> <span class="kw">let</span> pkg <span class="fu">=</span> filter (\x <span class="ot">=&gt;</span> isSuffixOf <span class="fu">&lt;|</span> unpack <span class="st">&quot;.ipkg&quot;</span>
+                                                        <span class="fu">&lt;|</span> unpack (trim x)) flist
+                     <span class="kw">in</span> <span class="kw">case</span> (pkg <span class="st"># 0) of</span>
+                         <span class="dt">Just</span> pkg <span class="ot">=&gt;</span> sys <span class="fu">$</span> <span class="st">&quot;pushd &quot;</span> <span class="fu">++</span> repoDir <span class="fu">++</span> <span class="st">&quot; &amp; idris --install &quot;</span> <span class="fu">++</span> pkg
+                         _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;No ipkg in this repository&quot;</span>
+        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;No synthia in this repository&quot;</span>
+<span class="co">{- </span>
+<span class="co">- I'll not leave you here. I've got to save you. </span>
+<span class="co">- You already have, Luke.</span>
+<span class="co">-}</span>
+install <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
+install [] [] <span class="fu">=</span> putStrLn <span class="st">&quot;try Synthia install GitHubUser/Repo&quot;</span>
+install [] xs <span class="fu">=</span> <span class="kw">let</span> <span class="dt">Just</span> mypkg <span class="fu">=</span> xs <span class="st"># 0</span>
+                <span class="kw">in</span> sys <span class="fu">$</span> <span class="st">&quot;idris --install &quot;</span> <span class="fu">++</span> mypkg
+install xs _ <span class="fu">=</span> <span class="kw">do</span>
+    <span class="kw">let</span> dir <span class="fu">=</span> <span class="st">&quot;C:\\Idris\\&quot;</span>
+    <span class="kw">let</span> <span class="dt">Just</span> repo <span class="fu">=</span> xs <span class="st"># 0</span>
+    <span class="kw">case</span> (splitOn <span class="ch">'/'</span> (unpack repo)) <span class="st"># 1 of</span>
+        <span class="dt">Just</span> repx <span class="ot">=&gt;</span> <span class="kw">do</span> <span class="kw">let</span> reps <span class="fu">=</span> pack repx
+                        sys <span class="fu">$</span> <span class="st">&quot;mkdir &quot;</span> <span class="fu">++</span> dir
+                        <span class="kw">let</span> repoDir <span class="fu">=</span> dir <span class="fu">++</span> reps <span class="fu">++</span> <span class="st">&quot;\\&quot;</span>
+                        sys <span class="fu">$</span> <span class="st">&quot;git clone git@github.com:&quot;</span> <span class="fu">++</span> repo <span class="fu">++</span> <span class="st">&quot;.git &quot;</span> <span class="fu">++</span> repoDir
+                        <span class="kw">let</span> flist <span class="fu">=</span> splitOn <span class="ch">'\n'</span> <span class="fu">!</span>(els repoDir)
+                        <span class="co">{- PROCESS DEP CHECK! .syn SYNTHIA FILES -}</span>
+                        <span class="kw">let</span> synss <span class="fu">=</span> filter (\x <span class="ot">=&gt;</span> isSuffixOf <span class="fu">&lt;|</span> unpack <span class="st">&quot;.syn&quot;</span>
+                                                             <span class="fu">&lt;|</span> unpack (trim x)) flist
+                        finalInstall repoDir synss flist
+
+        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;try Synthia install GitHubUser/Repo&quot;</span> 
+
+<span class="co">{- SYMPLY RUN IDRIS WITH ARGUMENTS -}</span>
+goC <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
+goC pkg args cc <span class="fu">=</span>
+    <span class="kw">case</span> (pkg <span class="st"># 0) of</span>
+        <span class="dt">Just</span> mypkg <span class="ot">=&gt;</span> sys <span class="fu">$</span> cc <span class="fu">++</span> concat <span class="fu">&lt;&lt;|</span> drop <span class="dv">2</span> args
+                               <span class="fu">++</span> <span class="st">&quot; &quot;</span>
+                               <span class="fu">++</span> mypkg
+        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;No ipkg in this repository&quot;</span> 
+
+<span class="co">{- TRUE MAIN -}</span>
+procs <span class="fu">:</span> (<span class="dt">List</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> (<span class="dt">List</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> <span class="dt">Bool</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
+procs args file p <span class="fu">=</span>
+    <span class="kw">let</span> config <span class="fu">=</span> concat file <span class="co">{- READ OWN CONFIG FILE -}</span>
+    <span class="kw">in</span> <span class="kw">case</span> parse yamlToplevelValue config <span class="kw">of</span>
+       <span class="dt">Left</span> err <span class="ot">=&gt;</span> putStrLn <span class="fu">$</span> <span class="st">&quot;error: &quot;</span> <span class="fu">++</span> err
+       <span class="dt">Right</span> v  <span class="ot">=&gt;</span>
+        <span class="kw">if</span> p <span class="kw">then</span> putStrLn <span class="fu">$</span> show v <span class="co">-- TODO: Install finally deps</span>
+             <span class="kw">else</span> <span class="kw">let</span> pkg <span class="fu">=</span> filter (\x <span class="ot">=&gt;</span> isSuffixOf <span class="fu">&lt;|</span> unpack <span class="st">&quot;.ipkg&quot;</span>
+                                                     <span class="fu">&lt;|</span> unpack (trim x))
+                              <span class="fu">$</span> splitOn <span class="ch">'\n'</span> <span class="fu">!</span>(els <span class="st">&quot;.&quot;</span>)
+                  <span class="kw">in</span> <span class="kw">case</span> (args <span class="st"># 1) of</span>
+                        <span class="dt">Just</span> cmd <span class="ot">=&gt;</span> <span class="kw">case</span> cmd <span class="kw">of</span>
+                                       <span class="st">&quot;--help&quot;</span>     <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;try Synthia install GitHubUser/Repo&quot;</span>
+                                       <span class="st">&quot;--version&quot;</span>  <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;0.0.2&quot;</span>
+                                       
+                                       <span class="st">&quot;build&quot;</span>      <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --build &quot;</span>
+                                       <span class="st">&quot;clean&quot;</span>      <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --clean &quot;</span>
+                                       <span class="st">&quot;mkdoc&quot;</span>      <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --mkdoc &quot;</span>
+                                       <span class="st">&quot;checkpkg&quot;</span>   <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --checkpkg &quot;</span>
+                                       <span class="st">&quot;testpkg&quot;</span>    <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --testpkg &quot;</span>
+                                       
+                                       <span class="st">&quot;install&quot;</span>    <span class="ot">=&gt;</span> install (drop <span class="dv">2</span> args) pkg
+                                       <span class="st">&quot;list&quot;</span>       <span class="ot">=&gt;</span> sys <span class="st">&quot;ls -d1 C:\\Idris/*/&quot;</span>
+                                       
+                                       _            <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;What?&quot;</span>
+                        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;What?&quot;</span>
+
+<span class="co">{- GET SYNTHIA CONFIG AND PROCESS -}</span>
+cfg <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> (<span class="dt">List</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> <span class="dt">EternalIO</span> () ()
+cfg f args <span class="fu">=</span> 
+    <span class="kw">case</span> (args <span class="st"># 1) of</span>
+        <span class="dt">Just</span> cmd <span class="ot">=&gt;</span> <span class="kw">case</span> cmd <span class="kw">of</span>
+                        <span class="st">&quot;--install&quot;</span> <span class="ot">=&gt;</span> <span class="kw">case</span> (args <span class="st"># 2) of</span>
+                                        <span class="dt">Just</span> syn <span class="ot">=&gt;</span> <span class="kw">case</span> <span class="fu">!</span>(open syn <span class="dt">Read</span>) <span class="kw">of</span>
+                                                        <span class="dt">True</span> <span class="ot">=&gt;</span> <span class="kw">do</span> procs args <span class="fu">!</span>readFile <span class="dt">True</span>
+                                                                   close <span class="co">{- =&lt;&lt; -}</span>
+                                                        <span class="dt">False</span> <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;Error!&quot;</span>
+                                        _ <span class="ot">=&gt;</span> sys <span class="st">&quot;Synthia install&quot;</span>
+                        _ <span class="ot">=&gt;</span> <span class="kw">case</span> <span class="fu">!</span>(open f <span class="dt">Read</span>) <span class="kw">of</span>
+                                <span class="dt">True</span> <span class="ot">=&gt;</span> <span class="kw">do</span> procs args <span class="fu">!</span>readFile <span class="dt">False</span>
+                                           close <span class="co">{- =&lt;&lt; -}</span>
+                                <span class="dt">False</span> <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;Error!&quot;</span>
+        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;Hi, I am Synthia, I am here to destroy your world, I'm also weird by design&quot;</span>
+
+<span class="co">{- niaM -}</span>
+main <span class="fu">:</span> <span class="dt">IO</span> ()
+main <span class="fu">=</span> System.getArgs <span class="fu">&gt;&gt;=</span> \args <span class="ot">=&gt;</span> run <span class="fu">$</span> cfg <span class="st">&quot;Synthia.syn&quot;</span> args</code></pre>
+
+<hr />
+
+
+        </div>
+        
+        <div id="social">
+            <ul>
+              <li>
+                <a href="http://github.com/Heather" title="Github" target="_blank">
+                  <span class="mega-octicon octicon-octoface"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://twitter.com/Cynede" title="Twitter" target="_blank">
+                  <span class="mega-octicon octicon-star"></span>
+                </a>
+              </li>
+              <li>
+                <a href="mailto:heather@live.ru" title="Main mail" target="_blank">
+                  <span class="mega-octicon octicon-mail-read"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank">
+                  <span class="mega-octicon octicon-broadcast"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://grooveshark.com/#!/cynede" title="Grooveshark" target="_blank">
+                  <span class="mega-octicon octicon-squirrel"></span>
+                </a>
+              </li>
+              <li>
+                <a href="../atom.xml" title="RSS" target="_blank">
+                  <span class="mega-octicon octicon-rss"></span>
+                </a>
+              </li>
+            </ul>
+        </div>
+        
+        <div id="footer">
+
+        </div>
+
+    <script type="application/javascript" src="../web/packages/shadow_dom/shadow_dom.min.js"></script>
+    <script type="application/dart" src="../web/core.dart"></script>
+    <script type="application/javascript" src="../web/packages/browser/dart.js"></script>
+    </body>
+</html>
