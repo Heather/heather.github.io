@@ -29,7 +29,7 @@ In the future I will finish processing deps
 Yaml is [Idris.Yaml](https://github.com/Heather/Idris.Yaml) library for parsing config files and it already works <br/>
 But there are still being a lot of things to do to make it sane
 
-Github repository: https://github.com/Heather/Synthia <br/>
+Github repository: [https://github.com/Heather/Synthia](https://github.com/Heather/Synthia) <br/>
 Code in current state:
 
 ``` haskell
