@@ -47,6 +47,8 @@ div#logo a
   transition-property        : color;
   transition-duration        : 0.5s;
   transition-timing-function : linear;
+  position: relative;
+  z-index: 100;
 }
 
 div#logo a:hover
