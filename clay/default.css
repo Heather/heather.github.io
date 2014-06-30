@@ -44,11 +44,11 @@ div#logo a
   text-decoration            : none;
   color                      : rgb(232,42,55);
   height                     : 30px;
+  position                   : relative;
+  z-index                    : 100;
   transition-property        : color;
   transition-duration        : 0.5s;
   transition-timing-function : linear;
-  position: relative;
-  z-index: 100;
 }
 
 div#logo a:hover
