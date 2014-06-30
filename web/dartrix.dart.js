@@ -2932,7 +2932,7 @@ if(J.u6(y.W(a,z),5000)){z=y.W(a,this.vX)
 if(typeof z!=="number")return H.s(z)
 y=this.JZ
 y.font="bold 75px Verdana"
-y.fillStyle="rgba(67,199,40, "+H.d((5000-z)/5000)+")"
+y.fillStyle="rgba(199,40,140, "+H.d((5000-z)/5000)+")"
 z=this.YK
 if(typeof z!=="number")return z.V()
 x=this.ZC
