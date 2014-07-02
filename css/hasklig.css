@@ -10,4 +10,5 @@
 
 .sourceCode {
     font-family:'Hasklig',Sans-Serif;
+    text-rendering: optimizeLegibility;
 }
