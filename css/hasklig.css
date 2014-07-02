@@ -1,0 +1,13 @@
+@font-face {
+	font-family: 'Hasklig';
+	src: url('../fonts/Hasklig.eot');
+	src: local('☺'), url('../fonts/Hasklig.woff') format('woff')
+                   , url('../fonts/Hasklig.ttf') format('truetype')
+                   , url('../fonts/Hasklig.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.sourceCode {
+    font-family:'Hasklig',Sans-Serif;
+}
