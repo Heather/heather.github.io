@@ -2,7 +2,7 @@
 title: Async Reactive Haskell
 ---
 
-First: added dirty lifts to Hackage: https://hackage.haskell.org/package/eternal-0.0.7/src/src/Control/Eternal/Syntax/Lift.hs
+First: added dirty lifts to [Hackage](https://hackage.haskell.org/package/eternal-0.0.7/src/src/Control/Eternal/Syntax/Lift.hs)
 
 [io-reactive](https://github.com/andygill/io-reactive/pull/1)
 -------------------------------------------------------------
