@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
-import           Data.Monoid         (mappend)
-import           Hakyll
+
+import Data.Monoid (mappend)
+import Hakyll
 
 main :: IO ()
 main = hakyll $ do
