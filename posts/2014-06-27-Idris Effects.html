@@ -48,25 +48,153 @@ Type checking .\Control\Eternal\Operators\FSharp.idr
 Type checking .\Control\Eternal\Operators.idr
 Type checking .\Control\Eternal.idr
 Installing Control\Eternal.ibc to ....\cabal\idris-</code></pre>
-<p>In the future I will finish processing deps</p>
-<p>Yaml is <a href="https://github.com/Heather/Idris.Yaml">Idris.Yaml</a> library for parsing config files and it already works <br /> But there are still being a lot of things to do to make it sane</p>
+<p>Yaml is <a href="https://github.com/Heather/Idris.Yaml">Idris.Yaml</a> library for parsing config files and it already works, thanks to <a href="https://github.com/ziman/lightyear">lightyear</a> and JSON example there <br /> But there are still being a lot of things to do to make it sane, thanks to</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">YamlValue</span> <span class="fu">=</span> <span class="dt">YamlString</span> <span class="dt">String</span>
+               <span class="fu">|</span> <span class="dt">YamlNumber</span> <span class="dt">Float</span>
+               <span class="fu">|</span> <span class="dt">YamlBool</span> <span class="dt">Bool</span>
+               <span class="fu">|</span> <span class="dt">YamlNull</span>
+               <span class="fu">|</span> <span class="dt">YamlObject</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)
+               <span class="fu">|</span> <span class="dt">YamlArray</span> (<span class="dt">List</span> <span class="dt">YamlValue</span>) <span class="co">-- TODO: YamlObject</span>
+
+<span class="kw">instance</span> <span class="dt">Show</span> <span class="dt">YamlValue</span> <span class="kw">where</span>
+  show (<span class="dt">YamlString</span> s)   <span class="fu">=</span> show s
+  show (<span class="dt">YamlNumber</span> x)   <span class="fu">=</span> show x
+  show (<span class="dt">YamlBool</span> <span class="dt">True</span> ) <span class="fu">=</span> <span class="st">&quot;true&quot;</span>
+  show (<span class="dt">YamlBool</span> <span class="dt">False</span>) <span class="fu">=</span> <span class="st">&quot;false&quot;</span>
+  show  <span class="dt">YamlNull</span>        <span class="fu">=</span> <span class="st">&quot;null&quot;</span>
+  show (<span class="dt">YamlObject</span> xs)  <span class="fu">=</span>
+      <span class="st">&quot;{&quot;</span> <span class="fu">++</span> intercalate <span class="st">&quot;, &quot;</span> (map fmtItem <span class="fu">$</span> SortedMap.toList xs) <span class="fu">++</span> <span class="st">&quot;}&quot;</span>
+    <span class="kw">where</span>
+      intercalate <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
+      intercalate sep [] <span class="fu">=</span> <span class="st">&quot;&quot;</span>
+      intercalate sep [x] <span class="fu">=</span> x
+      intercalate sep (<span class="ot">x ::</span> xs) <span class="fu">=</span> x <span class="fu">++</span> sep <span class="fu">++</span> intercalate sep xs
+
+      fmtItem (k, v) <span class="fu">=</span> k <span class="fu">++</span> <span class="st">&quot;: &quot;</span> <span class="fu">++</span> show v
+  show (<span class="dt">YamlArray</span>  xs)  <span class="fu">=</span> show xs
+
+hex <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Int</span>
+hex <span class="fu">=</span> <span class="kw">do</span>
+  c <span class="ot">&lt;-</span> map (ord <span class="fu">.</span> toUpper) <span class="fu">$</span> satisfy isHexDigit
+  pure <span class="fu">$</span> <span class="kw">if</span> c <span class="fu">&gt;=</span> ord <span class="ch">'0'</span> <span class="fu">&amp;&amp;</span> c <span class="fu">&lt;=</span> ord <span class="ch">'9'</span> <span class="kw">then</span> c <span class="fu">-</span> ord <span class="ch">'0'</span>
+                                         <span class="kw">else</span> <span class="dv">10</span> <span class="fu">+</span> c <span class="fu">-</span> ord <span class="ch">'A'</span>
+
+hexQuad <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Int</span>
+hexQuad <span class="fu">=</span> <span class="kw">do</span>
+  a <span class="ot">&lt;-</span> hex
+  b <span class="ot">&lt;-</span> hex
+  c <span class="ot">&lt;-</span> hex
+  d <span class="ot">&lt;-</span> hex
+  pure <span class="fu">$</span> a <span class="fu">*</span> <span class="dv">4096</span> <span class="fu">+</span> b <span class="fu">*</span> <span class="dv">256</span> <span class="fu">+</span> c <span class="fu">*</span> <span class="dv">16</span> <span class="fu">+</span> d
+
+specialChar <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Char</span>
+specialChar <span class="fu">=</span> <span class="kw">do</span>
+  c <span class="ot">&lt;-</span> satisfy (const <span class="dt">True</span>)
+  <span class="kw">case</span> c <span class="kw">of</span>
+    <span class="ch">'&quot;'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'&quot;'</span>
+    <span class="ch">'\\'</span> <span class="ot">=&gt;</span> pure <span class="ch">'\\'</span>
+    <span class="ch">'/'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'/'</span>
+    <span class="ch">'b'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'\b'</span>
+    <span class="ch">'f'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'\f'</span>
+    <span class="ch">'n'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'\n'</span>
+    <span class="ch">'r'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'\r'</span>
+    <span class="ch">'t'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'\t'</span>
+    <span class="ch">'u'</span>  <span class="ot">=&gt;</span> map chr hexQuad
+    _    <span class="ot">=&gt;</span> satisfy (const <span class="dt">False</span>) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;expected special char&quot;</span>
+
+yamlString' <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">List</span> <span class="dt">Char</span>)
+yamlString' <span class="fu">=</span> (char <span class="ch">'&quot;'</span> <span class="fu">$!&gt;</span> pure <span class="dt">Prelude.List.Nil</span>) <span class="fu">&lt;|&gt;</span> <span class="kw">do</span>
+  c <span class="ot">&lt;-</span> satisfy (<span class="fu">/=</span> <span class="ch">'&quot;'</span>)
+  <span class="kw">if</span> (c <span class="fu">==</span> <span class="ch">'\\'</span>) <span class="kw">then</span> map (<span class="ot">::</span>) specialChar <span class="fu">&lt;$&gt;</span> yamlString'
+                 <span class="kw">else</span> map (<span class="ot">c ::</span>) yamlString'
+
+yamlString <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">String</span>
+yamlString <span class="fu">=</span> char <span class="ch">'&quot;'</span> <span class="fu">$&gt;</span> map pack yamlString' <span class="fu">&lt;?&gt;</span> <span class="st">&quot;Yaml string&quot;</span>
+
+<span class="co">-- inspired by Haskell's Data.Scientific module</span>
+record <span class="dt">Scientific</span> <span class="fu">:</span> <span class="dt">Type</span> <span class="kw">where</span>
+  <span class="dt">MkScientific</span> <span class="fu">:</span> (coefficient <span class="fu">:</span> <span class="dt">Integer</span>) <span class="ot">-&gt;</span>
+                 (exponent <span class="fu">:</span> <span class="dt">Integer</span>) <span class="ot">-&gt;</span> <span class="dt">Scientific</span>
+
+scientificToFloat <span class="fu">:</span> <span class="dt">Scientific</span> <span class="ot">-&gt;</span> <span class="dt">Float</span>
+scientificToFloat (<span class="dt">MkScientific</span> c e) <span class="fu">=</span> fromInteger c <span class="fu">*</span> exp
+  <span class="kw">where</span> exp <span class="fu">=</span> <span class="kw">if</span> e <span class="fu">&lt;</span> <span class="dv">0</span> <span class="kw">then</span> <span class="dv">1</span> <span class="fu">/</span> pow <span class="dv">10</span> (fromIntegerNat (<span class="fu">-</span> e))
+                       <span class="kw">else</span> pow <span class="dv">10</span> (fromIntegerNat e)
+
+parseScientific <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Scientific</span>
+parseScientific <span class="fu">=</span> <span class="kw">do</span> sign <span class="ot">&lt;-</span> maybe <span class="dv">1</span> (const (<span class="fu">-</span><span class="dv">1</span>)) <span class="ot">`map`</span> opt (char <span class="ch">'-'</span>)
+                     digits <span class="ot">&lt;-</span> some digit
+                     hasComma <span class="ot">&lt;-</span> isJust <span class="ot">`map`</span> opt (char <span class="ch">'.'</span>)
+                     decimals <span class="ot">&lt;-</span> <span class="kw">if</span> hasComma <span class="kw">then</span> some digit <span class="kw">else</span> pure <span class="dt">Prelude.List.Nil</span>
+                     hasExponent <span class="ot">&lt;-</span> isJust <span class="ot">`map`</span> opt (char <span class="ch">'e'</span>)
+                     exponent <span class="ot">&lt;-</span> <span class="kw">if</span> hasExponent <span class="kw">then</span> integer <span class="kw">else</span> pure <span class="dv">0</span>
+                     pure <span class="fu">$</span> <span class="dt">MkScientific</span> (sign <span class="fu">*</span> fromDigits (digits <span class="fu">++</span> decimals))
+                                         (exponent <span class="fu">-</span> cast (length decimals))
+  <span class="kw">where</span> fromDigits <span class="fu">:</span> <span class="dt">List</span> (<span class="dt">Fin</span> <span class="dv">10</span>) <span class="ot">-&gt;</span> <span class="dt">Integer</span>
+        fromDigits <span class="fu">=</span> foldl (\a, b <span class="ot">=&gt;</span> <span class="dv">10</span> <span class="fu">*</span> a <span class="fu">+</span> cast b) <span class="dv">0</span>
+
+yamlNumber <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Float</span>
+yamlNumber <span class="fu">=</span> map scientificToFloat parseScientific
+
+yamlBool <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Bool</span>
+yamlBool  <span class="fu">=</span>  (char <span class="ch">'t'</span> <span class="fu">&gt;!</span> string <span class="st">&quot;rue&quot;</span>  <span class="fu">$&gt;</span> return <span class="dt">True</span>)
+         <span class="fu">&lt;|&gt;</span> (char <span class="ch">'f'</span> <span class="fu">&gt;!</span> string <span class="st">&quot;alse&quot;</span> <span class="fu">$&gt;</span> return <span class="dt">False</span>) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;Yaml Bool&quot;</span>
+
+yamlNull <span class="fu">:</span> <span class="dt">Parser</span> ()
+yamlNull <span class="fu">=</span> (char <span class="ch">'n'</span> <span class="fu">&gt;!</span> string <span class="st">&quot;ull&quot;</span> <span class="fu">&gt;!</span> return ()) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;Yaml Null&quot;</span>
+
+
+parseWord' <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">List</span> <span class="dt">Char</span>)
+parseWord' <span class="fu">=</span> (char <span class="ch">' '</span> <span class="fu">$!&gt;</span> pure <span class="dt">Prelude.List.Nil</span>) <span class="fu">&lt;|&gt;</span> <span class="kw">do</span>
+  c <span class="ot">&lt;-</span> satisfy (<span class="fu">/=</span> <span class="ch">' '</span>); map (<span class="ot">c ::</span>) parseWord'
+
+<span class="fu">|||</span> <span class="dt">A</span> parser that skips whitespace without jumping over lines
+yamlSpace <span class="fu">:</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> <span class="dt">ParserT</span> m <span class="dt">String</span> ()
+yamlSpace <span class="fu">=</span> skip (many <span class="fu">$</span> satisfy (\c <span class="ot">=&gt;</span> c <span class="fu">/=</span> <span class="ch">'\n'</span> <span class="fu">&amp;&amp;</span> isSpace c)) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;yamlSpace&quot;</span>
+
+mutual
+  yamlArray <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">List</span> <span class="dt">YamlValue</span>)
+  yamlArray <span class="fu">=</span> char <span class="ch">'-'</span> <span class="fu">$!&gt;</span> (yamlArrayValue <span class="ot">`sepBy`</span> (char <span class="ch">'-'</span>))
+
+  keyValuePair <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">String</span>, <span class="dt">YamlValue</span>)
+  keyValuePair <span class="fu">=</span> <span class="kw">do</span>
+    key <span class="ot">&lt;-</span> space <span class="fu">$&gt;</span> map pack parseWord' <span class="fu">&lt;$</span> space
+    char <span class="ch">':'</span>
+    value <span class="ot">&lt;-</span> yamlValue
+    pure (key, value)
+
+  yamlObject <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)
+  yamlObject <span class="fu">=</span> map fromList <span class="fu">$</span> keyValuePair <span class="ot">`sepBy`</span> (char <span class="ch">'\n'</span>)
+
+  yamlObjectA <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)
+  yamlObjectA <span class="fu">=</span> map fromList <span class="fu">$</span> keyValuePair <span class="ot">`sepBy`</span> (char <span class="ch">'\n'</span>)
+
+  yamlValue' <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span>
+  yamlValue' <span class="fu">=</span>  (map <span class="dt">YamlString</span> yamlString)
+            <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlNumber</span> yamlNumber)
+            <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlBool</span>   yamlBool)
+            <span class="fu">&lt;|&gt;</span> (pure <span class="dt">YamlNull</span> <span class="fu">&lt;$</span> yamlNull)
+            <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlArray</span>  yamlArray
+            <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlObject</span> yamlObject
+            
+  yamlValueA' <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span>
+  yamlValueA' <span class="fu">=</span>  (map <span class="dt">YamlString</span> yamlString)
+             <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlNumber</span> yamlNumber)
+             <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlBool</span>   yamlBool)
+             <span class="fu">&lt;|&gt;</span> (pure <span class="dt">YamlNull</span> <span class="fu">&lt;$</span> yamlNull)
+             <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlArray</span>  yamlArray
+             <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlObject</span> yamlObjectA
+
+  yamlArrayValue <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span>
+  yamlArrayValue <span class="fu">=</span> space <span class="fu">$&gt;</span> yamlValueA' <span class="fu">&lt;$</span> space
+
+  yamlValue <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span>
+  yamlValue <span class="fu">=</span> yamlSpace <span class="fu">$&gt;</span> yamlValue' <span class="fu">&lt;$</span> yamlSpace
+
+yamlToplevelValue <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span>
+yamlToplevelValue <span class="fu">=</span> (map <span class="dt">YamlArray</span> yamlArray) <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlObject</span> yamlObject)</code></pre>
 <p>Github repository: <a href="https://github.com/Heather/Synthia">https://github.com/Heather/Synthia</a> <br /> Code in current state:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">Main</span>
-
-<span class="kw">import </span><span class="dt">Control.Eternal</span>
-<span class="kw">import </span><span class="dt">Control.IOExcept</span>
-
-<span class="kw">import </span><span class="dt">Effect.StdIO</span>
-<span class="kw">import </span><span class="dt">Effect.File</span>
-<span class="kw">import </span><span class="dt">Effect.System</span>
-
-<span class="kw">import </span><span class="dt">Yaml</span>
-
-<span class="kw">import </span><span class="dt">Effects</span>
-<span class="kw">import </span><span class="dt">System</span>
-
-<span class="co">{- let start from simple -}</span>
-ls <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">String</span>
+<pre class="sourceCode haskell"><code class="sourceCode haskell">ls <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">String</span>
 ls path <span class="fu">=</span> readProcess' (<span class="st">&quot;ls &quot;</span> <span class="fu">++</span> path) <span class="dt">False</span> 
 
 <span class="co">{- ETERNAL EFFECT WILL DO LS and stuff in EternalIO -}</span>
@@ -98,7 +226,6 @@ sys <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&
 sys ss <span class="fu">=</span> <span class="kw">do</span> system ss
             return ()
 
-<span class="co">{- THAT'S HOW NEW PACKAGES IS ISNTALLED -}</span>
 finalInstall <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
 finalInstall repoDir synss flist <span class="fu">=</span>
     <span class="kw">case</span> (synss <span class="st"># 0) of</span>
@@ -116,10 +243,7 @@ finalInstall repoDir synss flist <span class="fu">=</span>
                          <span class="dt">Just</span> pkg <span class="ot">=&gt;</span> sys <span class="fu">$</span> <span class="st">&quot;pushd &quot;</span> <span class="fu">++</span> repoDir <span class="fu">++</span> <span class="st">&quot; &amp; idris --install &quot;</span> <span class="fu">++</span> pkg
                          _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;No ipkg in this repository&quot;</span>
         _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;No synthia in this repository&quot;</span>
-<span class="co">{- </span>
-<span class="co">- I'll not leave you here. I've got to save you. </span>
-<span class="co">- You already have, Luke.</span>
-<span class="co">-}</span>
+
 install <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
 install [] [] <span class="fu">=</span> putStrLn <span class="st">&quot;try Synthia install GitHubUser/Repo&quot;</span>
 install [] xs <span class="fu">=</span> <span class="kw">let</span> <span class="dt">Just</span> mypkg <span class="fu">=</span> xs <span class="st"># 0</span>
@@ -139,7 +263,6 @@ install xs _ <span class="fu">=</span> <span class="kw">do</span>
                         finalInstall repoDir synss flist
 
         _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;try Synthia install GitHubUser/Repo&quot;</span> 
-
 <span class="co">{- SYMPLY RUN IDRIS WITH ARGUMENTS -}</span>
 goC <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
 goC pkg args cc <span class="fu">=</span>
@@ -149,7 +272,6 @@ goC pkg args cc <span class="fu">=</span>
                                <span class="fu">++</span> mypkg
         _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;No ipkg in this repository&quot;</span> 
 
-<span class="co">{- TRUE MAIN -}</span>
 procs <span class="fu">:</span> (<span class="dt">List</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> (<span class="dt">List</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> <span class="dt">Bool</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
 procs args file p <span class="fu">=</span>
     <span class="kw">let</span> config <span class="fu">=</span> concat file <span class="co">{- READ OWN CONFIG FILE -}</span>
@@ -175,28 +297,7 @@ procs args file p <span class="fu">=</span>
                                        <span class="st">&quot;list&quot;</span>       <span class="ot">=&gt;</span> sys <span class="st">&quot;ls -d1 C:\\Idris/*/&quot;</span>
                                        
                                        _            <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;What?&quot;</span>
-                        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;What?&quot;</span>
-
-<span class="co">{- GET SYNTHIA CONFIG AND PROCESS -}</span>
-cfg <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> (<span class="dt">List</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> <span class="dt">EternalIO</span> () ()
-cfg f args <span class="fu">=</span> 
-    <span class="kw">case</span> (args <span class="st"># 1) of</span>
-        <span class="dt">Just</span> cmd <span class="ot">=&gt;</span> <span class="kw">case</span> cmd <span class="kw">of</span>
-                        <span class="st">&quot;--install&quot;</span> <span class="ot">=&gt;</span> <span class="kw">case</span> (args <span class="st"># 2) of</span>
-                                        <span class="dt">Just</span> syn <span class="ot">=&gt;</span> <span class="kw">case</span> <span class="fu">!</span>(open syn <span class="dt">Read</span>) <span class="kw">of</span>
-                                                        <span class="dt">True</span> <span class="ot">=&gt;</span> <span class="kw">do</span> procs args <span class="fu">!</span>readFile <span class="dt">True</span>
-                                                                   close <span class="co">{- =&lt;&lt; -}</span>
-                                                        <span class="dt">False</span> <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;Error!&quot;</span>
-                                        _ <span class="ot">=&gt;</span> sys <span class="st">&quot;Synthia install&quot;</span>
-                        _ <span class="ot">=&gt;</span> <span class="kw">case</span> <span class="fu">!</span>(open f <span class="dt">Read</span>) <span class="kw">of</span>
-                                <span class="dt">True</span> <span class="ot">=&gt;</span> <span class="kw">do</span> procs args <span class="fu">!</span>readFile <span class="dt">False</span>
-                                           close <span class="co">{- =&lt;&lt; -}</span>
-                                <span class="dt">False</span> <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;Error!&quot;</span>
-        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;Hi, I am Synthia, I am here to destroy your world, I'm also weird by design&quot;</span>
-
-<span class="co">{- niaM -}</span>
-main <span class="fu">:</span> <span class="dt">IO</span> ()
-main <span class="fu">=</span> System.getArgs <span class="fu">&gt;&gt;=</span> \args <span class="ot">=&gt;</span> run <span class="fu">$</span> cfg <span class="st">&quot;Synthia.syn&quot;</span> args</code></pre>
+                        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;What?&quot;</span></code></pre>
 
 <hr />
 

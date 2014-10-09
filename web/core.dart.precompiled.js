@@ -14919,7 +14919,7 @@ Imr:{
 "^":"PZ;jO:id=,oc:name=,t5:type=",
 "%":"MIDIInput;MIDIPort"},
 AjY:{
-"^":"w6O;pL:button=,EB:ctrlKey=,hv:fromElement=,Nl:metaKey=,qx:shiftKey=,RV:toElement=",
+"^":"w6O;pL:button=,EB:ctrlKey=,Nl:metaKey=,qx:shiftKey=",
 gVQ:function(a){return W.qc(a.relatedTarget)},
 gwl:function(a){return H.VM(new P.EX(a.clientX,a.clientY),[null])},
 gD7:function(a){var z,y
@@ -18218,23 +18218,21 @@ b.yZ=z.gE9(c)!=null?z.gE9(c):z.gIG(c)}return b}},
 y4:{
 "^":"lV;Mh",
 gCF:function(){return this.Mh},
-pK:function(a,b,c){var z,y,x,w,v,u,t,s,r
+pK:function(a,b,c){var z,y,x,w,v,u,t
 z=J.RE(c)
 y=z.gpL(c)
-x=z.ghv(c)
-w=z.gwl(c)
-if(b.Mj==null&&w.gx(w)!=null){v=H.KB(b.oE,"$iscv").ownerDocument
-u=J.hw(v!=null?v:new Q.mK().$0())
-t=document.body
-s=w.gx(w)
-r=this.it(u,t)
-if(typeof s!=="number")return s.g()
-b.Mj=s+r
-r=w.gy(w)
-s=this.d7(u,t)
-if(typeof r!=="number")return r.g()
-b.rj=r+s}if(b.us==null&&x!=null){s=b.oE
-b.us=(x==null?s==null:x===s)?z.gRV(c):x}if(b.yZ==null&&y!=null){if(y===1)z=1
+x=z.gwl(c)
+if(b.Mj==null&&x.gx(x)!=null){w=H.KB(b.oE,"$iscv").ownerDocument
+v=J.hw(w!=null?w:new Q.mK().$0())
+u=document.body
+z=x.gx(x)
+t=this.it(v,u)
+if(typeof z!=="number")return z.g()
+b.Mj=z+t
+t=x.gy(x)
+z=this.d7(v,u)
+if(typeof t!=="number")return t.g()
+b.rj=t+z}if(b.yZ==null&&y!=null){if(y===1)z=1
 else if(y===2)z=3
 else z=y===4?2:0
 b.yZ=z}return b},
@@ -18347,12 +18345,12 @@ if(w.lp)y.e6(0)
 return},"$1",null,2,0,null,167,"call"],
 $isEH:true},
 Wm:{
-"^":"TpZ:326;a,c,d",
+"^":"TpZ:14;a,c,d",
 $1:function(a){if(this.a.a++===0)C.WH.On(document,this.c,this.d,!0)
 return!0},
 $isEH:true},
 Sb:{
-"^":"TpZ:326;a,e,f",
+"^":"TpZ:14;a,e,f",
 $1:function(a){if(--this.a.a===0)C.WH.Y9(document,this.e,this.f,!0)
 return!0},
 $isEH:true},
@@ -24722,10 +24720,8 @@ if($desc instanceof Array)$desc=$desc[1]
 AjY.prototype=$desc
 AjY.prototype.gpL=function(receiver){return receiver.button}
 AjY.prototype.gEB=function(receiver){return receiver.ctrlKey}
-AjY.prototype.ghv=function(receiver){return receiver.fromElement}
 AjY.prototype.gNl=function(receiver){return receiver.metaKey}
 AjY.prototype.gqx=function(receiver){return receiver.shiftKey}
-AjY.prototype.gRV=function(receiver){return receiver.toElement}
 function oUu(){}oUu.builtin$cls="oUu"
 if(!"name" in oUu)oUu.name="oUu"
 $desc=$collectedClasses.oUu

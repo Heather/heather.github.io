@@ -2,39 +2,59 @@ heather.github.io
 =================
 
 ``` haskell
-main :: IO ()
-main =
-  do args <- getArgs
-     case args of
-       "compact" : _
-          -> TXT.putStr (renderWith compact [] theStylesheet)
-       _ -> putCss theStylesheet
+main = hakyll $ do
+    match "clay/*.hs" $ do
+        route   $ setExtension "css"
+        compile $ getResourceString >>= withItemBody (unixFilter "runghc" [])
 
-theStylesheet :: Css
-theStylesheet =
-  do -- Overall site-wide styling rules.
-    body ? do color "#333"
-              margin 0 auto 0 auto
-              width $ px 600
-              fontSize $ px 15
-              fontFamily ["Helvetica Neue Light", "Helvetica Neue", "Helvetica"] [sansSerif]
-              fontWeight $ weight 300
-              lineHeight $ em 1.5
+    match "posts/*" $ do
+        route $ setExtension "html"
+        compile $ pandocCompiler
+            >>= loadAndApplyTemplate "templates/post.html"    postCtx
+            >>= loadAndApplyTemplate "templates/default.html" postCtx
+            >>= relativizeUrls
 
-    div # "#header" ? do marginBottom $ px 44
-                         marginTop $ px 44
-                         height $ px 45
-                         "#navigation" ?
-                            do height (px 45)
-                               a ? do color $ black
-                                      fontSize $ px 18
-                                      fontWeight $ bold
-                                      marginLeft $ px 12
-                                      textDecoration none
-                                      textTransform uppercase
-    div # "#footer" ? do color "#555"
-                         fontSize $ px 12
-                         marginTop $ px 30
-                         padding 12 0 12 0
-                         textAlign $ alignSide sideRight
+    create ["index.html"] $ do
+        route idRoute
+        compile $ do
+            posts <- recentFirst =<< loadAll "posts/*"
+            let indexCtx =
+                    listField "posts" postCtx (return posts) `mappend`
+                    constField "title" "Home" `mappend`
+                    defaultContext
+
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/index.html" indexCtx
+                >>= loadAndApplyTemplate "templates/default.html" homeCtx
+                >>= relativizeUrls
+                
+    create ["atom.xml"] $ do
+        route idRoute
+        compile $ do
+            let feedCtx = postCtx `mappend` -- no idea
+                    constField "description" "Heather"
+
+            posts <- fmap (take 10) . recentFirst =<< loadAll "posts/*"
+            renderAtom feedConfiguration feedCtx posts
+
+    match "templates/*" $ compile templateCompiler
+
+homeCtx :: Context String
+homeCtx =
+    constField "title" "Home" `mappend`
+    postCtx
+
+postCtx :: Context String
+postCtx =
+    dateField "date" "%e %B %Y" `mappend`
+    defaultContext
+
+feedConfiguration :: FeedConfiguration
+feedConfiguration = FeedConfiguration
+    { feedTitle       = "Heather"
+    , feedDescription = "blog"
+    , feedAuthorName  = "Heather"
+    , feedAuthorEmail = "heather@live.ru"
+    , feedRoot        = "http://heather.github.io"
+    }
 ```
