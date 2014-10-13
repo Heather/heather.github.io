@@ -1,6 +1,10 @@
 heather.github.io
 =================
 
+ - run dart-build
+ - run update
+ - run commit
+
 ``` haskell
 main = hakyll $ do
     match "clay/*.hs" $ do
