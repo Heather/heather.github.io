@@ -1,4 +1,4 @@
-﻿---
+---
 title: Imperative bits of Haskell
 ---
 
