@@ -50,35 +50,6 @@ FailessLib features:
  - Easy fall-back for uncovered parts.
  - Various options and styles.
  - Obfuscation
-
-How does it work
-----------------
-
-It's designed to use custom F# operators with right priority in mind <and basically it replaces custom keywords to strings and merges all the stuff
-
-``` fsharp
-(* F# Operators Priority Table:
-|,',',||,&,&&,< op, >op, =, |op, &op,&&& , |||, ^^^, ~~~, 
-<<<, >>>,^ op,::,- op, +op, (binary),* op, /op, %op,** op,
-prefix operators (+op, -op, %, %%, &, &&, !op, ~op)  *)
-
-let inline (~+.) st = 
-    match st with
-    | [] -> ""
-    | [ _ ] -> sprintf " { %s }" st.Head
-    | _ -> 
-        let pars = 
-            [for s in st -> 
-                sprintf "%s%s" 
-                <| tab
-                <| s]
-        sprintf " {%s%s%s%s}" 
-        <| System.Environment.NewLine
-        <| String.Join(System.Environment.NewLine, pars)
-        <| System.Environment.NewLine
-        <| tab
-```
-
  - Devil unicode extension: https://github.com/Heather/DEVIL
 
 ``` fsharp
@@ -112,4 +83,27 @@ Border.set (px 1) Solid "#ccc" |> fun ➷ ->
         ⠂ "textEntry "      -|[ ➷; width -- px 320 ]
         ⠂ "passwordEntry"   -|[ ➷; width -- px 320 ]
         ]
+```
+
+How does it work
+----------------
+
+It's designed to use custom F# operators with right priority in mind and basically it replaces custom keywords to strings and merges all the stuff
+
+``` fsharp
+let inline (~+.) st = 
+    match st with
+    | [] -> ""
+    | [ _ ] -> sprintf " { %s }" st.Head
+    | _ -> 
+        let pars = 
+            [for s in st -> 
+                sprintf "%s%s" 
+                <| tab
+                <| s]
+        sprintf " {%s%s%s%s}" 
+        <| System.Environment.NewLine
+        <| String.Join(System.Environment.NewLine, pars)
+        <| System.Environment.NewLine
+        <| tab
 ```
