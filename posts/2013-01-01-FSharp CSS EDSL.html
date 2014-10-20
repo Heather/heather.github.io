@@ -74,6 +74,11 @@ RunParameterTargetOrDefault <span class="st">&quot;target&quot;</span> <span cla
 <li>Easy fall-back for uncovered parts.</li>
 <li>Various options and styles.</li>
 <li>Obfuscation</li>
+</ul>
+<h2 id="how-does-it-work">How does it work</h2>
+<p>It’s designed to use custom F# operators with right priority in mind <and basically it replaces custom keywords to strings and merges all the stuff ``` fsharp (* F# Operators Priority Table: |,',',||,&,&&,< op,>op, =, |op, &amp;op,&amp;&amp;&amp; , |||, <sup>^</sup>, <sub>~</sub>, &lt;&lt;&lt;, &gt;&gt;&gt;,^ op,::,- op, +op, (binary),* op, /op, %op,** op, prefix operators (+op, -op, %, %%, &amp;, &amp;&amp;, !op, ~op) *)</p>
+<p>let inline (~+.) st = match st with | [] -&gt; “” | [ _ ] -&gt; sprintf &quot; { %s }&quot; st.Head | _ -&gt; let pars = [for s in st -&gt; sprintf “%s%s” &lt;| tab &lt;| s] sprintf &quot; {%s%s%s%s}&quot; &lt;| System.Environment.NewLine &lt;| String.Join(System.Environment.NewLine, pars) &lt;| System.Environment.NewLine &lt;| tab ```</p>
+<ul>
 <li>Devil unicode extension: https://github.com/Heather/DEVIL</li>
 </ul>
 <pre class="sourceCode fsharp"><code class="sourceCode fsharp">fieldset <span class="st">&lt;&lt; [</span>
@@ -106,9 +111,6 @@ RunParameterTargetOrDefault <span class="st">&quot;target&quot;</span> <span cla
 <span class="st">        ⠂ &quot;textEntry &quot;      -|[ ➷; width -- px 320 ]</span>
 <span class="st">        ⠂ &quot;passwordEntry&quot;   -|[ ➷; width -- px 320 ]</span>
 <span class="st">        ]</span></code></pre>
-<h2 id="how-does-it-work">How does it work</h2>
-<p>It’s designed to use custom F# operators with right priority in mind <and basically it replaces custom keywords to strings and merges all the stuff ``` fsharp (* F# Operators Priority Table: |,',',||,&,&&,< op,>op, =, |op, &amp;op,&amp;&amp;&amp; , |||, <sup>^</sup>, <sub>~</sub>, &lt;&lt;&lt;, &gt;&gt;&gt;,^ op,::,- op, +op, (binary),* op, /op, %op,** op, prefix operators (+op, -op, %, %%, &amp;, &amp;&amp;, !op, ~op) *)</p>
-<p>let inline (~+.) st = match st with | [] -&gt; “” | [ _ ] -&gt; sprintf &quot; { %s }&quot; st.Head | _ -&gt; let pars = [for s in st -&gt; sprintf “%s%s” &lt;| tab &lt;| s] sprintf &quot; {%s%s%s%s}&quot; &lt;| System.Environment.NewLine &lt;| String.Join(System.Environment.NewLine, pars) &lt;| System.Environment.NewLine &lt;| tab ```</p>
 
 <hr />
 
