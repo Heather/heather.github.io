@@ -94,14 +94,14 @@ It's designed to use custom F# operators with right priority in mind and basical
 let inline (~+.) st = 
     match st with
     | [] -> ""
-    | [ _ ] -> sprintf " { %s }" st.Head
+    | [ _ ] -> sprintf " {{ %s }}" st.Head
     | _ -> 
         let pars = 
             [for s in st -> 
                 sprintf "%s%s" 
                 <| tab
                 <| s]
-        sprintf " {%s%s%s%s}" 
+        sprintf " {{%s%s%s%s}}" 
         <| System.Environment.NewLine
         <| String.Join(System.Environment.NewLine, pars)
         <| System.Environment.NewLine
