@@ -2901,13 +2901,13 @@ else{y=J.Wx(a)
 if(J.u6(y.W(a,z),5000)){z=y.W(a,this.KP)
 if(typeof z!=="number")return H.s(z)
 y=this.dV
-y.font="bold 75px Verdana"
+y.font="bold 28px Verdana"
 y.fillStyle="rgba(199,40,140, "+H.d((5000-z)/5000)+")"
 z=this.IB
 if(typeof z!=="number")return z.V()
 x=this.Ii
 if(typeof x!=="number")return x.V()
-J.mi(y,"Mi Mi Mi",z/2+100,x/2)}}for(w=0;w<21;++w){v=this.eZ[w]
+J.mi(y,"There is no hope, No Light, There is only Despair...",z/2+100,x/2)}}for(w=0;w<21;++w){v=this.eZ[w]
 z=this.dV
 z.font=H.d(v)+"px MatrixCode"
 z.textBaseline="top"

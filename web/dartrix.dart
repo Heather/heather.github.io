@@ -10,7 +10,7 @@ void main() {
 }
 
 final num _STRIP_NUMBER = 21;
-final String MESSAGE = "Mi Mi Mi";
+final String MESSAGE = "There is no hope, No Light, There is only Despair...";
 final num MESSAGE_DELAY = 5000;
 final List<String> _COLORS = const ['#FA14A7', '#FAFFFF', '#FAA2FA', '#D19DCD', '#F9A0AA', "#FAFFFA"];
 
@@ -107,7 +107,7 @@ class Dartrix {
     }
   
     showMessage(double alpha){
-        _ctx..font = 'bold 75px Verdana'
+        _ctx..font = 'bold 28px Verdana'
             ..fillStyle = 'rgba(199,40,140, ${alpha})'
             ..fillText(MESSAGE , _width/2+100, _height/2);
     }
