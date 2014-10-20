@@ -1,4 +1,4 @@
----
+﻿---
 title: Failess : CSS EDSL in FSharp
 ---
 
@@ -54,34 +54,34 @@ FailessLib features:
 
 ``` fsharp
 fieldset << [
-    ?  [    
+    ★  [    
         margin -/ [em 1.0; px 0]
         padding -- em 1.0
         Border.set (px 1) Solid "#ccc" 
         ]
-    ? p @ margin -/ px4 2 12 10 10
-    ? "login" ++ label 
-        >< ? "register" ++ label 
-        >< ? "changePassword" ++ label 
+    ☆ p @ margin -/ px4 2 12 10 10
+    ⠂ "login" ++ label 
+        >< ⠂ "register" ++ label 
+        >< ⠂ "changePassword" ++ label 
             @ Display.block 
     ]
-? loginDisplay << [
-    ?  [
+⠂ loginDisplay << [
+    ★  [
         fontSize       -- em 1.1
         padding        -- px 10
         Display.block
         TextAlign.right
         Color.white 
         ]
-    ? a << [
-        ? link     @ Color.white
-        ? visited  @ Color.white
-        ? hover    @ Color.white
+    ☆ a << [
+        ⠅ link     @ Color.white
+        ⠅ visited  @ Color.white
+        ⠅ hover    @ Color.white
         ] ]
-Border.set (px 1) Solid "#ccc" |> fun ? ->
+Border.set (px 1) Solid "#ccc" |> fun ➷ ->
     input << [
-        ? "textEntry "      -|[ ?; width -- px 320 ]
-        ? "passwordEntry"   -|[ ?; width -- px 320 ]
+        ⠂ "textEntry "      -|[ ➷; width -- px 320 ]
+        ⠂ "passwordEntry"   -|[ ➷; width -- px 320 ]
         ]
 ```
 
