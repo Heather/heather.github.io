@@ -41,6 +41,20 @@
     <p>Your browser sucks, after all... </p>
 </audio>
 
+<script type="text/javascript">
+  function displayNextImage() {
+      x = (x === images.length - 1) ? 0 : x + 1;
+      document.getElementById("img").src = images[x];
+  }
+  var images = [ "images/Hlogo.png"
+               , "images/Zlogo.png"
+               , "images/ZZlogo.png"
+               , "images/Jlogo.png"
+               , "images/Xlogo.png"
+               ], x = -1;
+  setInterval(displayNextImage, 1000);
+</script>
+
 <div id="parent">
     <div id="top">
         <div class="mlr">
@@ -77,13 +91,12 @@
                 </ul>
             </div>
             <div class="mright">
-                <a href="./">
-                    <img src="./images/logo.png" />
-                </a>
+                <img id="img" src="./images/Zlogo.png" />
             </div>
         </div>
     </div>
 </div>
+
 
 <script type="application/dart" src="./web/dartrix.dart"></script>
 
