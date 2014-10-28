@@ -15,13 +15,40 @@
         <link rel="stylesheet" type="text/css" media="all" href="/css/hasklig.css">
         <link rel="stylesheet" type="text/css" media="all" href="/css/octicons.css">
         <link rel="stylesheet" type="text/css" media="all" href="/css/syntax.css" />
-        <link rel="stylesheet" type="text/css" media="all" href="/clay/default.css" />        
+        <link rel="stylesheet" type="text/css" media="all" href="/clay/default.css" />
+        <script>
+            var a = ["Is ", "every ", "person ", "here ", "a ",
+            "mental ", "case ", "?"];
+            var i, j, p, e;
+            i = j = p = 0;
+            function r() {
+                "use strict";
+                var s = e.textContent || e.innerText;
+                s = s.substr(0,p) + a[i].charAt(j);
+                p += 1;
+                j += 1;
+                if (j >= a[i].length) {
+                    j = 0;
+                    i += 1;
+                    p += 1;
+                    if (i >= a.length) {
+                        i = p = 0;
+                    }
+                }
+                e.textContent = e.innerText = s;
+                setTimeout(r, p ? j ? 50 : 100 : 2000);
+            }
+        </script>
     </head>
     <body>
         <div class="band"/>
         <div id="header">
             <div id="logo">
-                <a href="/">Is every person here a mental case?</a>
+                <a id="abbr" href="/"></a>
+                <script>
+                    e = document.getElementById("abbr");
+                    setTimeout(r, 0);
+                </script>
             </div>
         </div>
         <div id="content">

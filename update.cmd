@@ -2,7 +2,9 @@
 
 ::Clean
 rm -rf clay
+rm -rf css
 rm -rf posts
+rm -rf 404.html
 rm -rf index.html
 
 :: For unicode support

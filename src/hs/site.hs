@@ -1,13 +1,28 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 import Data.Monoid (mappend)
+
+import System.Process (system)
+import System.FilePath (replaceExtension, takeDirectory)
+
 import Hakyll
 
 main :: IO ()
 main = hakyll $ do
+
+    match "images/*.tex" $ do
+        route   $ setExtension "png"
+        compile $ getResourceBody
+            >>= loadAndApplyTemplate "templates/formula.tex" defaultContext
+            >>= pdflatex >>= pdfToPng
+
     match "clay/*.hs" $ do
         route   $ setExtension "css"
         compile $ getResourceString >>= withItemBody (unixFilter "runghc" [])
+
+    match "css/*" $ do
+        route idRoute
+        compile compressCssCompiler
 
     match "posts/*" $ do
         route $ setExtension "html"
@@ -29,7 +44,15 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/index.html" indexCtx
                 >>= loadAndApplyTemplate "templates/default.html" homeCtx
                 >>= relativizeUrls
-                
+
+    create ["404.html"] $ do
+        route idRoute
+        compile $ do
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/404.html" homeCtx
+                >>= loadAndApplyTemplate "templates/default.html" homeCtx
+                >>= relativizeUrls
+
     create ["atom.xml"] $ do
         route idRoute
         compile $ do
@@ -59,3 +82,31 @@ feedConfiguration = FeedConfiguration
     , feedAuthorEmail = "heather@live.ru"
     , feedRoot        = "http://heather.github.io"
     }
+
+--------------------------------------------------------------------------------
+-- | source: https://github.com/jaspervdj/jaspervdj/blob/master/src/Main.hs
+pdflatex :: Item String -> Compiler (Item TmpFile)
+pdflatex item = do
+    TmpFile texPath <- newTmpFile "pdflatex.tex"
+    let tmpDir  = takeDirectory texPath
+        pdfPath = replaceExtension texPath "pdf"
+
+    unsafeCompiler $ do
+        writeFile texPath $ itemBody item
+        _ <- system $ unwords ["pdflatex", "-halt-on-error",
+            "-output-directory", tmpDir, texPath, ">/dev/null", "2>&1"]
+        return ()
+
+    makeItem $ TmpFile pdfPath
+
+
+--------------------------------------------------------------------------------
+pdfToPng :: Item TmpFile -> Compiler (Item TmpFile)
+pdfToPng item = do
+    let TmpFile pdfPath = itemBody item
+        pngPath         = replaceExtension pdfPath "png"
+    unsafeCompiler $ do
+        _ <- system $ unwords ["convert", "-density", "150", "-quality", "90",
+                pdfPath, pngPath]
+        return ()
+    makeItem $ TmpFile pngPath
