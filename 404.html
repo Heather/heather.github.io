@@ -68,9 +68,44 @@
 
 <div id="parent">
     <div id="top">
-        404 <a href="http://heather.github.io/">Anybody Want To Take Me Home!?</a>
+        <div class="mlr">
+            <div class="mleft">
+                404 <a href="http://heather.github.io/">Anybody Want To Take Me Home!?</a>
+            </div>
+            <div class="mright" style="padding-top: 250px;">
+                <h3>Hello {{name}}!</h3>
+                    Name: <input type="text" ng-model="name" />
+                <button class="btn btn-primary" data-target="#modal" data-toggle="modal">Ping</button>
+                <div id="modal" class="modal fade" tabindex="-1" role="dialog">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal">&times</button>
+                          <h3 style="margin: 0">Pong</h3>
+                        </div>
+                        <div class="modal-body">
+                          <ul style="margin: 0">
+                            <li>Hakyll</li>
+                            <li>Clay</li>
+                            <li>Dart</li>
+                            <li>Ponies</li>
+                          </ul>
+                        </div>
+                        <div class="modal-footer" style="margin: 0">
+                          <button class="btn btn-success" data-dismiss="modal">OK</button>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<audio id="audio" autoplay loop>
+    <source src="http://dl.zaycev.net/308221/1396801/kirara_and_urara_-_bween_bween_bween_(zaycev.net).mp3" type="audio/mp3"></source>
+    <p>Your browser sucks, after all... </p>
+</audio>
 <script type="application/dart" src="./web/dartrix.dart"></script>
 
         </div>

@@ -91,8 +91,8 @@ theStylesheet = do -- Overall site-wide styling rules.
                               fontWeight bold
                               color "#aaa"
 
-    ".band" ? do height     $ px 5
-                 width      $ pct 100
+    ".band" ? do height $ px 5
+                 width  $ pct 100
                  backgroundColor "#E82A37"
                  position absolute
                  left   $ px 0

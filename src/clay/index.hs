@@ -36,7 +36,7 @@ theStylesheet = do
     div # ".mlr" ? do minHeight $ px 300
 
     div # ".mleft"  ? do float      floatLeft
-                         minWidth   $ px 150
+                         minWidth   $ px 300
     div # ".mright" ? do float floatRight
                          top $ px $ -100
                          position relative
