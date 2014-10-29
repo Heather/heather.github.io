@@ -11,7 +11,12 @@
         
         <link href="./atom.xml" rel="alternate" title="Heather" type="application/atom+xml">
         <link rel="shortcut icon" type="image/ico" href="./favicon.ico" />
-        <link rel="stylesheet" href="./web/packages/bootjack/css/bootstrap.css">
+
+        <script src="./bootstrap/jquery-2.1.1.min.js"></script>
+        <link rel="stylesheet" href="./bootstrap/bootstrap.min.css">
+        <script src="./bootstrap/bootstrap.min.js"></script>
+        <script src="./bootstrap/angular.min.js"></script>
+        
         <link rel="stylesheet" type="text/css" media="all" href="./css/hasklig.css">
         <link rel="stylesheet" type="text/css" media="all" href="./css/octicons.css">
         <link rel="stylesheet" type="text/css" media="all" href="./css/syntax.css" />
@@ -43,6 +48,7 @@
 </style>
 
 <canvas id="canvas">
+    <p>No canvas support... </p>
 </canvas>
 
 <div id="parent">
@@ -54,12 +60,15 @@
             <div class="mright" style="padding-top: 250px;">
                 <h3>Hello {{name}}!</h3>
                     Name: <input type="text" ng-model="name" />
+                    
+                <br />
+                
                 <button class="btn btn-primary" data-target="#modal" data-toggle="modal">Ping</button>
                 <div id="modal" class="modal fade" tabindex="-1" role="dialog">
                     <div class="modal-dialog">
                       <div class="modal-content">
                         <div class="modal-header">
-                          <button type="button" class="close" data-dismiss="modal">&times</button>
+                          <button type="button" class="close" data-dismiss="modal">×</button>
                           <h3 style="margin: 0">Pong</h3>
                         </div>
                         <div class="modal-body">
@@ -85,6 +94,7 @@
     <source src="http://dl.zaycev.net/308221/1396801/kirara_and_urara_-_bween_bween_bween_(zaycev.net).mp3" type="audio/mp3"></source>
     <p>Your browser sucks, after all... </p>
 </audio>
+
 <script type="application/dart" src="./web/dartrix.dart"></script>
 
         </div>
@@ -128,8 +138,6 @@
 
         </div>
 
-    <script type="application/javascript" src="./web/packages/shadow_dom/shadow_dom.min.js"></script>
-    <script type="application/dart" src="./web/core.dart"></script>
     <script type="application/javascript" src="./web/packages/browser/dart.js"></script>
     </body>
 </html>

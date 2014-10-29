@@ -11,7 +11,12 @@
         
         <link href="../atom.xml" rel="alternate" title="Heather" type="application/atom+xml">
         <link rel="shortcut icon" type="image/ico" href="../favicon.ico" />
-        <link rel="stylesheet" href="../web/packages/bootjack/css/bootstrap.css">
+
+        <script src="../bootstrap/jquery-2.1.1.min.js"></script>
+        <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+        <script src="../bootstrap/bootstrap.min.js"></script>
+        <script src="../bootstrap/angular.min.js"></script>
+        
         <link rel="stylesheet" type="text/css" media="all" href="../css/hasklig.css">
         <link rel="stylesheet" type="text/css" media="all" href="../css/octicons.css">
         <link rel="stylesheet" type="text/css" media="all" href="../css/syntax.css" />
@@ -34,8 +39,7 @@
             <h1>Imperative bits of Haskell</h1>
 
 <audio id="audio" autoplay>
-    <source src="http://fp2.myzuka.ru/Download.aspx?lid=7671685&mid=21337344&date=20141028&sum=aef90de2e63c8ba8f85224ef187d28c4&name=01_weird_al_yankovic_handy_myzuka.ru.mp3&ic=False&cr=True&ex=.mp3&il=False&msl=100" type="audio/mp3"></source>
-    <p>Your browser sucks, after all... </p>
+    <source src="http://fp2.myzuka.ru/Download.aspx?lid=7671685∣=21337344&amp;date=20141028∑=aef90de2e63c8ba8f85224ef187d28c4&amp;name=01_weird_al_yankovic_handy_myzuka.ru.mp3⁣=False&amp;cr=True&amp;ex=.mp3&amp;il=False&amp;msl=100" type="audio/mp3"></source>
 </audio>
 
 <div class="info">Posted on 20 October 2014</div>
@@ -47,7 +51,7 @@ test1 a <span class="fu">=</span> <span class="kw">do</span> (a <span class="fu"
 
 main <span class="fu">=</span> <span class="kw">do</span> 
     test1 <span class="fu">=&lt;&lt;</span> int <span class="dv">1</span>
-    test1 <span class="fu">=&lt;&lt;</span> float <span class="fl">1.0</span>
+    test1 <span class="fu">=&lt;&lt;</span> float <span class="dv">1</span><span class="fu">.</span><span class="dv">0</span>
     x <span class="ot">&lt;-</span> int <span class="dv">1</span>
     x <span class="fu">+=</span> <span class="dv">4</span>
     x <span class="fu">-=</span> <span class="dv">2</span>
@@ -72,7 +76,7 @@ float x <span class="fu">=</span> newIORef x
    print r <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;    P.print <span class="fu">$</span> P.show x
 
 <span class="kw">instance</span> <span class="dt">PlusPlus</span> <span class="dt">Float</span> <span class="kw">where</span>
-   (<span class="fu">++</span>) r <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;    writeIORef r <span class="fu">$</span> x <span class="fu">+</span> <span class="fl">1.0</span>
+   (<span class="fu">++</span>) r <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;    writeIORef r <span class="fu">$</span> x <span class="fu">+</span> <span class="dv">1</span><span class="fu">.</span><span class="dv">0</span>
    (<span class="fu">+=</span>) r v <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;  writeIORef r <span class="fu">$</span> x <span class="fu">+</span> v
    (<span class="fu">-=</span>) r v <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;  writeIORef r <span class="fu">$</span> x <span class="fu">-</span> v
    print r <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;    P.print <span class="fu">$</span> P.show x</code></pre>
@@ -261,8 +265,6 @@ location<span class="fu">.</span>x <span class="ot">`over`</span> (<span class="
 
         </div>
 
-    <script type="application/javascript" src="../web/packages/shadow_dom/shadow_dom.min.js"></script>
-    <script type="application/dart" src="../web/core.dart"></script>
     <script type="application/javascript" src="../web/packages/browser/dart.js"></script>
     </body>
 </html>

@@ -1,13 +1,7 @@
 name: heather.github.io
-version: 0.0.1
+version: 0.0.2
 description: Heather blog
 author: Heather <heather@live.ru>
 homepage: http://heather.github.io
 dependencies:
   browser: any
-  angular: any
-  shadow_dom: any
-  dquery: any
-  bootjack: any
-transformers:
-- angular
