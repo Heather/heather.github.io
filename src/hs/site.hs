@@ -1,11 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+import Control.Applicative ((<$>))
+
 import Data.Monoid (mappend)
+import qualified Data.ByteString.Lazy as LB
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as E
 
 import System.Process (system)
 import System.FilePath (replaceExtension, takeDirectory)
 
 import Hakyll
+
+import Text.Jasmine
 
 main :: IO ()
 main = hakyll $ do
@@ -17,12 +24,16 @@ main = hakyll $ do
             >>= pdflatex >>= pdfToPng
 
     match "clay/*.hs" $ do
-        route   $ setExtension "css"
-        compile $ getResourceString >>= withItemBody (unixFilter "runghc" [])
+        route $ setExtension "css"
+        compile runGHC
 
     match "css/*" $ do
         route idRoute
         compile compressCssCompiler
+        
+    match "js/*" $ do
+        route idRoute
+        compile compressJsCompiler
 
     match "posts/*" $ do
         route $ setExtension "html"
@@ -63,6 +74,17 @@ main = hakyll $ do
             renderAtom feedConfiguration feedCtx posts
 
     match "templates/*" $ compile templateCompiler
+    
+  where
+  
+    runGHC :: Compiler (Item String)
+    runGHC = getResourceString >>= withItemBody (unixFilter "runghc" [])
+  
+    compressJsCompiler :: Compiler (Item String)
+    compressJsCompiler = fmap compressCss <$> getResourceString
+    
+    jasmin :: String -> String
+    jasmin src = show $ minify $ LB.fromChunks [(E.encodeUtf8 $ T.pack src)] 
 
 homeCtx :: Context String
 homeCtx =
