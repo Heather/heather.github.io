@@ -62,7 +62,7 @@ main = hakyll $ do
             makeItem ""
                 >>= loadAndApplyTemplate "templates/404.html" homeCtx
                 >>= loadAndApplyTemplate "templates/default.html" homeCtx
-                >>= relativizeUrls
+                -- >>= relativizeUrls
 
     create ["atom.xml"] $ do
         route idRoute

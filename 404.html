@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html ng-app>
     <head>
@@ -14,6 +14,7 @@
 
         <script src="./bootstrap/jquery-2.1.1.min.js"></script>
         <link rel="stylesheet" href="./bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="./bootstrap/bootstrap-theme.min.css">
         <script src="./bootstrap/bootstrap.min.js"></script>
         <script src="./bootstrap/angular.min.js"></script>
         
@@ -25,7 +26,7 @@
         <script type="application/javascript" src="./js/auto.js"></script>
     </head>
     <body>
-        <div class="band"></div>
+        <div class="band"/>
         <div id="header">
             <div id="logo">
                 <a id="abbr" href="./"></a>
@@ -48,10 +49,9 @@
 </style>
 
 <canvas id="canvas">
-    <p>No canvas support... </p>
 </canvas>
 
-<div id="parent">
+<div id = "parent">
     <div id="top">
         <div class="mlr">
             <div class="mleft">
@@ -59,7 +59,7 @@
             </div>
             <div class="mright" style="padding-top: 250px;">
                 <h3>Hello {{name}}!</h3>
-                    Name: <input type="text" ng-model="name" />
+                    Name: <input type="text" ng-model="name"/>
                     
                 <br />
                 
@@ -68,7 +68,7 @@
                     <div class="modal-dialog">
                       <div class="modal-content">
                         <div class="modal-header">
-                          <button type="button" class="close" data-dismiss="modal">×</button>
+                          <button type="button" class="close" data-dismiss="modal">&times</button>
                           <h3 style="margin: 0">Pong</h3>
                         </div>
                         <div class="modal-body">
@@ -91,7 +91,7 @@
 </div>
 
 <audio id="audio" autoplay loop>
-    <source src="http://dl.zaycev.net/308221/1396801/kirara_and_urara_-_bween_bween_bween_(zaycev.net).mp3" type="audio/mp3"></source>
+    <source src="http://dl.zaycev.net/308221/1396801/kirara_and_urara_-_bween_bween_bween_(zaycev.net).mp3" type="audio/mp3" />
     <p>Your browser sucks, after all... </p>
 </audio>
 
@@ -127,7 +127,7 @@
                 </a>
               </li>
               <li>
-                <a href="./atom.xml" title="RSS" target="_blank">
+                <a href="/atom.xml" title="RSS" target="_blank">
                   <span class="mega-octicon octicon-rss"></span>
                 </a>
               </li>
