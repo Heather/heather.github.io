@@ -13,10 +13,10 @@ export LANG=en_US.UTF-8
 ghc --make src/hs/site.hs -o src/site
 
 #Dart
-rm -rf web/*.js
-rm -rf web/packages
-cp -rf build/web/packages web/
-cp -rf build/web/*.js web/
+#rm -rf web/*.js
+#rm -rf web/packages
+#cp -rf build/web/packages web/
+#cp -rf build/web/*.js web/
 
 cd src
 
