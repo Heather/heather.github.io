@@ -226,8 +226,8 @@ function Eye( canvas, x, y, scale, time ) {
 		this.iris.y += ( ei.y - this.iris.y ) * this.irisSpeed;
 		
 		// Eye fill drawing
-		this.context.fillStyle = 'rgba(255,255,255,1.0)';
-		this.context.strokeStyle = 'rgba(100,100,100,1.0)';
+		this.context.fillStyle = 'rgba(190,190,190,5.0)';
+		this.context.strokeStyle = 'rgba(50,50,50,1.0)';
 		this.context.beginPath();
 		this.context.lineWidth = 3;
 		this.context.lineJoin = 'round';
@@ -244,7 +244,7 @@ function Eye( canvas, x, y, scale, time ) {
 		this.context.translate(this.iris.x*0.1,0);
 		this.context.scale(0.9,1);
 		this.context.strokeStyle = 'rgba(0,0,0,0.5)';
-		this.context.fillStyle = 'rgba(130,50,90,0.9)';
+		this.context.fillStyle = 'rgba(170,50,50,0.9)';
 		this.context.lineWidth = 2;
 		this.context.beginPath();
 		this.context.arc(this.iris.x, this.iris.y, this.iris.size, 0, Math.PI*2, true);

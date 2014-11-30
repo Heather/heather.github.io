@@ -29,7 +29,6 @@ theStylesheet = do
                    position absolute
                    top  5
                    left 0
-                                        
 
     div # "#top" ? zIndex 100
 
@@ -37,10 +36,12 @@ theStylesheet = do
 
     div # ".mleft"  ? do float      floatLeft
                          minWidth   $ px 300
+                         backgroundColor $ rgba 255 255 255 50
+
     div # ".mright" ? do float floatRight
                          top $ px $ -100
                          position relative
-                           
+
     div # "#social" ? do zIndex 100
                          position absolute
                          bottom $ px 10
