@@ -37,6 +37,7 @@ theStylesheet = do
     div # ".mleft"  ? do float      floatLeft
                          minWidth   $ px 300
                          backgroundColor $ rgba 255 255 255 50
+                         borderRadius (px 15) (px 15) (px 15) (px 15)
 
     div # ".mright" ? do float floatRight
                          top $ px $ -100
