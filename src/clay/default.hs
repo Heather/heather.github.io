@@ -77,14 +77,14 @@ theStylesheet = do -- Overall site-wide styling rules.
     h1 ? fontSize (px 22)
     h2 ? fontSize (px 18)
     
-    a ? do color            "#0881B3"
-           textDecoration   none
+    a ? do color $ rgb 250 64 64
+           textDecoration none
            transitionProperty "color"
            transitionDuration $ sec 1
            transitionTimingFunction ease
 
-    a # hover ? do color "#F33088"
-    a # visited ? color "#0881B3"
+    a # hover ? do color $ rgb 255 0 0
+    a # visited ? do color $ rgb 180 64 64
     
     ".recent-posts" ? li ? do listStyleType none
                               fontSize (px 24)

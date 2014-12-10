@@ -105,7 +105,7 @@ h2
 
 a
 {
-  color                      : rgb(8,129,179);
+  color                      : rgb(250,64,64);
   text-decoration            : none;
   transition-property        : color;
   transition-duration        : 1.0s;
@@ -114,12 +114,12 @@ a
 
 a:hover
 {
-  color : rgb(243,48,136);
+  color : rgb(255,0,0);
 }
 
 a:visited
 {
-  color : rgb(8,129,179);
+  color : rgb(180,64,64);
 }
 
 

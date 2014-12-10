@@ -36,8 +36,10 @@ theStylesheet = do
 
     div # ".mleft"  ? do float      floatLeft
                          minWidth   $ px 300
-                         backgroundColor $ rgba 250 250 250 80
-                         borderRadius (px 15) (px 15) (px 15) (px 15)
+                         backgroundColor $ rgba 200 200 200 100
+                         borderRadius (px 5) (px 15) (px 5) (px 15)
+                         outline dotted (px 6) $ rgba 50 50 50 100
+                         outlineOffset $ px 3
 
     div # ".mright" ? do float floatRight
                          top $ px $ -100
@@ -48,5 +50,6 @@ theStylesheet = do
                          bottom $ px 15
                          width  $ pct 80
                          height $ px 100
-                         backgroundColor $ rgba 200 200 200 200
+                         backgroundColor $ rgba 150 150 150 220
+                         backgroundImage $ url "../images/blood.png"
                          borderRadius (px 30) (px 150) (px 30) (px 150)

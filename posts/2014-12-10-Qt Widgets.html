@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html ng-app>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        
+        <title>Heather - Modern C++ and Qt Widgets (basics)</title>
+        <meta name="description" content="Heather">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link href="../atom.xml" rel="alternate" title="Heather" type="application/atom+xml">
+        <link rel="shortcut icon" type="image/ico" href="../favicon.ico" />
+
+        <script src="../bootstrap/jquery-2.1.1.min.js"></script>
+        <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="../bootstrap/bootstrap-theme.min.css">
+        <script src="../bootstrap/bootstrap.min.js"></script>
+        <script src="../bootstrap/angular.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" media="all" href="../css/hasklig.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/octicons.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/syntax.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="../clay/default.css" />
+        
+        <script type="application/javascript" src="../js/auto.js"></script>
+    </head>
+    <body>
+        <div class="band"></div>
+        <div id="header">
+            <div id="logo">
+                <a id="abbr" href="../"></a>
+                <script>
+                    e = document.getElementById("abbr");
+                    setTimeout(r, 0);
+                </script>
+            </div>
+        </div>
+        <div id="content">
+            <h1>Modern C++ and Qt Widgets (basics)</h1>
+
+<audio id="audio" autoplay loop>
+    <source src="../images/Bween.mp3" type="audio/mp3"></source>
+</audio>
+
+<div class="info">Posted on 10 December 2014</div>
+
+<p>I never liked and I still don’t like Qt but maybe I will need it in near future. <br /> Here is my fast review.</p>
+<h2 id="path">PATH</h2>
+<p>GUI application that extracts PATH windows variable and gives you easy way to edit it. <br /> For now it just splits by <code>;</code> PATH into different edits with possibility to edit / delete those edits or add new edits. <br /> And finally concatenates them all to one string with <code>;</code> separator.</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">Path::Path() {
+    path = std::getenv(<span class="st">&quot;PATH&quot;</span>);
+}
+
+std::vector&lt;std::string&gt; Path::GetPath() {
+    std::vector&lt;std::string&gt; strs;
+    boost::split(strs, path, boost::is_any_of(<span class="st">&quot;;&quot;</span>));
+    <span class="kw">return</span> strs;
+}
+
+<span class="dt">void</span> Path::Reload() {
+    path = std::getenv(<span class="st">&quot;PATH&quot;</span>);
+}</code></pre>
+<h2 id="gui-header">GUI header</h2>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">class</span> MainWindow : <span class="kw">public</span> <span class="ot">QMainWindow</span> {
+    <span class="kw">Q_OBJECT</span>
+
+<span class="kw">public</span>:
+    <span class="kw">explicit</span> MainWindow(<span class="ot">QWidget</span> *parent = <span class="dv">0</span>);
+    ~MainWindow();
+
+<span class="kw">private</span> <span class="kw">slots</span>:
+    <span class="dt">void</span> on_actionReload_triggered();
+    <span class="dt">void</span> on_actionDisplay_triggered();
+    <span class="dt">void</span> on_actionVersion_triggered();
+
+<span class="kw">private</span>:
+    <span class="dt">void</span> DrawPath();
+
+    std::unique_ptr&lt;Ui::MainWindow&gt; ui;
+    std::unique_ptr&lt;Path&gt; path;
+};</code></pre>
+<p>For me it looks sane to use <code>unique_ptr</code> here but for Qt Creator it’s often a problem.</p>
+<h2 id="gui-methods">GUI methods</h2>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> MainWindow::DrawPath() {
+    <span class="kw">for</span> (std::string str : path-&gt;GetPath()) {
+        <span class="kw">auto</span> editForm = <span class="kw">new</span> <span class="ot">QLineEdit</span>();
+        <span class="kw">auto</span> btnDelete = <span class="kw">new</span> <span class="ot">QPushButton</span>(<span class="st">&quot;Del&quot;</span>);
+        <span class="fu">connect</span>(btnDelete, &amp;<span class="ot">QPushButton::</span>clicked, [editForm, btnDelete] () {
+             <span class="kw">if</span> (editForm) <span class="kw">delete</span> editForm;
+             <span class="kw">if</span> (btnDelete) <span class="kw">delete</span> btnDelete;
+        });
+        <span class="ot">QString</span> qstr = <span class="ot">QString::</span>fromUtf8(str.c_str());
+        editForm-&gt;setText(qstr);
+        <span class="kw">this</span>-&gt;ui-&gt;formLayout-&gt;addRow(btnDelete, editForm);
+    }
+    <span class="kw">auto</span> editAdd = <span class="kw">new</span> <span class="ot">QLineEdit</span>();
+    <span class="kw">auto</span> btnAdd = <span class="kw">new</span> <span class="ot">QPushButton</span>(<span class="st">&quot;Add&quot;</span>);
+    <span class="fu">connect</span>(btnAdd, &amp;<span class="ot">QPushButton::</span>clicked, [btnAdd, editAdd, <span class="kw">this</span>] () {
+        <span class="kw">auto</span> editForm2 = <span class="kw">new</span> <span class="ot">QLineEdit</span>(editAdd-&gt;text());
+        <span class="kw">auto</span> btnDelete2 = <span class="kw">new</span> <span class="ot">QPushButton</span>(<span class="st">&quot;Del&quot;</span>);
+        <span class="fu">connect</span>(btnDelete2, &amp;<span class="ot">QPushButton::</span>clicked, [editForm2, btnDelete2] () {
+             <span class="kw">if</span> (editForm2) <span class="kw">delete</span> editForm2;
+             <span class="kw">if</span> (btnDelete2) <span class="kw">delete</span> btnDelete2;
+        });
+        <span class="kw">this</span>-&gt;ui-&gt;formLayout-&gt;insertRow(<span class="kw">this</span>-&gt;ui-&gt;formLayout-&gt;rowCount() - <span class="dv">1</span>
+                                       , btnDelete2, editForm2);
+        editAdd-&gt;setText(<span class="st">&quot;&quot;</span>);
+    });
+    <span class="kw">this</span>-&gt;ui-&gt;formLayout-&gt;addRow(btnAdd, editAdd);
+}
+
+<span class="dt">void</span> MainWindow::on_actionReload_triggered() {
+    path-&gt;Reload();
+    <span class="kw">while</span> (<span class="ot">QLayoutItem</span>* item = <span class="kw">this</span>-&gt;ui-&gt;formLayout-&gt;takeAt(<span class="dv">0</span>)) {
+        <span class="kw">if</span> (<span class="ot">QWidget</span>* widget = item-&gt;widget())
+            <span class="kw">delete</span> widget;
+    }
+    <span class="kw">this</span>-&gt;DrawPath();
+}
+
+<span class="dt">void</span> MainWindow::on_actionDisplay_triggered() {
+    <span class="ot">QString</span> con;
+    <span class="kw">for</span> (<span class="ot">QLineEdit</span>* qle : <span class="kw">this</span>-&gt;findChildren&lt;<span class="ot">QLineEdit</span> *&gt;()) {
+        con += qle-&gt;text() + <span class="st">&quot;;&quot;</span>;
+    }
+    <span class="kw">auto</span> window = <span class="kw">new</span> <span class="ot">QDialog</span>(<span class="kw">this</span>);
+    <span class="kw">auto</span> layout = <span class="kw">new</span> <span class="ot">QVBoxLayout</span>();
+    <span class="kw">auto</span> btn_Ok = <span class="kw">new</span> <span class="ot">QPushButton</span>(<span class="st">&quot;Ok&quot;</span>);
+    layout-&gt;addWidget(<span class="kw">new</span> <span class="ot">QTextEdit</span>(con));
+    layout-&gt;addWidget(btn_Ok);
+    <span class="fu">connect</span>(btn_Ok, &amp;<span class="ot">QPushButton::</span>clicked, [window] () {
+         <span class="kw">if</span> (window) window-&gt;close();
+    });
+    window-&gt;setLayout(layout);
+    window-&gt;setAttribute(<span class="ot">Qt::</span>WA_DeleteOnClose);
+    window-&gt;show();
+}</code></pre>
+<p>Maybe there are some weak moments alike: - <code>for (QLineEdit* qle : this-&gt;findChildren&lt;QLineEdit *&gt;())</code> as <code>formLayout</code> strings iteration - <code>setText</code> needs <code>QString</code> and not just std string with some reason</p>
+<p>There is no much to review so far, I plan to check more about what Qt Widgets can do and how I can work with OpenCL there.</p>
+<p>GitHub: <a href="https://github.com/Heather/PATH">PATH</a></p>
+
+<div id="postfooter"></div>
+<script src="../bootstrap/three.js"></script>
+<script type="text/javascript">
+	var SCREEN_WIDTH = window.innerWidth;
+	var SCREEN_HEIGHT = window.innerHeight;
+	var RADIUS = 200;
+	var QUANTITY = 150;
+
+	var container;
+
+	var camera;
+	var scene;
+	var renderer;
+	
+	var descriptors = [];
+
+	var mouseX = 0;
+	var mouseY = 0;
+
+	var windowHalfX = window.innerWidth / 2;
+	var windowHalfY = window.innerHeight / 2;
+
+	init();
+	setInterval(loop, 1000 / 60);
+
+	function init() {
+
+		container = document.getElementById('postfooter');
+
+		camera = new THREE.Camera(0, 0, 300);
+		camera.focus = 50;
+
+		scene = new THREE.Scene();
+
+		renderer = new THREE.CanvasRenderer();
+		renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT / 4);
+		
+		createParticles();
+		
+		container.appendChild(renderer.domElement);
+
+		document.addEventListener('mousemove', onDocumentMouseMove, false);
+		document.addEventListener('touchstart', onDocumentTouchStart, false);
+		document.addEventListener('touchmove', onDocumentTouchMove, false);
+	}
+
+	function createParticles() {
+		for (var i = 0; i < QUANTITY; i++) {
+			var particle = new THREE.Particle(new THREE.ColorFillMaterial(Math.random() * 0x404040 + 0xaaaaaa, 1));
+			particle.size = 10;
+			
+			particle.position.x = 0;
+			particle.position.y = 0;
+			particle.position.z = 0;
+			
+			particle.offset = { x: 0, y: 0, z: 0 };
+			particle.shift = { x: 0, y: 0 };
+			particle.speed = 0.01+Math.random()*0.04;
+			particle.targetSize = particle.size;
+			
+			scene.add(particle);
+		}
+	}
+
+	function onDocumentMouseMove(event) {
+
+		mouseX = event.clientX - windowHalfX;
+		mouseY = event.clientY - windowHalfY;
+	}
+
+	function onDocumentTouchStart(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function onDocumentTouchMove(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function loop() {
+		camera.updateMatrix();
+		
+		renderer.render(scene, camera);
+		
+		var context = renderer.domElement.getContext("2d")
+		
+		for (var i = 0, len = scene.objects.length; i < len; i++) {
+			var particle = scene.objects[i];
+			
+			particle.offset.x += particle.speed;
+			particle.offset.y += particle.speed;
+			
+			particle.shift.x += ( mouseX - particle.shift.x) * (particle.speed);
+			particle.shift.y += ( -mouseY - particle.shift.y) * (particle.speed);
+			
+			particle.position.x = particle.shift.x + Math.cos(i + particle.offset.x) * RADIUS;
+			particle.position.y = particle.shift.y + Math.sin(i + particle.offset.y) * RADIUS;
+			particle.position.z = i / QUANTITY * RADIUS;
+			
+			particle.size += ( particle.targetSize - particle.size ) * 0.05;
+			
+			if( Math.round( particle.size ) == Math.round( particle.targetSize ) ) {
+				particle.targetSize = 1 + Math.random() * 10;
+			}
+		}
+	}
+	
+	function distanceBetween(p1,p2) {
+		var dx = p2.x-p1.x;
+		var dy = p2.y-p1.y;
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+</script>
+
+<hr />
+
+        </div>
+        
+        <div id="social">
+            <ul>
+              <li>
+                <a href="http://github.com/Heather" title="Github" target="_blank">
+                  <span class="mega-octicon octicon-octoface"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://twitter.com/Cynede" title="Twitter" target="_blank">
+                  <span class="mega-octicon octicon-star"></span>
+                </a>
+              </li>
+              <li>
+                <a href="mailto:heather@live.ru" title="Main mail" target="_blank">
+                  <span class="mega-octicon octicon-mail-read"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank">
+                  <span class="mega-octicon octicon-broadcast"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://grooveshark.com/#!/cynede" title="Grooveshark" target="_blank">
+                  <span class="mega-octicon octicon-squirrel"></span>
+                </a>
+              </li>
+              <li>
+                <a href="../atom.xml" title="RSS" target="_blank">
+                  <span class="mega-octicon octicon-rss"></span>
+                </a>
+              </li>
+            </ul>
+        </div>
+        
+        <div id="footer">
+
+        </div>
+
+    </body>
+</html>

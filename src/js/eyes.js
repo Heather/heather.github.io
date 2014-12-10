@@ -26,7 +26,7 @@
 	var DISPLAY_WIDTH = 960,
 		DISPLAY_HEIGHT = 480,
 		DISPLAY_DURATION = 10,
-		OVERLAY_DURATION = 3;
+		OVERLAY_DURATION = 1;
 	
 	var	mouse = { x: 0, y: 0 },
 		container,
