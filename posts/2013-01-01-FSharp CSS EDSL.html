@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
 <html ng-app>
     <head>
@@ -28,6 +28,9 @@
     <body>
         <div class="band"></div>
         <div id="header">
+            <div id="controls">
+                <a id="audiocontrols" href="#">||</a>
+            </div>
             <div id="logo">
                 <a id="abbr" href="../"></a>
                 <script>
@@ -307,6 +310,10 @@ RunParameterTargetOrDefault <span class="st">&quot;target&quot;</span> <span cla
         <div id="footer">
 
         </div>
-
+        <script type="text/javascript">
+            var pauseaudio = function (e) { var obj = $('#audio'); obj[0].pause(); $('#audiocontrols').unbind('click', pauseaudio); $('#audiocontrols').text('>'); $('#audiocontrols').click(playaudio); };
+            var playaudio = function (e) { var obj = $('#audio'); obj[0].play(); $('#audiocontrols').unbind('click', playaudio); $('#audiocontrols').text('||'); $('#audiocontrols').click(pauseaudio); };
+            $('#audiocontrols').click(pauseaudio);
+        </script>
     </body>
 </html>
