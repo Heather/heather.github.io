@@ -45,6 +45,8 @@ theStylesheet = do
 
     div # "#social" ? do zIndex 100
                          position absolute
-                         bottom $ px 10
+                         bottom $ px 15
                          width  $ pct 80
                          height $ px 100
+                         backgroundColor $ rgba 200 200 200 200
+                         borderRadius (px 30) (px 150) (px 30) (px 150)
