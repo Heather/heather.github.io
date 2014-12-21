@@ -43,6 +43,9 @@
     <source src="../images/Bween.mp3" type="audio/mp3"></source>
 </audio>
 
+<div id="controls">
+    <a id="audiocontrols" href="#">||</a>
+</div>
 <div class="info">Posted on 25 June 2014</div>
 
 <p><a href="https://npoi.codeplex.com/">NPOI</a> is is the .NET version of POI Java project at http://poi.apache.org/. POI is an open source project which can help you read/write xls, doc, ppt files. It has a wide application.</p>
@@ -97,7 +100,20 @@ getData sr er</code></pre>
             MessageBox<span class="kw">.</span>Show( <span class="st">&quot;X.xls created, check the result&quot;</span> ) |&gt; ignore
         <span class="kw">with</span> _ -&gt; MessageBox<span class="kw">.</span>Show( <span class="st">&quot;Can't write to file&quot;</span> )       |&gt; ignore</code></pre>
 
-<div id="postfooter"></div>
+<div id="postfooter">
+</div>
+
+<script type="text/javascript">
+    var pauseaudio = function (e) { var obj = $('#audio'); 
+        obj[0].pause(); $('#audiocontrols').unbind('click', pauseaudio);
+        $('#audiocontrols').text('>'); $('#audiocontrols').click(playaudio); 
+    };
+    var playaudio = function (e) { var obj = $('#audio'); 
+        obj[0].play(); $('#audiocontrols').unbind('click', playaudio); 
+        $('#audiocontrols').text('||'); $('#audiocontrols').click(pauseaudio); 
+    };
+    $('#audiocontrols').click(pauseaudio);
+</script>
 <script src="../bootstrap/three.js"></script>
 <script type="text/javascript">
 	var SCREEN_WIDTH = window.innerWidth;

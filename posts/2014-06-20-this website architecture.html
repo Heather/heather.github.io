@@ -43,6 +43,9 @@
     <source src="../images/Bween.mp3" type="audio/mp3"></source>
 </audio>
 
+<div id="controls">
+    <a id="audiocontrols" href="#">||</a>
+</div>
 <div class="info">Posted on 20 June 2014</div>
 
 <p>It’s just my Blog where I run all the possible experiments…</p>
@@ -106,7 +109,20 @@ div <span class="st"># &quot;#header&quot; ? do marginBottom    $  px 44</span>
     <span class="fu">applicationFactory</span>().<span class="fu">run</span>();
 }</code></pre>
 
-<div id="postfooter"></div>
+<div id="postfooter">
+</div>
+
+<script type="text/javascript">
+    var pauseaudio = function (e) { var obj = $('#audio'); 
+        obj[0].pause(); $('#audiocontrols').unbind('click', pauseaudio);
+        $('#audiocontrols').text('>'); $('#audiocontrols').click(playaudio); 
+    };
+    var playaudio = function (e) { var obj = $('#audio'); 
+        obj[0].play(); $('#audiocontrols').unbind('click', playaudio); 
+        $('#audiocontrols').text('||'); $('#audiocontrols').click(pauseaudio); 
+    };
+    $('#audiocontrols').click(pauseaudio);
+</script>
 <script src="../bootstrap/three.js"></script>
 <script type="text/javascript">
 	var SCREEN_WIDTH = window.innerWidth;

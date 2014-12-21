@@ -43,6 +43,9 @@
     <source src="../images/Bween.mp3" type="audio/mp3"></source>
 </audio>
 
+<div id="controls">
+    <a id="audiocontrols" href="#">||</a>
+</div>
 <div class="info">Posted on 20 October 2014</div>
 
 <p>Haskell is purely functional. However sometimes people (and me also) need some imperative bits with various reasons: sometimes it could be performance, sometimes simpler design, etc… However even being purely functional Haskell is very good imperative language.</p>
@@ -223,7 +226,20 @@ location<span class="fu">.</span>x <span class="ot">`over`</span> (<span class="
 <li><a href="http://www.haskell.org/haskellwiki/Modern_array_libraries">Haskell.org : Arrays</a></li>
 </ul>
 
-<div id="postfooter"></div>
+<div id="postfooter">
+</div>
+
+<script type="text/javascript">
+    var pauseaudio = function (e) { var obj = $('#audio'); 
+        obj[0].pause(); $('#audiocontrols').unbind('click', pauseaudio);
+        $('#audiocontrols').text('>'); $('#audiocontrols').click(playaudio); 
+    };
+    var playaudio = function (e) { var obj = $('#audio'); 
+        obj[0].play(); $('#audiocontrols').unbind('click', playaudio); 
+        $('#audiocontrols').text('||'); $('#audiocontrols').click(pauseaudio); 
+    };
+    $('#audiocontrols').click(pauseaudio);
+</script>
 <script src="../bootstrap/three.js"></script>
 <script type="text/javascript">
 	var SCREEN_WIDTH = window.innerWidth;

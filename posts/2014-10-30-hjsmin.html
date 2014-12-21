@@ -43,6 +43,9 @@
     <source src="../images/Bween.mp3" type="audio/mp3"></source>
 </audio>
 
+<div id="controls">
+    <a id="audiocontrols" href="#">||</a>
+</div>
 <div class="info">Posted on 30 October 2014</div>
 
 <p>I discovered that by default Hakyll only can <code>compressCssCompiler</code> and there is no <code>compressJsCompiler</code></p>
@@ -67,7 +70,20 @@ compressJsCompiler <span class="fu">=</span> fmap compressCss <span class="fu">&
 jasmin src <span class="fu">=</span> show <span class="fu">$</span> minify <span class="fu">$</span> LB.fromChunks [(E.encodeUtf8 <span class="fu">$</span> T.pack src)] </code></pre>
 <p>It works pretty fine so I even think this should be somewhere in hakyll docs</p>
 
-<div id="postfooter"></div>
+<div id="postfooter">
+</div>
+
+<script type="text/javascript">
+    var pauseaudio = function (e) { var obj = $('#audio'); 
+        obj[0].pause(); $('#audiocontrols').unbind('click', pauseaudio);
+        $('#audiocontrols').text('>'); $('#audiocontrols').click(playaudio); 
+    };
+    var playaudio = function (e) { var obj = $('#audio'); 
+        obj[0].play(); $('#audiocontrols').unbind('click', playaudio); 
+        $('#audiocontrols').text('||'); $('#audiocontrols').click(pauseaudio); 
+    };
+    $('#audiocontrols').click(pauseaudio);
+</script>
 <script src="../bootstrap/three.js"></script>
 <script type="text/javascript">
 	var SCREEN_WIDTH = window.innerWidth;

@@ -43,6 +43,9 @@
     <source src="../images/Bween.mp3" type="audio/mp3"></source>
 </audio>
 
+<div id="controls">
+    <a id="audiocontrols" href="#">||</a>
+</div>
 <div class="info">Posted on 19 August 2014</div>
 
 <p>First: added dirty lifts to <a href="https://hackage.haskell.org/package/eternal-0.0.7/src/src/Control/Eternal/Syntax/Lift.hs">Hackage</a></p>
@@ -88,7 +91,20 @@ asyncReactive foo <span class="fu">=</span> liftM2_ doProcess (mkProgress stdout
 Done</code></pre>
 <p>It could be useful for example to visualise activity of an long process which doesn’t visualise it’s activity <a href="https://github.com/Heather/Sharingan/blob/master/src/Shell.hs#L103">(example)</a></p>
 
-<div id="postfooter"></div>
+<div id="postfooter">
+</div>
+
+<script type="text/javascript">
+    var pauseaudio = function (e) { var obj = $('#audio'); 
+        obj[0].pause(); $('#audiocontrols').unbind('click', pauseaudio);
+        $('#audiocontrols').text('>'); $('#audiocontrols').click(playaudio); 
+    };
+    var playaudio = function (e) { var obj = $('#audio'); 
+        obj[0].play(); $('#audiocontrols').unbind('click', playaudio); 
+        $('#audiocontrols').text('||'); $('#audiocontrols').click(pauseaudio); 
+    };
+    $('#audiocontrols').click(pauseaudio);
+</script>
 <script src="../bootstrap/three.js"></script>
 <script type="text/javascript">
 	var SCREEN_WIDTH = window.innerWidth;
