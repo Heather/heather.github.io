@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html ng-app>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        
+        <title>Heather - Python SmartShell</title>
+        <meta name="description" content="Heather">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link href="../atom.xml" rel="alternate" title="Heather" type="application/atom+xml">
+        <link rel="shortcut icon" type="image/ico" href="../favicon.ico" />
+
+        <script src="../bootstrap/jquery-2.1.1.min.js"></script>
+        <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="../bootstrap/bootstrap-theme.min.css">
+        <script src="../bootstrap/bootstrap.min.js"></script>
+        <script src="../bootstrap/angular.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" media="all" href="../css/hasklig.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/octicons.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/syntax.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="../clay/default.css" />
+        
+        <script type="application/javascript" src="../js/auto.js"></script>
+    </head>
+    <body>
+        <div class="band"></div>
+        <div id="header">
+            <div id="logo">
+                <a id="abbr" href="../"></a>
+                <script>
+                    e = document.getElementById("abbr");
+                    setTimeout(r, 0);
+                </script>
+            </div>
+        </div>
+        <div id="content">
+            <h1>Python SmartShell</h1>
+
+<audio id="audio" autoplay loop>
+    <source src="../images/Bween.mp3" type="audio/mp3"></source>
+</audio>
+
+<div id="controls">
+    <a id="audiocontrols" href="#">||</a>
+</div>
+<div class="info">Posted on 29 December 2014</div>
+
+<p>Task: save modified Environment variable during calling different scripts in python Solution: Singleton with internal variable for storing and updating Environment</p>
+<h2 id="smartshell">SmartShell</h2>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="ch">from</span> subprocess <span class="ch">import</span> Popen, PIPE, list2cmdline
+<span class="ch">from</span> Singleton <span class="ch">import</span> Singleton
+
+<span class="kw">class</span> SmartShell(Singleton):
+    <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, shell):
+        <span class="ot">self</span>.shell = shell
+        <span class="ot">self</span>.initial = <span class="ot">None</span>
+    <span class="kw">def</span> validate(<span class="ot">self</span>, ob): <span class="kw">return</span> (<span class="dt">len</span>(ob) == <span class="dv">2</span>)
+    <span class="kw">def</span> env_cmd(<span class="ot">self</span>, env_cmd):
+        env_cmd         = list2cmdline(env_cmd)
+        cmd             = <span class="st">'cmd.exe /s /c &quot;</span><span class="ot">{env_cmd}</span><span class="st"> &amp;&amp; set&quot;'</span>.<span class="dt">format</span>(**<span class="dt">vars</span>())
+        proc            = Popen(cmd
+                            , stdout    = PIPE
+                            , shell     = <span class="ot">self</span>.shell
+                            , env       = <span class="ot">self</span>.initial)
+        lines           = proc.stdout
+        handle_line     = <span class="kw">lambda</span> l: l.rstrip().split(<span class="st">'='</span>,<span class="dv">1</span>)
+        pairs           = <span class="dt">map</span>(handle_line, lines)
+        valid_pairs     = <span class="dt">filter</span>(<span class="ot">self</span>.validate, pairs)
+        <span class="ot">self</span>.initial    = <span class="dt">dict</span>(valid_pairs)
+        proc.communicate()
+    <span class="kw">def</span> command(<span class="ot">self</span>, just_cmd):
+        just_cmd    = list2cmdline(just_cmd)
+        cmd         = <span class="st">'cmd.exe /s /c &quot;</span><span class="ot">{just_cmd}</span><span class="st">&quot;'</span>.<span class="dt">format</span>(**<span class="dt">vars</span>())
+        proc        = Popen(cmd
+                            , stdout    = PIPE
+                            , shell     = <span class="ot">self</span>.shell
+                            , env       = <span class="ot">self</span>.initial)
+        lines       = proc.stdout.readlines()
+        proc.communicate()[<span class="dv">0</span>]
+        <span class="kw">return</span> lines
+    <span class="kw">def</span> cmd(<span class="ot">self</span>, s): <span class="dt">print</span>(<span class="st">&quot;&quot;</span>.join(<span class="ot">self</span>.command(s)))
+    <span class="kw">def</span> run(<span class="ot">self</span>, s): <span class="dt">print</span>(<span class="st">&quot;&quot;</span>.join(<span class="ot">self</span>.command(s.split(<span class="st">' '</span>))))</code></pre>
+<p>There are various implementations of Singleton object in python so here is example</p>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> Singleton(<span class="dt">object</span>):
+    _instances = {}
+    <span class="kw">def</span> <span class="ot">__new__</span>(class_, *args, **kwargs):
+        <span class="kw">if</span> class_ not in class_._instances:
+            class_._instances[class_] = <span class="dt">super</span>(Singleton, class_).<span class="ot">__new__</span>(class_, *args, **kwargs)
+        <span class="kw">return</span> class_._instances[class_]</code></pre>
+<h2 id="usage">Usage</h2>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="ch">from</span> lib <span class="ch">import</span> SmartShell
+shell = SmartShell(<span class="ot">True</span>)
+<span class="co">#To store modified Environment variables</span>
+e.env_cmd([LoadMSBuild, Options])
+<span class="co">#To use internal class Environment</span>
+e.run(<span class="st">&quot;MSBuild /version&quot;</span>)</code></pre>
+<p>Idea came from this <a href="http://stackoverflow.com/a/2214292/238232">StackOverflow answer</a></p>
+
+<div id="postfooter">
+</div>
+
+<script type="text/javascript">
+    var pauseaudio = function (e) { var obj = $('#audio'); 
+        obj[0].pause(); $('#audiocontrols').unbind('click', pauseaudio);
+        $('#audiocontrols').text('>'); $('#audiocontrols').click(playaudio); 
+    };
+    var playaudio = function (e) { var obj = $('#audio'); 
+        obj[0].play(); $('#audiocontrols').unbind('click', playaudio); 
+        $('#audiocontrols').text('||'); $('#audiocontrols').click(pauseaudio); 
+    };
+    $('#audiocontrols').click(pauseaudio);
+</script>
+<script src="../bootstrap/three.js"></script>
+<script type="text/javascript">
+	var SCREEN_WIDTH = window.innerWidth;
+	var SCREEN_HEIGHT = window.innerHeight;
+	var RADIUS = 200;
+	var QUANTITY = 150;
+
+	var container;
+
+	var camera;
+	var scene;
+	var renderer;
+	
+	var descriptors = [];
+
+	var mouseX = 0;
+	var mouseY = 0;
+
+	var windowHalfX = window.innerWidth / 2;
+	var windowHalfY = window.innerHeight / 2;
+
+	init();
+	setInterval(loop, 1000 / 60);
+
+	function init() {
+
+		container = document.getElementById('postfooter');
+
+		camera = new THREE.Camera(0, 0, 300);
+		camera.focus = 50;
+
+		scene = new THREE.Scene();
+
+		renderer = new THREE.CanvasRenderer();
+		renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT / 4);
+		
+		createParticles();
+		
+		container.appendChild(renderer.domElement);
+
+		document.addEventListener('mousemove', onDocumentMouseMove, false);
+		document.addEventListener('touchstart', onDocumentTouchStart, false);
+		document.addEventListener('touchmove', onDocumentTouchMove, false);
+	}
+
+	function createParticles() {
+		for (var i = 0; i < QUANTITY; i++) {
+			var particle = new THREE.Particle(new THREE.ColorFillMaterial(Math.random() * 0x404040 + 0xaaaaaa, 1));
+			particle.size = 10;
+			
+			particle.position.x = 0;
+			particle.position.y = 0;
+			particle.position.z = 0;
+			
+			particle.offset = { x: 0, y: 0, z: 0 };
+			particle.shift = { x: 0, y: 0 };
+			particle.speed = 0.01+Math.random()*0.04;
+			particle.targetSize = particle.size;
+			
+			scene.add(particle);
+		}
+	}
+
+	function onDocumentMouseMove(event) {
+
+		mouseX = event.clientX - windowHalfX;
+		mouseY = event.clientY - windowHalfY;
+	}
+
+	function onDocumentTouchStart(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function onDocumentTouchMove(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function loop() {
+		camera.updateMatrix();
+		
+		renderer.render(scene, camera);
+		
+		var context = renderer.domElement.getContext("2d")
+		
+		for (var i = 0, len = scene.objects.length; i < len; i++) {
+			var particle = scene.objects[i];
+			
+			particle.offset.x += particle.speed;
+			particle.offset.y += particle.speed;
+			
+			particle.shift.x += ( mouseX - particle.shift.x) * (particle.speed);
+			particle.shift.y += ( -mouseY - particle.shift.y) * (particle.speed);
+			
+			particle.position.x = particle.shift.x + Math.cos(i + particle.offset.x) * RADIUS;
+			particle.position.y = particle.shift.y + Math.sin(i + particle.offset.y) * RADIUS;
+			particle.position.z = i / QUANTITY * RADIUS;
+			
+			particle.size += ( particle.targetSize - particle.size ) * 0.05;
+			
+			if( Math.round( particle.size ) == Math.round( particle.targetSize ) ) {
+				particle.targetSize = 1 + Math.random() * 10;
+			}
+		}
+	}
+	
+	function distanceBetween(p1,p2) {
+		var dx = p2.x-p1.x;
+		var dy = p2.y-p1.y;
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+</script>
+
+<hr />
+
+        </div>
+        
+        <div id="social">
+            <ul>
+              <li>
+                <a href="http://github.com/Heather" title="Github" target="_blank">
+                  <span class="mega-octicon octicon-octoface"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://twitter.com/Cynede" title="Twitter" target="_blank">
+                  <span class="mega-octicon octicon-star"></span>
+                </a>
+              </li>
+              <li>
+                <a href="mailto:heather@live.ru" title="Main mail" target="_blank">
+                  <span class="mega-octicon octicon-mail-read"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank">
+                  <span class="mega-octicon octicon-broadcast"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://grooveshark.com/#!/cynede" title="Grooveshark" target="_blank">
+                  <span class="mega-octicon octicon-squirrel"></span>
+                </a>
+              </li>
+              <li>
+                <a href="../atom.xml" title="RSS" target="_blank">
+                  <span class="mega-octicon octicon-rss"></span>
+                </a>
+              </li>
+            </ul>
+        </div>
+        
+        <div id="footer">
+
+        </div>
+
+    </body>
+</html>

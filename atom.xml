@@ -8,8 +8,16 @@
         <name>Heather</name>
         <email>heather@live.ru</email>
     </author>
-    <updated>2014-12-10T00:00:00Z</updated>
+    <updated>2014-12-29T00:00:00Z</updated>
     <entry>
+    <title>Python SmartShell</title>
+    <link href="http://heather.github.io/posts/2014-12-29-Python%20SmartShell.html" />
+    <id>http://heather.github.io/posts/2014-12-29-Python%20SmartShell.html</id>
+    <published>2014-12-29T00:00:00Z</published>
+    <updated>2014-12-29T00:00:00Z</updated>
+    <summary type="html"><![CDATA[Heather]]></summary>
+</entry>
+<entry>
     <title>Modern C++ and Qt Widgets (basics)</title>
     <link href="http://heather.github.io/posts/2014-12-10-Qt%20Widgets.html" />
     <id>http://heather.github.io/posts/2014-12-10-Qt%20Widgets.html</id>

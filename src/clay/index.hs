@@ -27,8 +27,8 @@ theStylesheet = do
                    height $ pct 100
                    width  $ pct 100
                    position absolute
-                   top  5
-                   left 0
+                   top  $ px 5
+                   left $ px 0
 
     div # "#top" ? zIndex 100
 

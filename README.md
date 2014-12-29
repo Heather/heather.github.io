@@ -1,9 +1,10 @@
 heather.github.io
 =================
 
- - run dart-build
- - run update
- - run commit
+ - cabal install hakyll
+ - cabal install clay
+ - cabal install hjsmin
+ - update
 
 ``` haskell
 main = hakyll $ do
