@@ -2,8 +2,9 @@
 title: Python SmartShell
 ---
 
-Task: save modified Environment variable during calling different scripts in python
-Solution: Singleton with internal variable for storing and updating Environment
+<b>Task:</b> save modified Environment variable during calling different scripts in python
+<br/>
+<b>Solution:</b> Singleton with internal variable for storing and updating Environment
 
 SmartShell
 ----------
