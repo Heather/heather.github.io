@@ -44,12 +44,3 @@ theStylesheet = do
     div # ".mright" ? do float floatRight
                          top $ px $ -100
                          position relative
-
-    div # "#social" ? do zIndex 100
-                         position absolute
-                         bottom $ px 15
-                         width  $ pct 80
-                         height $ px 100
-                         backgroundColor $ rgba 150 150 150 220
-                         backgroundImage $ url "../images/blood.png"
-                         borderRadius (px 30) (px 150) (px 30) (px 150)

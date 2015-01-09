@@ -58,33 +58,34 @@ theStylesheet = do -- Overall site-wide styling rules.
         a # hover ? color "#F53088"
     
     div # "#social" ? do listStyle none outside none
-                         textAlign  $ alignSide sideCenter
-                         li ? do width   $ pct 10
+                         textAlign $ alignSide sideCenter
+                         zIndex 100
+                         position absolute
+                         bottom $ px 35
+                         width  $ pct 85
+                         height $ px 100
+                         backgroundColor $ rgba 150 150 150 200
+                         backgroundImage $ url "../images/blood.png"
+                         borderRadius (px 30) (px 150) (px 30) (px 150)
+                         li ? do width   $ pct 20
                                  height  $ px 64
                                  display $ inlineBlock
-                                 
-                                 a ? do color "#444"
-                                        transitionProperty "color"
-                                        transitionDuration $ sec 1
-                                        transitionTimingFunction ease
-                                 a # hover ? color "#F53088"
-                                 
-                                 ".mega-octicon" ? fontSize (px 64)
-        
+                                 marginTop $ px 15
+                                 a ? color "#333"
+                                 a # hover ? do color $ rgb 190 64 64
+
     div # ".info" ? do color    $ rgb 170 170 170
                        fontSize $ px 14
-        
+
     h1 ? fontSize (px 22)
     h2 ? fontSize (px 18)
-    
-    a ? do color $ rgb 250 64 64
+
+    a ? do color $ rgb 190 64 64
            textDecoration none
            transitionProperty "color"
            transitionDuration $ sec 1
            transitionTimingFunction ease
-
     a # hover ? do color $ rgb 255 0 0
-    a # visited ? do color $ rgb 180 64 64
     
     ".recent-posts" ? li ? do listStyleType none
                               fontSize (px 24)

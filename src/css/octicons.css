@@ -23,7 +23,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 .mega-octicon {
-  font: normal normal 32px octicons;
+  font: normal normal 64px octicons;
   line-height: 1;
   display: inline-block;
   text-decoration: none;

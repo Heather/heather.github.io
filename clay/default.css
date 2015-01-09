@@ -58,33 +58,34 @@ div#logo a:hover
 
 div#social
 {
-  list-style : none outside none;
-  text-align : center;
+  list-style       : none outside none;
+  text-align       : center;
+  z-index          : 100;
+  position         : absolute;
+  bottom           : 35px;
+  width            : 85%;
+  height           : 100px;
+  background-color : rgba(150,150,150,0.7812);
+  background-image : url("../images/blood.png");
+  border-radius    : 30px 150px 30px 150px;
 }
 
 div#social li
 {
-  width   : 10%;
-  height  : 64px;
-  display : inline-block;
+  width      : 20%;
+  height     : 64px;
+  display    : inline-block;
+  margin-top : 15px;
 }
 
 div#social li a
 {
-  color                      : rgb(68,68,68);
-  transition-property        : color;
-  transition-duration        : 1.0s;
-  transition-timing-function : ease;
+  color : rgb(51,51,51);
 }
 
 div#social li a:hover
 {
-  color : rgb(245,48,136);
-}
-
-div#social li .mega-octicon
-{
-  font-size : 64px;
+  color : rgb(190,64,64);
 }
 
 div.info
@@ -105,7 +106,7 @@ h2
 
 a
 {
-  color                      : rgb(250,64,64);
+  color                      : rgb(190,64,64);
   text-decoration            : none;
   transition-property        : color;
   transition-duration        : 1.0s;
@@ -115,11 +116,6 @@ a
 a:hover
 {
   color : rgb(255,0,0);
-}
-
-a:visited
-{
-  color : rgb(180,64,64);
 }
 
 

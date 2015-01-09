@@ -42,17 +42,5 @@ div.mright
   position : relative;
 }
 
-div#social
-{
-  z-index          : 100;
-  position         : absolute;
-  bottom           : 15px;
-  width            : 80%;
-  height           : 100px;
-  background-color : rgba(150,150,150,0.8594);
-  background-image : url("../images/blood.png");
-  border-radius    : 30px 150px 30px 150px;
-}
-
 
 /* Generated with Clay, http://fvisser.nl/clay */
