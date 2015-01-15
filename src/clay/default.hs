@@ -56,21 +56,13 @@ theStylesheet = do -- Overall site-wide styling rules.
                transitionDuration $ sec 0.5
                transitionTimingFunction linear
         a # hover ? color "#F53088"
-    
+
     div # "#social" ? do listStyle none outside none
                          textAlign $ alignSide sideCenter
-                         zIndex 100
-                         position absolute
-                         bottom $ px 35
                          width  $ pct 85
-                         height $ px 100
-                         backgroundColor $ rgba 150 150 150 200
-                         backgroundImage $ url "../images/blood.png"
-                         borderRadius (px 30) (px 150) (px 30) (px 150)
-                         li ? do width   $ pct 20
+                         li ? do width   $ pct 12
                                  height  $ px 64
                                  display $ inlineBlock
-                                 marginTop $ px 15
                                  a ? color "#333"
                                  a # hover ? do color $ rgb 190 64 64
 
@@ -86,7 +78,7 @@ theStylesheet = do -- Overall site-wide styling rules.
            transitionDuration $ sec 1
            transitionTimingFunction ease
     a # hover ? do color $ rgb 255 0 0
-    
+
     ".recent-posts" ? li ? do listStyleType none
                               fontSize (px 24)
                               fontWeight bold
@@ -103,5 +95,5 @@ theStylesheet = do -- Overall site-wide styling rules.
             borderWidth 0
             borderTop solid (px 1) "#eeeeee"
             borderBottom solid (px 1) "#ffffff"
-            
+
     "#content" ? ul ? paddingLeft (px 0)
