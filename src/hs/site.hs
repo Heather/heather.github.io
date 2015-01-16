@@ -3,7 +3,7 @@
 import Control.Applicative ((<$>))
 
 import Data.Monoid (mappend)
-import qualified Data.ByteString.Lazy as LB
+import qualified Data.ByteString.Lazy.Char8 as LB
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as E
 
@@ -67,7 +67,7 @@ main = hakyll $ do
     create ["atom.xml"] $ do
         route idRoute
         compile $ do
-            let feedCtx = postCtx `mappend` -- no idea
+            let feedCtx = postCtx `mappend`
                     constField "description" "Heather"
 
             posts <- fmap (take 10) . recentFirst =<< loadAll "posts/*"
@@ -81,10 +81,10 @@ main = hakyll $ do
     runGHC = getResourceString >>= withItemBody (unixFilter "runghc" [])
   
     compressJsCompiler :: Compiler (Item String)
-    compressJsCompiler = fmap compressCss <$> getResourceString
+    compressJsCompiler = fmap jasmin <$> getResourceString
     
     jasmin :: String -> String
-    jasmin src = show $ minify $ LB.fromChunks [(E.encodeUtf8 $ T.pack src)] 
+    jasmin src = LB.unpack $ minify $ LB.fromChunks [(E.encodeUtf8 $ T.pack src)] 
 
 homeCtx :: Context String
 homeCtx =
