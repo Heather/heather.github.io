@@ -56,6 +56,10 @@ theStylesheet = do -- Overall site-wide styling rules.
                transitionDuration $ sec 0.5
                transitionTimingFunction linear
         a # hover ? color "#F53088"
+        
+    div # "#controls" ? do
+        img # "#playpause" ? do
+            cursor pointer
 
     div # "#social" ? do listStyle none outside none
                          textAlign $ alignSide sideCenter

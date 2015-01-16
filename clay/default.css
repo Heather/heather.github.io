@@ -56,6 +56,12 @@ div#logo a:hover
   color : rgb(245,48,136);
 }
 
+
+div#controls img#playpause
+{
+  cursor : pointer;
+}
+
 div#social
 {
   list-style : none outside none;
