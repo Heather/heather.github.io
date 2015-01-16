@@ -44,7 +44,7 @@
 </audio>
 
 <div id="controls">
-    <a id="audiocontrols" href="#">||</a>
+    <img id="playpause" height="20px" width="20px" src="../images/RedPause.png" />
 </div>
 <div class="info">Posted on 10 December 2014</div>
 
@@ -147,16 +147,17 @@ std::vector&lt;std::string&gt; Path::GetPath() {
 </div>
 
 <script type="text/javascript">
-    var pauseaudio = function (e) { var obj = $('#audio'); 
-        obj[0].pause(); $('#audiocontrols').unbind('click', pauseaudio);
-        $('#audiocontrols').text('>'); $('#audiocontrols').click(playaudio); 
-    };
-    var playaudio = function (e) { var obj = $('#audio'); 
-        obj[0].play(); $('#audiocontrols').unbind('click', playaudio); 
-        $('#audiocontrols').text('||'); $('#audiocontrols').click(pauseaudio); 
-    };
-    $('#audiocontrols').click(pauseaudio);
+    $('#playpause').click(function() {
+      if ($('#audio')[0].paused == false) {
+          $('#audio')[0].pause();
+          $('#playpause').attr("src","../images/RedPlay.png");
+      } else {
+          $('#audio')[0].play();
+          $('#playpause').attr("src","../images/RedPause.png");
+      }
+    });
 </script>
+
 <script src="../bootstrap/three.js"></script>
 <script type="text/javascript">
 	var SCREEN_WIDTH = window.innerWidth;
