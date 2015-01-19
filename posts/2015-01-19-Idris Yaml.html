@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html ng-app>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        
+        <title>Heather - Idris YAML (Usage)</title>
+        <meta name="description" content="Heather">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link href="../atom.xml" rel="alternate" title="Heather" type="application/atom+xml">
+        <link rel="shortcut icon" type="image/ico" href="../favicon.ico" />
+
+        <script src="../bootstrap/jquery-2.1.1.min.js"></script>
+        <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="../bootstrap/bootstrap-theme.min.css">
+        <script src="../bootstrap/bootstrap.min.js"></script>
+        <script src="../bootstrap/angular.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" media="all" href="../css/hasklig.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/octicons.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/syntax.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="../clay/default.css" />
+        
+        <script type="application/javascript" src="../js/auto.js"></script>
+    </head>
+    <body>
+        <div class="band"></div>
+        <div id="header">
+            <div id="logo">
+                <a id="abbr" href="../"></a>
+                <script>
+                    e = document.getElementById("abbr");
+                    setTimeout(r, 0);
+                </script>
+            </div>
+        </div>
+        <div id="content">
+            <h1>Idris YAML (Usage)</h1>
+
+<audio id="audio" autoplay loop>
+    <source src="../images/Bween.mp3" type="audio/mp3"></source>
+</audio>
+
+<div id="controls">
+    <img id="playpause" height="20px" width="20px" src="../images/RedPause.png" />
+</div>
+<div class="info">Posted on 19 January 2015</div>
+
+<h2 id="idris.yaml"><a href="https://github.com/Heather/Idris.Yaml">Idris.YAML</a></h2>
+<p>Simple Idris Parser done with</p>
+<ul>
+<li><a href="https://github.com/ziman/lightyear">lightyear</a> parser combinator library</li>
+<li>Idris <a href="http://www.idris-lang.org/documentation/effects/">Effects</a></li>
+</ul>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="fu">|||</span> <span class="dt">A</span> parser that skips whitespace without jumping over lines
+yamlSpace <span class="fu">:</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> <span class="dt">ParserT</span> m <span class="dt">String</span> ()
+yamlSpace <span class="fu">=</span> skip (many <span class="fu">$</span> satisfy (\c <span class="ot">=&gt;</span> c <span class="fu">/=</span> <span class="ch">'\n'</span> <span class="fu">&amp;&amp;</span> isSpace c)) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;yamlSpace&quot;</span>
+
+mutual
+    yamlArray <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">List</span> <span class="dt">YamlValue</span>)
+    yamlArray <span class="fu">=</span> char <span class="ch">'-'</span> <span class="fu">$!&gt;</span> (yamlArrayValue <span class="ot">`sepBy`</span> (char <span class="ch">'-'</span>))
+
+    keyValuePair <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">String</span>, <span class="dt">YamlValue</span>)
+    keyValuePair <span class="fu">=</span> <span class="kw">do</span> key <span class="ot">&lt;-</span> map pack (many (satisfy <span class="fu">$</span> not <span class="fu">.</span> isSpace)) <span class="fu">&lt;$</span> space
+                      val <span class="ot">&lt;-</span> char <span class="ch">':'</span> <span class="fu">$&gt;</span> yamlValue
+                      pure (key, val)
+
+    yamlObject <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)
+    yamlObject <span class="fu">=</span> map fromList <span class="fu">$</span> keyValuePair <span class="ot">`sepBy`</span> (char <span class="ch">'\n'</span>)
+
+    <span class="co">-- TODO check id indent is bigger than in array start</span>
+    yamlObjectA <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)
+    yamlObjectA <span class="fu">=</span> map fromList <span class="fu">$</span> keyValuePair <span class="ot">`sepBy`</span> (char <span class="ch">'\n'</span>)
+
+    yamlValue' <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span>
+    yamlValue' <span class="fu">=</span>  (map <span class="dt">YamlString</span> yamlString)
+            <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlNumber</span> yamlNumber)
+            <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlBool</span>   yamlBool)
+            <span class="fu">&lt;|&gt;</span> (pure <span class="dt">YamlNull</span> <span class="fu">&lt;$</span> yamlNull)
+            <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlArray</span>  yamlArray
+            <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlObject</span> yamlObject</code></pre>
+<h1 id="usage">Usage</h1>
+<p>Here is simple example of code that reads and parse YML files</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">Main</span>
+
+<span class="kw">import </span><span class="dt">Yaml</span>
+
+<span class="kw">import </span>public <span class="dt">Effects</span>
+<span class="kw">import </span>public <span class="dt">Effect.StdIO</span>
+<span class="kw">import </span>public <span class="dt">Effect.File</span>
+
+<span class="dt">FileIO</span> <span class="fu">:</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span>
+<span class="dt">FileIO</span> st t <span class="fu">=</span> { [<span class="dt">FILE_IO</span> st, <span class="dt">STDIO</span>] } <span class="dt">Eff</span> t 
+
+readFile <span class="fu">:</span> <span class="dt">FileIO</span> (<span class="dt">OpenFile</span> <span class="dt">Read</span>) (<span class="dt">List</span> <span class="dt">String</span>)
+readFile <span class="fu">=</span> readAcc [] <span class="kw">where</span>
+  readAcc <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">FileIO</span> (<span class="dt">OpenFile</span> <span class="dt">Read</span>) (<span class="dt">List</span> <span class="dt">String</span>)
+  readAcc acc <span class="fu">=</span> <span class="kw">if</span> (not <span class="fu">!</span>eof) <span class="kw">then</span> readAcc <span class="fu">$</span> <span class="fu">!</span><span class="ot">readLine ::</span> acc
+                              <span class="kw">else</span> return  <span class="fu">$</span> reverse acc
+
+procs <span class="fu">:</span> (<span class="dt">List</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>] } <span class="dt">Eff</span> ()
+procs file <span class="fu">=</span> <span class="kw">case</span> parse yamlToplevelValue config <span class="kw">of</span>
+                      <span class="dt">Left</span> err <span class="ot">=&gt;</span> putStrLn <span class="fu">$</span> <span class="st">&quot;error: &quot;</span> <span class="fu">++</span> err
+                      <span class="dt">Right</span> v  <span class="ot">=&gt;</span> putStrLn <span class="fu">$</span> show v
+  <span class="kw">where</span> config <span class="fu">=</span> concat file
+
+test <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">FileIO</span> () ()
+test f <span class="fu">=</span> <span class="kw">case</span> <span class="fu">!</span>(open f <span class="dt">Read</span>) <span class="kw">of</span>
+                <span class="dt">True</span> <span class="ot">=&gt;</span> <span class="kw">do</span> procs <span class="fu">!</span>readFile
+                           close <span class="co">{- =&lt;&lt; -}</span>
+                <span class="dt">False</span> <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;Error!&quot;</span>
+
+main <span class="fu">:</span> <span class="dt">IO</span> ()
+main <span class="fu">=</span> <span class="kw">do</span>
+  run <span class="fu">$</span> test <span class="st">&quot;test1.yml&quot;</span>
+  run <span class="fu">$</span> test <span class="st">&quot;test2.yml&quot;</span></code></pre>
+<p>Script to run:</p>
+<pre class="shell"><code>idris Test.idr -p lightyear -p yaml -p effects -o test
+./test</code></pre>
+
+<div id="postfooter">
+</div>
+
+<script type="text/javascript">
+    $('#playpause').click(function() {
+      if ($('#audio')[0].paused == false) {
+          $('#audio')[0].pause();
+          $('#playpause').attr("src","../images/RedPlay.png");
+      } else {
+          $('#audio')[0].play();
+          $('#playpause').attr("src","../images/RedPause.png");
+      }
+    });
+</script>
+
+<script src="../bootstrap/three.js"></script>
+<script type="text/javascript">
+	var SCREEN_WIDTH = window.innerWidth;
+	var SCREEN_HEIGHT = window.innerHeight;
+	var RADIUS = 200;
+	var QUANTITY = 150;
+
+	var container;
+
+	var camera;
+	var scene;
+	var renderer;
+	
+	var descriptors = [];
+
+	var mouseX = 0;
+	var mouseY = 0;
+
+	var windowHalfX = window.innerWidth / 2;
+	var windowHalfY = window.innerHeight / 2;
+
+	init();
+	setInterval(loop, 1000 / 60);
+
+	function init() {
+
+		container = document.getElementById('postfooter');
+
+		camera = new THREE.Camera(0, 0, 300);
+		camera.focus = 50;
+
+		scene = new THREE.Scene();
+
+		renderer = new THREE.CanvasRenderer();
+		renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT / 4);
+		
+		createParticles();
+		
+		container.appendChild(renderer.domElement);
+
+		document.addEventListener('mousemove', onDocumentMouseMove, false);
+		document.addEventListener('touchstart', onDocumentTouchStart, false);
+		document.addEventListener('touchmove', onDocumentTouchMove, false);
+	}
+
+	function createParticles() {
+		for (var i = 0; i < QUANTITY; i++) {
+			var particle = new THREE.Particle(new THREE.ColorFillMaterial(Math.random() * 0x404040 + 0xaaaaaa, 1));
+			particle.size = 10;
+			
+			particle.position.x = 0;
+			particle.position.y = 0;
+			particle.position.z = 0;
+			
+			particle.offset = { x: 0, y: 0, z: 0 };
+			particle.shift = { x: 0, y: 0 };
+			particle.speed = 0.01+Math.random()*0.04;
+			particle.targetSize = particle.size;
+			
+			scene.add(particle);
+		}
+	}
+
+	function onDocumentMouseMove(event) {
+
+		mouseX = event.clientX - windowHalfX;
+		mouseY = event.clientY - windowHalfY;
+	}
+
+	function onDocumentTouchStart(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function onDocumentTouchMove(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function loop() {
+		camera.updateMatrix();
+		
+		renderer.render(scene, camera);
+		
+		var context = renderer.domElement.getContext("2d")
+		
+		for (var i = 0, len = scene.objects.length; i < len; i++) {
+			var particle = scene.objects[i];
+			
+			particle.offset.x += particle.speed;
+			particle.offset.y += particle.speed;
+			
+			particle.shift.x += ( mouseX - particle.shift.x) * (particle.speed);
+			particle.shift.y += ( -mouseY - particle.shift.y) * (particle.speed);
+			
+			particle.position.x = particle.shift.x + Math.cos(i + particle.offset.x) * RADIUS;
+			particle.position.y = particle.shift.y + Math.sin(i + particle.offset.y) * RADIUS;
+			particle.position.z = i / QUANTITY * RADIUS;
+			
+			particle.size += ( particle.targetSize - particle.size ) * 0.05;
+			
+			if( Math.round( particle.size ) == Math.round( particle.targetSize ) ) {
+				particle.targetSize = 1 + Math.random() * 10;
+			}
+		}
+	}
+	
+	function distanceBetween(p1,p2) {
+		var dx = p2.x-p1.x;
+		var dy = p2.y-p1.y;
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+</script>
+
+<hr />
+
+        </div>
+        
+        <div id="social">
+            <ul>
+              <li>
+                <a href="http://github.com/Heather" title="Github" target="_blank">
+                  <span class="mega-octicon octicon-octoface"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://twitter.com/Cynede" title="Twitter" target="_blank">
+                  <span class="mega-octicon octicon-star"></span>
+                </a>
+              </li>
+              <li>
+                <a href="mailto:heather@live.ru" title="Main mail" target="_blank">
+                  <span class="mega-octicon octicon-mail-read"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank">
+                  <span class="mega-octicon octicon-broadcast"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://grooveshark.com/#!/cynede" title="Grooveshark" target="_blank">
+                  <span class="mega-octicon octicon-squirrel"></span>
+                </a>
+              </li>
+              <li>
+                <a href="../atom.xml" title="RSS" target="_blank">
+                  <span class="mega-octicon octicon-rss"></span>
+                </a>
+              </li>
+            </ul>
+        </div>
+        
+        <div id="footer">
+
+        </div>
+
+    </body>
+</html>
