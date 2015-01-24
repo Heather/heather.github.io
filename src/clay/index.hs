@@ -28,7 +28,7 @@ theStylesheet = do
                    width  $ pct 100
                    position absolute
                    top  $ px 5
-                   left $ px 0
+                   left $ nil
 
     div # "#top" ? zIndex 100
 

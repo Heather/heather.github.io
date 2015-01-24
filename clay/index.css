@@ -12,7 +12,7 @@ div#parent
   width    : 100%;
   position : absolute;
   top      : 5px;
-  left     : 0px;
+  left     : 0;
 }
 
 div#top

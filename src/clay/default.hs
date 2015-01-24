@@ -20,7 +20,7 @@ theStylesheet :: Css
 theStylesheet = do -- Overall site-wide styling rules.
 
     body ? do color         "#333"
-              margin        (px 0) auto (px 0) auto
+              margin        nil auto nil auto
               width         $   pct 80
               height        $   pct 100
               fontSize      $   px 16
@@ -92,12 +92,12 @@ theStylesheet = do -- Overall site-wide styling rules.
                  width  $ pct 100
                  backgroundColor "#E82A37"
                  position absolute
-                 left   $ px 0
-                 top    $ px 0
+                 left   nil
+                 top    nil
 
-    hr ? do margin (px 60) (px 0) (px 7) (px 0)
-            borderWidth 0
+    hr ? do margin (px 60) nil (px 7) nil
+            borderWidth nil
             borderTop solid (px 1) "#eeeeee"
             borderBottom solid (px 1) "#ffffff"
 
-    "#content" ? ul ? paddingLeft (px 0)
+    "#content" ? ul ? paddingLeft nil
