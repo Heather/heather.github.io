@@ -76,7 +76,6 @@ main = hakyll $ do
     match "templates/*" $ compile templateCompiler
     
   where
-  
     runGHC :: Compiler (Item String)
     runGHC = getResourceString >>= withItemBody (unixFilter "runghc" [])
   
@@ -105,7 +104,6 @@ feedConfiguration = FeedConfiguration
     , feedRoot        = "http://heather.github.io"
     }
 
---------------------------------------------------------------------------------
 -- | source: https://github.com/jaspervdj/jaspervdj/blob/master/src/Main.hs
 pdflatex :: Item String -> Compiler (Item TmpFile)
 pdflatex item = do
@@ -121,8 +119,6 @@ pdflatex item = do
 
     makeItem $ TmpFile pdfPath
 
-
---------------------------------------------------------------------------------
 pdfToPng :: Item TmpFile -> Compiler (Item TmpFile)
 pdfToPng item = do
     let TmpFile pdfPath = itemBody item

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html ng-app>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        
+        <title>Heather - Boost Application Interprocess with Qt Quick</title>
+        <meta name="description" content="Heather">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link href="../atom.xml" rel="alternate" title="Heather" type="application/atom+xml">
+        <link rel="shortcut icon" type="image/ico" href="../favicon.ico" />
+
+        <script src="../bootstrap/jquery-2.1.1.min.js"></script>
+        <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="../bootstrap/bootstrap-theme.min.css">
+        <script src="../bootstrap/bootstrap.min.js"></script>
+        <script src="../bootstrap/angular.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" media="all" href="../css/hasklig.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/octicons.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/syntax.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="../clay/default.css" />
+        
+        <script type="application/javascript" src="../js/auto.js"></script>
+    </head>
+    <body>
+        <div class="band"></div>
+        <div id="header">
+            <div id="logo">
+                <a id="abbr" href="../"></a>
+                <script>
+                    e = document.getElementById("abbr");
+                    setTimeout(r, 0);
+                </script>
+            </div>
+        </div>
+        <div id="content">
+            <h1>Boost Application Interprocess with Qt Quick</h1>
+
+<audio id="audio" autoplay loop>
+    <source src="../images/Bween.mp3" type="audio/mp3"></source>
+</audio>
+
+<div id="controls">
+    <img id="playpause" height="20px" width="20px" src="../images/RedPause.png" />
+</div>
+<div class="info">Posted on  7 February 2015</div>
+
+<h2 id="here-is-template-in-current-stage-on-github">Here is template in current stage on <a href="https://github.com/Heather/Perfume">GitHub</a></h2>
+<p><img align="right" src="http://www.eisenberg.com/media/product/2ef/j-ose-by-eisenberg-paris-9b5.png"></p>
+<ul>
+<li>Boost Application runs as Service on Windows, as Daemon on Linux, can self install / uninstall / run from console</li>
+<li>Plugin system support via Boost.DLL</li>
+<li>Modern CMAKE system for crossIDE building</li>
+<li>log4cpp as modern logging system for C++</li>
+<li>Qt5 QtQuick Application with Tray icon as GUI part</li>
+<li>Boost interprocess for sharing memory between them</li>
+</ul>
+<h2 id="how-to-build">How to build:</h2>
+<pre class="shell"><code>cmake ../Perfume</code></pre>
+<h1 id="notes">Notes:</h1>
+<ul>
+<li>boost build example <code>b2 toolset=&quot;msvc&quot; --build-type=complete stage</code></li>
+<li>for git <a href="https://github.com/boostorg/boost">boost</a> version also pass <code>--without-context --without-coroutine</code> to <code>b2</code></li>
+<li>also with some reason general includes alike asio with git boost located in <code>libs/asio/includes</code> folder (maybe it’s done for reason) so for now CMake adds those paths to includes</li>
+<li>It’s possible to run QtQuick application from Visual Studio, to do it you must add path to Qt5 bin (where dlls located) to it’s environment.</li>
+<li>for 64 build use something alike: <code>cmake ../Perfume -G&quot;Visual Studio 11 Win64&quot;</code></li>
+</ul>
+<h1 id="server">Server</h1>
+<p><img align="left" src="http://cdn.flaticon.com/png/256/30983.png"></p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">LOG4CPLUS_INFO(logger_, <span class="st">&quot;Running server class&quot;</span>);
+managed_shared_memory segment
+   (create_only, <span class="st">&quot;Patchouli&quot;</span>, <span class="dv">65536</span>);
+
+managed_shared_memory::size_type free_memory = 
+                         segment.get_free_memory();
+
+<span class="dt">void</span> * shptr = segment.allocate(<span class="dv">1024</span>);
+segment.construct&lt;sharedString&gt;( <span class="st">&quot;sharedString&quot;</span> )
+        (app_name, segment.get_segment_manager());
+
+boost::thread thread(&amp;server::worker, <span class="kw">this</span>);</code></pre>
+<h1 id="client">Client</h1>
+<p><img align="right" src="http://cdn.flaticon.com/png/256/33804.png"></p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">root-&gt;<span class="fu">connect</span>(trayIcon, &amp;<span class="ot">QSystemTrayIcon::</span>activated,
+  [root] (<span class="ot">QSystemTrayIcon::</span>ActivationReason reason) {
+    <span class="kw">switch</span> (reason) {
+    <span class="kw">case</span> <span class="ot">QSystemTrayIcon::</span>Trigger<span class="ot">:</span>
+    <span class="kw">case</span> <span class="ot">QSystemTrayIcon::</span>DoubleClick<span class="ot">:</span>
+      ((QQuickWindow *)root)-&gt;showNormal();
+      <span class="kw">break</span>;
+    }
+});
+managed_shared_memory segment(open_only, <span class="st">&quot;Patchouli&quot;</span>);
+std::pair&lt;sharedString * , size_t &gt; p
+  = segment.find&lt;sharedString&gt;(<span class="st">&quot;sharedString&quot;</span>);
+((QQuickWindow *)root)-&gt;setTitle( p.first-&gt;c_str() );</code></pre>
+<h1 id="credits">Credits</h1>
+<ul>
+<li>based on https://github.com/snikulov/boost.app.cmake</li>
+</ul>
+
+<div id="postfooter">
+</div>
+
+<script type="text/javascript">
+    $('#playpause').click(function() {
+      if ($('#audio')[0].paused == false) {
+          $('#audio')[0].pause();
+          $('#playpause').attr("src","../images/RedPlay.png");
+      } else {
+          $('#audio')[0].play();
+          $('#playpause').attr("src","../images/RedPause.png");
+      }
+    });
+</script>
+
+<script src="../bootstrap/three.js"></script>
+<script type="text/javascript">
+	var SCREEN_WIDTH = window.innerWidth;
+	var SCREEN_HEIGHT = window.innerHeight;
+	var RADIUS = 200;
+	var QUANTITY = 150;
+
+	var container;
+
+	var camera;
+	var scene;
+	var renderer;
+	
+	var descriptors = [];
+
+	var mouseX = 0;
+	var mouseY = 0;
+
+	var windowHalfX = window.innerWidth / 2;
+	var windowHalfY = window.innerHeight / 2;
+
+	init();
+	setInterval(loop, 1000 / 60);
+
+	function init() {
+
+		container = document.getElementById('postfooter');
+
+		camera = new THREE.Camera(0, 0, 300);
+		camera.focus = 50;
+
+		scene = new THREE.Scene();
+
+		renderer = new THREE.CanvasRenderer();
+		renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT / 4);
+		
+		createParticles();
+		
+		container.appendChild(renderer.domElement);
+
+		document.addEventListener('mousemove', onDocumentMouseMove, false);
+		document.addEventListener('touchstart', onDocumentTouchStart, false);
+		document.addEventListener('touchmove', onDocumentTouchMove, false);
+	}
+
+	function createParticles() {
+		for (var i = 0; i < QUANTITY; i++) {
+			var particle = new THREE.Particle(new THREE.ColorFillMaterial(Math.random() * 0x404040 + 0xaaaaaa, 1));
+			particle.size = 10;
+			
+			particle.position.x = 0;
+			particle.position.y = 0;
+			particle.position.z = 0;
+			
+			particle.offset = { x: 0, y: 0, z: 0 };
+			particle.shift = { x: 0, y: 0 };
+			particle.speed = 0.01+Math.random()*0.04;
+			particle.targetSize = particle.size;
+			
+			scene.add(particle);
+		}
+	}
+
+	function onDocumentMouseMove(event) {
+
+		mouseX = event.clientX - windowHalfX;
+		mouseY = event.clientY - windowHalfY;
+	}
+
+	function onDocumentTouchStart(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function onDocumentTouchMove(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function loop() {
+		camera.updateMatrix();
+		
+		renderer.render(scene, camera);
+		
+		var context = renderer.domElement.getContext("2d")
+		
+		for (var i = 0, len = scene.objects.length; i < len; i++) {
+			var particle = scene.objects[i];
+			
+			particle.offset.x += particle.speed;
+			particle.offset.y += particle.speed;
+			
+			particle.shift.x += ( mouseX - particle.shift.x) * (particle.speed);
+			particle.shift.y += ( -mouseY - particle.shift.y) * (particle.speed);
+			
+			particle.position.x = particle.shift.x + Math.cos(i + particle.offset.x) * RADIUS;
+			particle.position.y = particle.shift.y + Math.sin(i + particle.offset.y) * RADIUS;
+			particle.position.z = i / QUANTITY * RADIUS;
+			
+			particle.size += ( particle.targetSize - particle.size ) * 0.05;
+			
+			if( Math.round( particle.size ) == Math.round( particle.targetSize ) ) {
+				particle.targetSize = 1 + Math.random() * 10;
+			}
+		}
+	}
+	
+	function distanceBetween(p1,p2) {
+		var dx = p2.x-p1.x;
+		var dy = p2.y-p1.y;
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+</script>
+
+<hr />
+
+        </div>
+        
+        <div id="social">
+            <ul>
+              <li>
+                <a href="http://github.com/Heather" title="Github" target="_blank">
+                  <span class="mega-octicon octicon-octoface"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://twitter.com/Cynede" title="Twitter" target="_blank">
+                  <span class="mega-octicon octicon-star"></span>
+                </a>
+              </li>
+              <li>
+                <a href="mailto:heather@live.ru" title="Main mail" target="_blank">
+                  <span class="mega-octicon octicon-mail-read"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank">
+                  <span class="mega-octicon octicon-broadcast"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://grooveshark.com/#!/cynede" title="Grooveshark" target="_blank">
+                  <span class="mega-octicon octicon-squirrel"></span>
+                </a>
+              </li>
+              <li>
+                <a href="../atom.xml" title="RSS" target="_blank">
+                  <span class="mega-octicon octicon-rss"></span>
+                </a>
+              </li>
+            </ul>
+        </div>
+        
+        <div id="footer">
+
+        </div>
+
+    </body>
+</html>
