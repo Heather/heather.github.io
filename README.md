@@ -1,9 +1,1 @@
-heather.github.io
-=================
-
- - cabal install hakyll
- - cabal install clay
- - cabal install hjsmin
- - update
-
-<img src="http://fc06.deviantart.net/fs70/i/2013/361/c/b/_render__homura_2_by_miregg-d6zmcov.png"/>
+![](http://fc09.deviantart.net/fs71/f/2013/195/4/0/mio_by_kigyn-d6dfeuf.png)
