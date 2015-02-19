@@ -6,4 +6,4 @@ heather.github.io
  - cabal install hjsmin
  - update
 
-<img src="http://th03.deviantart.net/fs70/PRE/i/2012/274/7/2/pyramid_head_render___sh__revelations_by_allan_valentine-d5ghibv.png"/>
+<img src="http://fc06.deviantart.net/fs70/i/2013/361/c/b/_render__homura_2_by_miregg-d6zmcov.png"/>
