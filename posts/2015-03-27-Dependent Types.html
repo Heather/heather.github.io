@@ -49,10 +49,10 @@
 <div class="info">Posted on 27 March 2015</div>
 
 <p>There was long standing question on <a href="https://twitter.com/lenadroid/status/577058060860071937">Twitter</a></p>
-<h2 id="practical-applicationuse-cases-of-dependently-typed-programming-languages">practical application/use cases of dependently typed programming languages?</h2>
+<h1 id="practical-applicationuse-cases-of-dependently-typed-programming-languages">practical application/use cases of dependently typed programming languages?</h1>
 <p>Edwin Brady:</p>
 <blockquote>
-<p>My current favourite phrase is “making assumptions explicit” - if you assume something, tell the type checker! [1/2] e.g. in non DT code I might assume a list can’t be empty, but it’s hard to make that explicit and it bites later [2/2] This kind of lightweight property may be more valuable than the strong correctness proofs we like to show off with [3/2] Seems I violated an assumption… [4/4]</p>
+<p>My current favourite phrase is “making assumptions explicit” - if you assume something, tell the type checker! [1/2] <br /> e.g. in non DT code I might assume a list can’t be empty, but it’s hard to make that explicit and it bites later [2/2] <br /> This kind of lightweight property may be more valuable than the strong correctness proofs we like to show off with [3/2] <br /> Seems I violated an assumption… [4/4]</p>
 </blockquote>
 <p>Great answer from Chris Allen:</p>
 <blockquote>
@@ -60,8 +60,9 @@
 </blockquote>
 <p>Answer from Brian McKenna:</p>
 <blockquote>
-<p>yeah, proofs as programs, one useful thing another is safe metaprogramming e.g. string interpolation, custom literals one example I’ve been interested in recently is putting Big-O complexity into types so proving some performance characteristics of algorithms (I should also post link to this <a href="https://gist.github.com/puffnfresh/11202637">printf</a>)</p>
+<p>yeah, proofs as programs, one useful thing another is safe metaprogramming e.g. string interpolation, custom literals one example I’ve been interested in recently is putting Big-O complexity into types so proving some performance characteristics of algorithms</p>
 </blockquote>
+<p>(I should also post link to this <a href="https://gist.github.com/puffnfresh/11202637">printf</a>)</p>
 <p>I was asked to post my simple explanation so here is it…</p>
 <p>For example everybody knows about generics and why and where they are useful and we call it alike <code>foo&lt;Type&gt;()</code>, now imagine we have some function which does something and returns Type based on integer, for example 4 -&gt; Int, 2 -&gt; Short, 8 -&gt; Long, etc… So we can <code>foo&lt;bar(i)&gt;()</code> so in this case you will not create additional case type-binder… e.g. you still write that 4 will be Int but you don’t write that 4 will be foo<int> … that looks like small metaprogramming trick but when it’s all over the code it’s not bad, e.g. better readability and more available programming tactics for logics implementation, faster solution solving</p>
 <p>Let take a look to example on <a href="http://www.rust-lang.org">rust-lang.org</a></p>
@@ -84,7 +85,7 @@ let mut accumulator = <span class="dv">0</span>;
 prog<span class="fu">=</span> <span class="st">&quot;+ + * - /&quot;</span>
 
 cType <span class="fu">:</span> <span class="dt">String</span> <span class="ot">→</span> <span class="dt">Type</span>
-cType c <span class="fu">=</span> <span class="kw">if</span> (<span class="ch">'/'</span> ∈ (unpack c))
+cType c <span class="fu">=</span> <span class="kw">if</span> <span class="ch">'/'</span> ∈ (unpack c)
             <span class="kw">then</span> <span class="dt">Float</span>
             <span class="kw">else</span> <span class="dt">Int</span>
 
@@ -102,7 +103,7 @@ main <span class="fu">=</span> putStrLn <span class="fu">$</span> <span class="s
                                  <span class="ch">'/'</span> <span class="ot">=&gt;</span> m ÷ <span class="dv">2</span>
                                  _   <span class="ot">=&gt;</span> m</code></pre>
 <pre class="shell"><code>The program + + * - / calculates the value 1.5</code></pre>
-<p>Discover the difference… But it’s small case. With thinking about types we can resolve a lot of common problems much faster. One of the great examples will be type providers in Idris <a href="https://github.com/david-christiansen/idris-type-providers">github</a> <a href="http://itu.dk/people/drc/pubs/dependent-type-providers.pdf">pdf</a></p>
+<p>Discover the difference… But it’s small case. With thinking about types we can resolve a lot of common problems much faster. One of the great examples will be type providers in Idris <a href="https://github.com/david-christiansen/idris-type-providers">github</a> <a href="http://itu.dk/people/drc/pubs/dependent-type-providers.pdf">pdf</a> by David Christiansen</p>
 
 <div id="postfooter">
 </div>

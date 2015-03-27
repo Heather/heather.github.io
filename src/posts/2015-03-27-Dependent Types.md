@@ -5,13 +5,14 @@ title: Selling dependent types
 There was long standing question on [Twitter](https://twitter.com/lenadroid/status/577058060860071937)
 
 practical application/use cases of dependently typed programming languages?
----------------------------------------------------------------------------
+===========================================================================
+
 
 Edwin Brady:
 
-> My current favourite phrase is "making assumptions explicit" - if you assume something, tell the type checker! [1/2]
-> e.g. in non DT code I might assume a list can't be empty, but it's hard to make that explicit and it bites later [2/2]
-> This kind of lightweight property may be more valuable than the strong correctness proofs we like to show off with [3/2]
+> My current favourite phrase is "making assumptions explicit" - if you assume something, tell the type checker! [1/2] <br/>
+> e.g. in non DT code I might assume a list can't be empty, but it's hard to make that explicit and it bites later [2/2] <br/>
+> This kind of lightweight property may be more valuable than the strong correctness proofs we like to show off with [3/2] <br/>
 > Seems I violated an assumption… [4/4]
 
 Great answer from Chris Allen:
@@ -37,6 +38,7 @@ Answer from Brian McKenna:
 > e.g. string interpolation, custom literals
 > one example I've been interested in recently is putting Big-O complexity into types
 > so proving some performance characteristics of algorithms
+
 (I should also post link to this [printf](https://gist.github.com/puffnfresh/11202637))
 
 I was asked to post my simple explanation so here is it...
@@ -71,7 +73,7 @@ prog : String
 prog= "+ + * - /"
 
 cType : String → Type
-cType c = if ('/' ∈ (unpack c))
+cType c = if '/' ∈ (unpack c)
             then Float
             else Int
 
@@ -94,4 +96,4 @@ main = putStrLn $ "The program "
 The program + + * - / calculates the value 1.5
 ```
 
-Discover the difference... But it's small case. With thinking about types we can resolve a lot of common problems much faster. One of the great examples will be type providers in Idris [github](https://github.com/david-christiansen/idris-type-providers) [pdf](http://itu.dk/people/drc/pubs/dependent-type-providers.pdf)
+Discover the difference... But it's small case. With thinking about types we can resolve a lot of common problems much faster. One of the great examples will be type providers in Idris [github](https://github.com/david-christiansen/idris-type-providers) [pdf](http://itu.dk/people/drc/pubs/dependent-type-providers.pdf) by David Christiansen
