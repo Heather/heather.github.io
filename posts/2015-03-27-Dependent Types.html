@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html ng-app>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        
+        <title>Heather - Selling dependent types</title>
+        <meta name="description" content="Heather">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link href="../atom.xml" rel="alternate" title="Heather" type="application/atom+xml">
+        <link rel="shortcut icon" type="image/ico" href="../favicon.ico" />
+
+        <script src="../bootstrap/jquery-2.1.1.min.js"></script>
+        <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="../bootstrap/bootstrap-theme.min.css">
+        <script src="../bootstrap/bootstrap.min.js"></script>
+        <script src="../bootstrap/angular.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" media="all" href="../css/hasklig.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/octicons.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/syntax.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="../clay/default.css" />
+        
+        <script type="application/javascript" src="../js/auto.js"></script>
+    </head>
+    <body>
+        <div class="band"></div>
+        <div id="header">
+            <div id="logo">
+                <a id="abbr" href="../"></a>
+                <script>
+                    e = document.getElementById("abbr");
+                    setTimeout(r, 0);
+                </script>
+            </div>
+        </div>
+        <div id="content">
+            <h1>Selling dependent types</h1>
+
+<audio id="audio" autoplay loop>
+    <source src="../images/Bween.mp3" type="audio/mp3"></source>
+</audio>
+
+<div id="controls">
+    <img id="playpause" height="20px" width="20px" src="../images/RedPause.png" />
+</div>
+<div class="info">Posted on 27 March 2015</div>
+
+<p>There was long standing question on <a href="https://twitter.com/lenadroid/status/577058060860071937">Twitter</a></p>
+<h2 id="practical-applicationuse-cases-of-dependently-typed-programming-languages">practical application/use cases of dependently typed programming languages?</h2>
+<p>Edwin Brady:</p>
+<blockquote>
+<p>My current favourite phrase is “making assumptions explicit” - if you assume something, tell the type checker! [1/2] e.g. in non DT code I might assume a list can’t be empty, but it’s hard to make that explicit and it bites later [2/2] This kind of lightweight property may be more valuable than the strong correctness proofs we like to show off with [3/2] Seems I violated an assumption… [4/4]</p>
+</blockquote>
+<p>Great answer from Chris Allen:</p>
+<blockquote>
+<p>in Haskell values can generate values, types can generate values, values <em>cannot</em> generate types. That sucks and means there’s a bunch of things you’re not allowed to do. There’s a phase separation between types and values. in Idris, types and values can hop back and forth interchangeably, almost kinda like if you had reflection, except it’s type-safe and used to create types that very precisely circumscribe what you want. puffnfresh’s printf tutorial is a good example of this. there ways to avoid needing dependent types in Haskell, but most people would like the option. it simplifies things related to writing very precisely typed software it makes writing more type-safe software less troublesome. it also often means you can more readily use the language as a sort of proof engine. I’ve seen people do this in Haskell, but it’s far more common in Coq, Agda, etc. virtually everything could use more type-safety. something as common as printf benefits from dependent types. imagine being able to take the requirements of business logic, which are usually enforced at runtime, and turn them into a proof? now your programs can’t violate the contracts you want to enforce.</p>
+</blockquote>
+<p>Answer from Brian McKenna:</p>
+<blockquote>
+<p>yeah, proofs as programs, one useful thing another is safe metaprogramming e.g. string interpolation, custom literals one example I’ve been interested in recently is putting Big-O complexity into types so proving some performance characteristics of algorithms (I should also post link to this <a href="https://gist.github.com/puffnfresh/11202637">printf</a>)</p>
+</blockquote>
+<p>I was asked to post my simple explanation so here is it…</p>
+<p>For example everybody knows about generics and why and where they are useful and we call it alike <code>foo&lt;Type&gt;()</code>, now imagine we have some function which does something and returns Type based on integer, for example 4 -&gt; Int, 2 -&gt; Short, 8 -&gt; Long, etc… So we can <code>foo&lt;bar(i)&gt;()</code> so in this case you will not create additional case type-binder… e.g. you still write that 4 will be Int but you don’t write that 4 will be foo<int> … that looks like small metaprogramming trick but when it’s all over the code it’s not bad, e.g. better readability and more available programming tactics for logics implementation, faster solution solving</p>
+<p>Let take a look to example on <a href="http://www.rust-lang.org">rust-lang.org</a></p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp">let program = <span class="st">&quot;+ + * - /&quot;</span>;
+let mut accumulator = <span class="dv">0</span>;
+
+<span class="kw">for</span> token in program.chars() {
+    match token {
+        <span class="st">'+'</span> =&gt; accumulator += <span class="dv">1</span>,
+        <span class="st">'-'</span> =&gt; accumulator -= <span class="dv">1</span>,
+        <span class="st">'*'</span> =&gt; accumulator *= <span class="dv">2</span>,
+        <span class="st">'/'</span> =&gt; accumulator /= <span class="dv">2</span>,
+        _ =&gt; { <span class="co">/* ignore everything else */</span> }
+    }
+}</code></pre>
+<p>Press <code>Run</code> on website</p>
+<p>Not sure if you guess or not but result is 1, because it’s integer…</p>
+<p>How we can handle it with Idris?</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell">prog <span class="fu">:</span> <span class="dt">String</span>
+prog<span class="fu">=</span> <span class="st">&quot;+ + * - /&quot;</span>
+
+cType <span class="fu">:</span> <span class="dt">String</span> <span class="ot">→</span> <span class="dt">Type</span>
+cType c <span class="fu">=</span> <span class="kw">if</span> (<span class="ch">'/'</span> ∈ (unpack c))
+            <span class="kw">then</span> <span class="dt">Float</span>
+            <span class="kw">else</span> <span class="dt">Int</span>
+
+main <span class="fu">:</span> <span class="dt">IO</span> ()
+main <span class="fu">=</span> putStrLn <span class="fu">$</span> <span class="st">&quot;The program &quot;</span>
+                    ⧺ prog
+                    ⧺ <span class="st">&quot; calculates the value &quot;</span>
+                    ⧺ (show <span class="fu">$</span> acc (unpack prog) <span class="dv">0</span>)
+ <span class="kw">where</span> acc <span class="fu">:</span> (<span class="dt">List</span> <span class="dt">Char</span>) <span class="ot">→</span> (cType prog) <span class="ot">→</span> (cType prog)
+       acc [] m <span class="fu">=</span> m
+       acc (<span class="ot">x::</span>xs) m <span class="fu">=</span> acc xs <span class="fu">$</span> <span class="kw">case</span> x <span class="kw">of</span>
+                                 <span class="ch">'+'</span> <span class="ot">=&gt;</span> m <span class="fu">+</span> <span class="dv">1</span>
+                                 <span class="ch">'-'</span> <span class="ot">=&gt;</span> m <span class="fu">-</span> <span class="dv">1</span>
+                                 <span class="ch">'*'</span> <span class="ot">=&gt;</span> m ⋅ <span class="dv">2</span>
+                                 <span class="ch">'/'</span> <span class="ot">=&gt;</span> m ÷ <span class="dv">2</span>
+                                 _   <span class="ot">=&gt;</span> m</code></pre>
+<pre class="shell"><code>The program + + * - / calculates the value 1.5</code></pre>
+<p>Discover the difference… But it’s small case. With thinking about types we can resolve a lot of common problems much faster. One of the great examples will be type providers in Idris <a href="https://github.com/david-christiansen/idris-type-providers">github</a> <a href="http://itu.dk/people/drc/pubs/dependent-type-providers.pdf">pdf</a></p>
+
+<div id="postfooter">
+</div>
+
+<script type="text/javascript">
+    $('#playpause').click(function() {
+      if ($('#audio')[0].paused == false) {
+          $('#audio')[0].pause();
+          $('#playpause').attr("src","../images/RedPlay.png");
+      } else {
+          $('#audio')[0].play();
+          $('#playpause').attr("src","../images/RedPause.png");
+      }
+    });
+</script>
+
+<script src="../bootstrap/three.js"></script>
+<script type="text/javascript">
+	var SCREEN_WIDTH = window.innerWidth;
+	var SCREEN_HEIGHT = window.innerHeight;
+	var RADIUS = 200;
+	var QUANTITY = 150;
+
+	var container;
+
+	var camera;
+	var scene;
+	var renderer;
+	
+	var descriptors = [];
+
+	var mouseX = 0;
+	var mouseY = 0;
+
+	var windowHalfX = window.innerWidth / 2;
+	var windowHalfY = window.innerHeight / 2;
+
+	init();
+	setInterval(loop, 1000 / 60);
+
+	function init() {
+
+		container = document.getElementById('postfooter');
+
+		camera = new THREE.Camera(0, 0, 300);
+		camera.focus = 50;
+
+		scene = new THREE.Scene();
+
+		renderer = new THREE.CanvasRenderer();
+		renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT / 4);
+		
+		createParticles();
+		
+		container.appendChild(renderer.domElement);
+
+		document.addEventListener('mousemove', onDocumentMouseMove, false);
+		document.addEventListener('touchstart', onDocumentTouchStart, false);
+		document.addEventListener('touchmove', onDocumentTouchMove, false);
+	}
+
+	function createParticles() {
+		for (var i = 0; i < QUANTITY; i++) {
+			var particle = new THREE.Particle(new THREE.ColorFillMaterial(Math.random() * 0x404040 + 0xaaaaaa, 1));
+			particle.size = 10;
+			
+			particle.position.x = 0;
+			particle.position.y = 0;
+			particle.position.z = 0;
+			
+			particle.offset = { x: 0, y: 0, z: 0 };
+			particle.shift = { x: 0, y: 0 };
+			particle.speed = 0.01+Math.random()*0.04;
+			particle.targetSize = particle.size;
+			
+			scene.add(particle);
+		}
+	}
+
+	function onDocumentMouseMove(event) {
+
+		mouseX = event.clientX - windowHalfX;
+		mouseY = event.clientY - windowHalfY;
+	}
+
+	function onDocumentTouchStart(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function onDocumentTouchMove(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function loop() {
+		camera.updateMatrix();
+		
+		renderer.render(scene, camera);
+		
+		var context = renderer.domElement.getContext("2d")
+		
+		for (var i = 0, len = scene.objects.length; i < len; i++) {
+			var particle = scene.objects[i];
+			
+			particle.offset.x += particle.speed;
+			particle.offset.y += particle.speed;
+			
+			particle.shift.x += ( mouseX - particle.shift.x) * (particle.speed);
+			particle.shift.y += ( -mouseY - particle.shift.y) * (particle.speed);
+			
+			particle.position.x = particle.shift.x + Math.cos(i + particle.offset.x) * RADIUS;
+			particle.position.y = particle.shift.y + Math.sin(i + particle.offset.y) * RADIUS;
+			particle.position.z = i / QUANTITY * RADIUS;
+			
+			particle.size += ( particle.targetSize - particle.size ) * 0.05;
+			
+			if( Math.round( particle.size ) == Math.round( particle.targetSize ) ) {
+				particle.targetSize = 1 + Math.random() * 10;
+			}
+		}
+	}
+	
+	function distanceBetween(p1,p2) {
+		var dx = p2.x-p1.x;
+		var dy = p2.y-p1.y;
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+</script>
+
+<hr />
+
+        </div>
+        
+        <div id="social">
+            <ul>
+              <li>
+                <a href="http://github.com/Heather" title="Github" target="_blank">
+                  <span class="mega-octicon octicon-octoface"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://twitter.com/Cynede" title="Twitter" target="_blank">
+                  <span class="mega-octicon octicon-star"></span>
+                </a>
+              </li>
+              <li>
+                <a href="mailto:heather@live.ru" title="Main mail" target="_blank">
+                  <span class="mega-octicon octicon-mail-read"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank">
+                  <span class="mega-octicon octicon-broadcast"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://grooveshark.com/#!/cynede" title="Grooveshark" target="_blank">
+                  <span class="mega-octicon octicon-squirrel"></span>
+                </a>
+              </li>
+              <li>
+                <a href="../atom.xml" title="RSS" target="_blank">
+                  <span class="mega-octicon octicon-rss"></span>
+                </a>
+              </li>
+            </ul>
+        </div>
+        
+        <div id="footer">
+
+        </div>
+
+    </body>
+</html>
