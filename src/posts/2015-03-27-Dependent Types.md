@@ -17,26 +17,26 @@ Edwin Brady:
 
 Great answer from Chris Allen:
 
-> in Haskell values can generate values, types can generate values, values *cannot* generate types.
-> That sucks and means there's a bunch of things you're not allowed to do. There's a phase separation between types and values.
-> in Idris, types and values can hop back and forth interchangeably, almost kinda like if you had reflection, except it's type-safe and used to create types that very precisely circumscribe what you want.
-> puffnfresh's printf tutorial is a good example of this.
-> there ways to avoid needing dependent types in Haskell, but most people would like the option.
-> it simplifies things related to writing very precisely typed software
-> it makes writing more type-safe software less troublesome.
-> it also often means you can more readily use the language as a sort of proof engine.
-> I've seen people do this in Haskell, but it's far more common in Coq, Agda, etc.
-> virtually everything could use more type-safety.
-> something as common as printf benefits from dependent types.
-> imagine being able to take the requirements of business logic, which are usually enforced at runtime, and turn them into a proof?
+> in Haskell values can generate values, types can generate values, values *cannot* generate types. <br/>
+> That sucks and means there's a bunch of things you're not allowed to do. There's a phase separation between types and values. <br/>
+> in Idris, types and values can hop back and forth interchangeably, almost kinda like if you had reflection, except it's type-safe and used to create types that very precisely circumscribe what you want. <br/>
+> puffnfresh's printf tutorial is a good example of this. <br/>
+> there ways to avoid needing dependent types in Haskell, but most people would like the option. <br/>
+> it simplifies things related to writing very precisely typed software <br/>
+> it makes writing more type-safe software less troublesome. <br/>
+> it also often means you can more readily use the language as a sort of proof engine. <br/>
+> I've seen people do this in Haskell, but it's far more common in Coq, Agda, etc. <br/>
+> virtually everything could use more type-safety. <br/>
+> something as common as printf benefits from dependent types. <br/>
+> imagine being able to take the requirements of business logic, which are usually enforced at runtime, and turn them into a proof? <br/>
 > now your programs can't violate the contracts you want to enforce.
 
 Answer from Brian McKenna:
 
-> yeah, proofs as programs, one useful thing
-> another is safe metaprogramming
-> e.g. string interpolation, custom literals
-> one example I've been interested in recently is putting Big-O complexity into types
+> yeah, proofs as programs, one useful thing <br/>
+> another is safe metaprogramming <br/>
+> e.g. string interpolation, custom literals <br/>
+> one example I've been interested in recently is putting Big-O complexity into types <br/>
 > so proving some performance characteristics of algorithms
 
 (I should also post link to this [printf](https://gist.github.com/puffnfresh/11202637))
