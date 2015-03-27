@@ -81,20 +81,17 @@ let mut accumulator = <span class="dv">0</span>;
 <p>Press <code>Run</code> on website</p>
 <p>Not sure if you guess or not but result is 1, because it’s integer…</p>
 <p>How we can handle it with Idris?</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell">prog <span class="fu">:</span> <span class="dt">String</span>
-prog<span class="fu">=</span> <span class="st">&quot;+ + * - /&quot;</span>
-
-cType <span class="fu">:</span> <span class="dt">String</span> <span class="ot">→</span> <span class="dt">Type</span>
-cType c <span class="fu">=</span> <span class="kw">if</span> <span class="ch">'/'</span> ∈ (unpack c)
-            <span class="kw">then</span> <span class="dt">Float</span>
-            <span class="kw">else</span> <span class="dt">Int</span>
-
-main <span class="fu">:</span> <span class="dt">IO</span> ()
+<pre class="sourceCode haskell"><code class="sourceCode haskell">main <span class="fu">:</span> <span class="dt">IO</span> ()
 main <span class="fu">=</span> putStrLn <span class="fu">$</span> <span class="st">&quot;The program &quot;</span>
                     ⧺ prog
                     ⧺ <span class="st">&quot; calculates the value &quot;</span>
                     ⧺ (show <span class="fu">$</span> acc (unpack prog) <span class="dv">0</span>)
- <span class="kw">where</span> acc <span class="fu">:</span> (<span class="dt">List</span> <span class="dt">Char</span>) <span class="ot">→</span> (cType prog) <span class="ot">→</span> (cType prog)
+ <span class="kw">where</span> aType <span class="fu">:</span> <span class="dt">Type</span>
+       aType <span class="fu">=</span> <span class="kw">if</span> (<span class="ch">'/'</span> ∈ (unpack prog))
+                    <span class="kw">then</span> <span class="dt">Float</span>
+                    <span class="kw">else</span> <span class="dt">Int</span>
+
+       acc <span class="fu">:</span> (<span class="dt">List</span> <span class="dt">Char</span>) <span class="ot">→</span> aType <span class="ot">→</span> aType
        acc [] m <span class="fu">=</span> m
        acc (<span class="ot">x::</span>xs) m <span class="fu">=</span> acc xs <span class="fu">$</span> <span class="kw">case</span> x <span class="kw">of</span>
                                  <span class="ch">'+'</span> <span class="ot">=&gt;</span> m <span class="fu">+</span> <span class="dv">1</span>
