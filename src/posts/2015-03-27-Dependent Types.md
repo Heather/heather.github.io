@@ -62,6 +62,8 @@ for token in program.chars() {
 }
 ```
 
+(note that line `'/' => accumulator /= 2` looks a bit different due my fonts there, it's just `/` and `=` together...)
+
 Press `Run` on website
 
 Not sure if you guess or not but result is 1, because it's integer...
