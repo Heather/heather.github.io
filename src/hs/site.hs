@@ -61,7 +61,7 @@ main = hakyll $ do
         compile $ do
             makeItem ""
                 >>= loadAndApplyTemplate "templates/404.html" homeCtx
-                >>= loadAndApplyTemplate "templates/default.html" homeCtx
+                >>= loadAndApplyTemplate "templates/top.html" homeCtx
                 >>= relativizeUrls
 
     create ["atom.xml"] $ do
