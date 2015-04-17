@@ -159,10 +159,10 @@
             wave2 = new YT.Player('wave2', {
                 height: '25%',
                 width: '25%',
-                videoId: '4qS_5Ntev94',
+                videoId: '9_sBxqyX_co',
                 playerVars: {
                   autoplay: 1,
-                  start: 20,
+                  start: 15,
                   controls: 0,
                   disablekb: 1,
                   loop: 1,
@@ -173,9 +173,6 @@
                   iv_load_policy: 3,
                   theme: 'dark',
                   rel: 0
-                },
-                events: {
-                    'onReady': onPlayerReady,
                 }
             });
             forester = new YT.Player('forester', {
@@ -196,6 +193,9 @@
                   iv_load_policy: 3,
                   theme: 'dark',
                   rel: 0
+                },
+                events: {
+                    'onReady': onPlayerReady,
                 }
             });
             refactoring = new YT.Player('refactoring', {
@@ -225,7 +225,8 @@
         function onPlayerReady(event){
             player.mute();
             wave.mute();
-            wave2.mute();
+            //wave2.mute();
+            forester.mute();
             refactoring.mute();
         }
         </script>
