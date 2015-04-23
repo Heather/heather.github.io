@@ -47,9 +47,9 @@ theStylesheet = do
 
     div # "#social" ? do zIndex 100
                          position absolute
-                         bottom $ px 35
+                         bottom $ px 10
                          height $ px 100
-                         backgroundColor $ rgba 150 150 150 200
+                         backgroundColor $ rgba 150 170 165 210
                          backgroundImage $ url "../images/blood.png"
                          borderRadius (px 30) (px 150) (px 30) (px 150)
                          li ? do marginTop $ px 15

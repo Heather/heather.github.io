@@ -46,9 +46,9 @@ div#social
 {
   z-index          : 100;
   position         : absolute;
-  bottom           : 35px;
+  bottom           : 10px;
   height           : 100px;
-  background-color : rgba(150,150,150,0.7812);
+  background-color : rgba(150,170,165,0.8203);
   background-image : url("../images/blood.png");
   border-radius    : 30px 150px 30px 150px;
 }
