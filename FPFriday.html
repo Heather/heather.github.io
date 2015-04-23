@@ -114,10 +114,10 @@
             player = new YT.Player('main', {
                 height: '100%',
                 width: '100%',
-                videoId: 'rGxHdRPGqgc',
+                videoId: 'Go5RCN-kcOo',
                 playerVars: {
                   autoplay: 1,
-                  start: 3,
+                  start: 30,
                   controls: 0,
                   disablekb: 1,
                   hl: 'ru-ru',
@@ -129,9 +129,6 @@
                   iv_load_policy: 3,
                   theme: 'dark',
                   rel: 0
-                },
-                events: {
-                    'onReady': onPlayerReady,
                 }
             });
             wave = new YT.Player('wave', {
@@ -159,7 +156,7 @@
             wave2 = new YT.Player('wave2', {
                 height: '25%',
                 width: '25%',
-                videoId: '4qS_5Ntev94',
+                videoId: 'rGxHdRPGqgc',
                 playerVars: {
                   autoplay: 1,
                   start: 20,
@@ -196,6 +193,9 @@
                   iv_load_policy: 3,
                   theme: 'dark',
                   rel: 0
+                },
+                events: {
+                    'onReady': onPlayerReady,
                 }
             });
             refactoring = new YT.Player('refactoring', {
@@ -223,7 +223,7 @@
             });
           }
         function onPlayerReady(event){
-            player.mute();
+            forester.mute();
             wave.mute();
             wave2.mute();
             refactoring.mute();
