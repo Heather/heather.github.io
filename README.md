@@ -6,6 +6,8 @@
  - css engine: clay + styl
  - js: hjsmin (want more?)
 
+[![Twitter][]](http://www.twitter.com/Cynede)
+
 Building
 ========
 
@@ -22,3 +24,4 @@ TODO
  - build whole thing with stack?
 
 ![](http://fc09.deviantart.net/fs71/f/2013/195/4/0/mio_by_kigyn-d6dfeuf.png)
+[Twitter]: http://mxtoolbox.com/Public/images/twitter-icon.png
