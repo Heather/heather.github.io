@@ -6,6 +6,13 @@
  - css engine: clay + styl
  - js: hjsmin (want more?)
 
+Building
+========
+
+ - install hakyll, hjsmin, lucid, clay ...
+ - run `update.cmd` on Windows
+ - run `update.sh` on Posix
+
 TODO
 ====
 
