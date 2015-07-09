@@ -1,0 +1,8 @@
+flags: {}
+packages:
+- '.'
+extra-deps:
+- Agda-2.4.2.3
+- Win32-notify-0.3.0.1
+- hakyll-agda-0.1.9
+resolver: lts-2.17

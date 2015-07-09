@@ -1,0 +1,22 @@
+Name:               site
+Version:            0.0.0
+Description:        Personal website of Heather
+Homepage:           http://heather.github.io
+Author:             Heather
+Maintainer:         heather@live.ru
+Category:           Web
+Build-type:         Simple
+Cabal-version:      >= 1.8
+
+Executable site
+  Main-is:        site.hs
+  Ghc-options:    -Wall
+
+  Build-depends:
+    base        >= 4.6,
+    hakyll      >= 4.5,
+    Agda        >= 2.4.2,
+    hakyll-agda >= 0.1.7,
+    pandoc      >= 1.12,
+    clay,
+    hjsmin
