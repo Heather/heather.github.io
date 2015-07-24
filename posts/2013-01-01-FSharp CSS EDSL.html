@@ -56,7 +56,7 @@
 <li>Show FailessLib version</li>
 <li>Readable color scheme for light-background terminals</li>
 </ul>
-<pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="ot">open</span> Fake
+<div class="sourceCode"><pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="ot">open</span> Fake
 <span class="ot">open</span> Failess
 
 Target <span class="st">&quot;custom.css&quot;</span> (<span class="kw">fun</span> () -&gt; 
@@ -72,7 +72,7 @@ Target <span class="st">&quot;custom.css&quot;</span> (<span class="kw">fun</spa
     ]
 ); <span class="st">&quot;custom.css&quot;</span>
 
-RunParameterTargetOrDefault <span class="st">&quot;target&quot;</span> <span class="st">&quot;custom.css&quot;</span></code></pre>
+RunParameterTargetOrDefault <span class="st">&quot;target&quot;</span> <span class="st">&quot;custom.css&quot;</span></code></pre></div>
 <h2 id="css-edsl-httpsgithub.comheatherfailesslib">CSS EDSL (https://github.com/Heather/FailessLib )</h2>
 <p>FailessLib features:</p>
 <ul>
@@ -93,7 +93,7 @@ RunParameterTargetOrDefault <span class="st">&quot;target&quot;</span> <span cla
 <li>Obfuscation</li>
 <li>Devil unicode extension: https://github.com/Heather/DEVIL</li>
 </ul>
-<pre class="sourceCode fsharp"><code class="sourceCode fsharp">fieldset <span class="st">&lt;&lt; [</span>
+<div class="sourceCode"><pre class="sourceCode fsharp"><code class="sourceCode fsharp">fieldset <span class="st">&lt;&lt; [</span>
 <span class="st">    ★  [    </span>
 <span class="st">        margin -/ [em 1.0; px 0]</span>
 <span class="st">        padding -- em 1.0</span>
@@ -122,10 +122,10 @@ RunParameterTargetOrDefault <span class="st">&quot;target&quot;</span> <span cla
 <span class="st">    input &lt;&lt; [</span>
 <span class="st">        ⠂ &quot;textEntry &quot;      -|[ ➷; width -- px 320 ]</span>
 <span class="st">        ⠂ &quot;passwordEntry&quot;   -|[ ➷; width -- px 320 ]</span>
-<span class="st">        ]</span></code></pre>
+<span class="st">        ]</span></code></pre></div>
 <h2 id="how-does-it-work">How does it work</h2>
 <p>It’s designed to use custom F# operators with right priority in mind and basically it replaces custom keywords to strings and merges all the stuff</p>
-<pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="kw">let</span> <span class="kw">inline</span> (~+.) st = 
+<div class="sourceCode"><pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="kw">let</span> <span class="kw">inline</span> (~+.) st = 
     <span class="kw">match</span> st <span class="kw">with</span>
     | [] -&gt; <span class="st">&quot;&quot;</span>
     | [ _ ] -&gt; sprintf <span class="st">&quot; {{ %s }}&quot;</span> st.Head
@@ -139,7 +139,7 @@ RunParameterTargetOrDefault <span class="st">&quot;target&quot;</span> <span cla
         &lt;| System<span class="kw">.</span>Environment<span class="kw">.</span>NewLine
         &lt;| String<span class="kw">.</span>Join(System<span class="kw">.</span>Environment<span class="kw">.</span>NewLine, pars)
         &lt;| System<span class="kw">.</span>Environment<span class="kw">.</span>NewLine
-        &lt;| tab</code></pre>
+        &lt;| tab</code></pre></div>
 
 <div id="postfooter">
 </div>

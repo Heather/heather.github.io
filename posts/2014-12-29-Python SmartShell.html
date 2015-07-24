@@ -50,53 +50,53 @@
 
 <p><b>Task:</b> save modified Environment variable during calling different scripts in python <br /> <b>Solution:</b> Singleton with internal variable for storing and updating Environment</p>
 <h2 id="smartshell">SmartShell</h2>
-<pre class="sourceCode python"><code class="sourceCode python"><span class="ch">from</span> subprocess <span class="ch">import</span> Popen, PIPE, list2cmdline
-<span class="ch">from</span> Singleton <span class="ch">import</span> Singleton
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> subprocess <span class="im">import</span> Popen, PIPE, list2cmdline
+<span class="im">from</span> Singleton <span class="im">import</span> Singleton
 
 <span class="kw">class</span> SmartShell(Singleton):
-    <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, shell):
-        <span class="ot">self</span>.shell = shell
-        <span class="ot">self</span>.initial = <span class="ot">None</span>
-    <span class="kw">def</span> validate(<span class="ot">self</span>, ob): <span class="kw">return</span> (<span class="dt">len</span>(ob) == <span class="dv">2</span>)
-    <span class="kw">def</span> env_cmd(<span class="ot">self</span>, env_cmd):
-        env_cmd         = list2cmdline(env_cmd)
-        cmd             = <span class="st">'cmd.exe /s /c &quot;</span><span class="ot">{env_cmd}</span><span class="st"> &amp;&amp; set&quot;'</span>.<span class="dt">format</span>(**<span class="dt">vars</span>())
-        proc            = Popen(cmd
-                            , stdout    = PIPE
-                            , shell     = <span class="ot">self</span>.shell
-                            , env       = <span class="ot">self</span>.initial)
-        lines           = proc.stdout
-        handle_line     = <span class="kw">lambda</span> l: l.rstrip().split(<span class="st">'='</span>,<span class="dv">1</span>)
-        pairs           = <span class="dt">map</span>(handle_line, lines)
-        valid_pairs     = <span class="dt">filter</span>(<span class="ot">self</span>.validate, pairs)
-        <span class="ot">self</span>.initial    = <span class="dt">dict</span>(valid_pairs)
+    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, shell):
+        <span class="va">self</span>.shell <span class="op">=</span> shell
+        <span class="va">self</span>.initial <span class="op">=</span> <span class="va">None</span>
+    <span class="kw">def</span> validate(<span class="va">self</span>, ob): <span class="cf">return</span> (<span class="bu">len</span>(ob) <span class="op">==</span> <span class="dv">2</span>)
+    <span class="kw">def</span> env_cmd(<span class="va">self</span>, env_cmd):
+        env_cmd         <span class="op">=</span> list2cmdline(env_cmd)
+        cmd             <span class="op">=</span> <span class="st">'cmd.exe /s /c &quot;</span><span class="sc">{env_cmd}</span><span class="st"> &amp;&amp; set&quot;'</span>.<span class="bu">format</span>(<span class="op">**</span><span class="bu">vars</span>())
+        proc            <span class="op">=</span> Popen(cmd
+                            , stdout    <span class="op">=</span> PIPE
+                            , shell     <span class="op">=</span> <span class="va">self</span>.shell
+                            , env       <span class="op">=</span> <span class="va">self</span>.initial)
+        lines           <span class="op">=</span> proc.stdout
+        handle_line     <span class="op">=</span> <span class="kw">lambda</span> l: l.rstrip().split(<span class="st">'='</span>,<span class="dv">1</span>)
+        pairs           <span class="op">=</span> <span class="bu">map</span>(handle_line, lines)
+        valid_pairs     <span class="op">=</span> <span class="bu">filter</span>(<span class="va">self</span>.validate, pairs)
+        <span class="va">self</span>.initial    <span class="op">=</span> <span class="bu">dict</span>(valid_pairs)
         proc.communicate()
-    <span class="kw">def</span> command(<span class="ot">self</span>, just_cmd):
-        just_cmd    = list2cmdline(just_cmd)
-        cmd         = <span class="st">'cmd.exe /s /c &quot;</span><span class="ot">{just_cmd}</span><span class="st">&quot;'</span>.<span class="dt">format</span>(**<span class="dt">vars</span>())
-        proc        = Popen(cmd
-                            , stdout    = PIPE
-                            , shell     = <span class="ot">self</span>.shell
-                            , env       = <span class="ot">self</span>.initial)
-        lines       = proc.stdout.readlines()
+    <span class="kw">def</span> command(<span class="va">self</span>, just_cmd):
+        just_cmd    <span class="op">=</span> list2cmdline(just_cmd)
+        cmd         <span class="op">=</span> <span class="st">'cmd.exe /s /c &quot;</span><span class="sc">{just_cmd}</span><span class="st">&quot;'</span>.<span class="bu">format</span>(<span class="op">**</span><span class="bu">vars</span>())
+        proc        <span class="op">=</span> Popen(cmd
+                            , stdout    <span class="op">=</span> PIPE
+                            , shell     <span class="op">=</span> <span class="va">self</span>.shell
+                            , env       <span class="op">=</span> <span class="va">self</span>.initial)
+        lines       <span class="op">=</span> proc.stdout.readlines()
         proc.communicate()[<span class="dv">0</span>]
-        <span class="kw">return</span> lines
-    <span class="kw">def</span> cmd(<span class="ot">self</span>, s): <span class="dt">print</span>(<span class="st">&quot;&quot;</span>.join(<span class="ot">self</span>.command(s)))
-    <span class="kw">def</span> run(<span class="ot">self</span>, s): <span class="dt">print</span>(<span class="st">&quot;&quot;</span>.join(<span class="ot">self</span>.command(s.split(<span class="st">' '</span>))))</code></pre>
+        <span class="cf">return</span> lines
+    <span class="kw">def</span> cmd(<span class="va">self</span>, s): <span class="bu">print</span>(<span class="st">&quot;&quot;</span>.join(<span class="va">self</span>.command(s)))
+    <span class="kw">def</span> run(<span class="va">self</span>, s): <span class="bu">print</span>(<span class="st">&quot;&quot;</span>.join(<span class="va">self</span>.command(s.split(<span class="st">' '</span>))))</code></pre></div>
 <p>There are various implementations of Singleton object in python so here is example</p>
-<pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> Singleton(<span class="dt">object</span>):
-    _instances = {}
-    <span class="kw">def</span> <span class="ot">__new__</span>(class_, *args, **kwargs):
-        <span class="kw">if</span> class_ not in class_._instances:
-            class_._instances[class_] = <span class="dt">super</span>(Singleton, class_).<span class="ot">__new__</span>(class_, *args, **kwargs)
-        <span class="kw">return</span> class_._instances[class_]</code></pre>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> Singleton(<span class="bu">object</span>):
+    _instances <span class="op">=</span> {}
+    <span class="kw">def</span> <span class="fu">__new__</span>(class_, <span class="op">*</span>args, <span class="op">**</span>kwargs):
+        <span class="cf">if</span> class_ <span class="op">not</span> <span class="op">in</span> class_._instances:
+            class_._instances[class_] <span class="op">=</span> <span class="bu">super</span>(Singleton, class_).<span class="fu">__new__</span>(class_, <span class="op">*</span>args, <span class="op">**</span>kwargs)
+        <span class="cf">return</span> class_._instances[class_]</code></pre></div>
 <h2 id="usage">Usage</h2>
-<pre class="sourceCode python"><code class="sourceCode python"><span class="ch">from</span> lib <span class="ch">import</span> SmartShell
-shell = SmartShell(<span class="ot">True</span>)
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> lib <span class="im">import</span> SmartShell
+shell <span class="op">=</span> SmartShell(<span class="va">True</span>)
 <span class="co">#To store modified Environment variables</span>
 e.env_cmd([LoadMSBuild, Options])
 <span class="co">#To use internal class Environment</span>
-e.run(<span class="st">&quot;MSBuild /version&quot;</span>)</code></pre>
+e.run(<span class="st">&quot;MSBuild /version&quot;</span>)</code></pre></div>
 <p>Idea came from this <a href="http://stackoverflow.com/a/2214292/238232">StackOverflow answer</a></p>
 
 <div id="postfooter">

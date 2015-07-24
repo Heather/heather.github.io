@@ -1,14 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import System.Environment
+import           System.Environment
 
-import qualified Data.Text.Lazy.IO as TXT
+import qualified Data.Text.Lazy.IO  as TXT
 
-import Data.Monoid -- <>
+-- import           Data.Monoid
 
-import Prelude hiding (div, span)
-import Clay
+import           Clay
+import           Prelude            hiding (div, span)
 
 main :: IO ()
 main =
@@ -28,7 +28,7 @@ theStylesheet = do
                    width  $ pct 100
                    position absolute
                    top  $ px 5
-                   left $ nil
+                   left nil
 
     div # "#top" ? zIndex 100
 

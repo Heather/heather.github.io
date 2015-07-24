@@ -54,7 +54,7 @@
 <li><a href="https://github.com/ziman/lightyear">lightyear</a> parser combinator library</li>
 <li>Idris <a href="http://www.idris-lang.org/documentation/effects/">Effects</a></li>
 </ul>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="fu">|||</span> <span class="dt">A</span> parser that skips whitespace without jumping over lines
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="fu">|||</span> <span class="dt">A</span> parser that skips whitespace without jumping over lines
 yamlSpace <span class="fu">:</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> <span class="dt">ParserT</span> m <span class="dt">String</span> ()
 yamlSpace <span class="fu">=</span> skip (many <span class="fu">$</span> satisfy (\c <span class="ot">=&gt;</span> c <span class="fu">/=</span> <span class="ch">'\n'</span> <span class="fu">&amp;&amp;</span> isSpace c)) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;yamlSpace&quot;</span>
 
@@ -80,10 +80,10 @@ mutual
             <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlBool</span>   yamlBool)
             <span class="fu">&lt;|&gt;</span> (pure <span class="dt">YamlNull</span> <span class="fu">&lt;$</span> yamlNull)
             <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlArray</span>  yamlArray
-            <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlObject</span> yamlObject</code></pre>
+            <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlObject</span> yamlObject</code></pre></div>
 <h1 id="usage">Usage</h1>
 <p>Here is simple example of code that reads and parse YML files</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">Main</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">Main</span>
 
 <span class="kw">import </span><span class="dt">Yaml</span>
 
@@ -115,7 +115,7 @@ test f <span class="fu">=</span> <span class="kw">case</span> <span class="fu">!
 main <span class="fu">:</span> <span class="dt">IO</span> ()
 main <span class="fu">=</span> <span class="kw">do</span>
   run <span class="fu">$</span> test <span class="st">&quot;test1.yml&quot;</span>
-  run <span class="fu">$</span> test <span class="st">&quot;test2.yml&quot;</span></code></pre>
+  run <span class="fu">$</span> test <span class="st">&quot;test2.yml&quot;</span></code></pre></div>
 <p>Script to run:</p>
 <pre class="shell"><code>idris Test.idr -p lightyear -p yaml -p effects -o test
 ./test</code></pre>

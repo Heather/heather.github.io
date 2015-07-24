@@ -51,23 +51,23 @@
 <p>I discovered that by default Hakyll only can <code>compressCssCompiler</code> and there is no <code>compressJsCompiler</code></p>
 <p>So I’ve found <a href="https://github.com/alanz/hjsmin/blob/master/Text/Jasmine.hs">hjsmin</a> for this task</p>
 <h2 id="include">Include</h2>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">Control.Applicative</span> ((&lt;$&gt;))
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">Control.Applicative</span> ((&lt;$&gt;))
 
 <span class="kw">import qualified</span> <span class="dt">Data.ByteString.Lazy.Char8</span> <span class="kw">as</span> <span class="dt">LB</span>
 <span class="kw">import qualified</span> <span class="dt">Data.Text</span> <span class="kw">as</span> <span class="dt">T</span>
 <span class="kw">import qualified</span> <span class="dt">Data.Text.Encoding</span> <span class="kw">as</span> <span class="dt">E</span>
 
-<span class="kw">import </span><span class="dt">Text.Jasmine</span></code></pre>
+<span class="kw">import </span><span class="dt">Text.Jasmine</span></code></pre></div>
 <h2 id="apply">Apply</h2>
-<pre class="sourceCode haskell"><code class="sourceCode haskell">match <span class="st">&quot;js/*&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">match <span class="st">&quot;js/*&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
     route idRoute
-    compile compressJsCompiler</code></pre>
+    compile compressJsCompiler</code></pre></div>
 <h2 id="implement">Implement</h2>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">compressJsCompiler ::</span> <span class="dt">Compiler</span> (<span class="dt">Item</span> <span class="dt">String</span>)
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">compressJsCompiler ::</span> <span class="dt">Compiler</span> (<span class="dt">Item</span> <span class="dt">String</span>)
 compressJsCompiler <span class="fu">=</span> fmap jasmin <span class="fu">&lt;$&gt;</span> getResourceString
 
 <span class="ot">jasmin ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
-jasmin src <span class="fu">=</span> LB.unpack <span class="fu">$</span> minify <span class="fu">$</span> LB.fromChunks [(E.encodeUtf8 <span class="fu">$</span> T.pack src)] </code></pre>
+jasmin src <span class="fu">=</span> LB.unpack <span class="fu">$</span> minify <span class="fu">$</span> LB.fromChunks [(E.encodeUtf8 <span class="fu">$</span> T.pack src)] </code></pre></div>
 <p>It works pretty fine so I even think this should be somewhere in hakyll docs</p>
 
 <div id="postfooter">

@@ -1,12 +1,12 @@
-﻿{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import System.Environment
+import           System.Environment
 
-import qualified Data.Text.Lazy.IO as TXT
+import qualified Data.Text.Lazy.IO  as TXT
 
-import Prelude hiding (div, span)
-import Clay
+import           Clay
+import           Prelude            hiding (div, span)
 
 main :: IO ()
 main =
@@ -35,18 +35,18 @@ theStylesheet = do -- Overall site-wide styling rules.
                          zIndex          100
                          "#navigation"   ?
                             do height (px 45)
-                               a ? do color         $ black
+                               a ? do color         black
                                       fontSize      $ px 18
-                                      fontWeight    $ bold
+                                      fontWeight    bold
                                       marginLeft    $ px 12
                                       textDecoration none
                                       textTransform  uppercase
 
     div # "#logo" ? do
-        a ? do float           $ floatLeft
+        a ? do float           floatLeft
                fontSize        $ px 32
-               fontWeight      $ bold
-               textDecoration  $ none
+               fontWeight      bold
+               textDecoration  none
                color           "#E82A37"
                height          $ px 30
                position        relative
@@ -56,9 +56,9 @@ theStylesheet = do -- Overall site-wide styling rules.
                transitionDuration $ sec 0.5
                transitionTimingFunction linear
         a # hover ? color "#F53088"
-        
-    div # "#controls" ? do
-        img # "#playpause" ? do
+
+    div # "#controls" ?
+        img # "#playpause" ?
             cursor pointer
 
     div # "#social" ? do listStyle none outside none
@@ -66,7 +66,7 @@ theStylesheet = do -- Overall site-wide styling rules.
                          width  $ pct 85
                          li ? do width   $ pct 12
                                  height  $ px 64
-                                 display $ inlineBlock
+                                 display inlineBlock
                                  a ? color "#333"
                                  a # hover ? do color $ rgb 190 64 64
 

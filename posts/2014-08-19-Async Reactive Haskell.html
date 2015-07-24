@@ -51,7 +51,7 @@
 <p>First: added dirty lifts to <a href="https://hackage.haskell.org/package/eternal-0.0.7/src/src/Control/Eternal/Syntax/Lift.hs">Hackage</a></p>
 <h2 id="io-reactive"><a href="https://github.com/andygill/io-reactive/pull/1">io-reactive</a></h2>
 <p>Tiny library for generating reactive objects</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Progress</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Progress</span>
     <span class="fu">=</span> <span class="dt">Progress</span> {<span class="ot"> pr_inc  ::</span> <span class="dt">IO</span> ()
                ,<span class="ot"> pr_done ::</span> <span class="dt">IO</span> ()
                }
@@ -61,10 +61,10 @@ mkProgress h <span class="fu">=</span> reactiveObjectIO <span class="dv">0</span
                          hFlush h
            , pr_done <span class="fu">=</span> <span class="kw">do</span> hPutStr h <span class="st">&quot;\nDone\n&quot;</span>
                           hFlush h 
-                          done }</code></pre>
+                          done }</code></pre></div>
 <h2 id="async">async</h2>
 <p>So now we can run some task and react in async on task progress, we even can use periodic pull to our async thread!</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">doProcess ::</span> <span class="dt">Progress</span> <span class="ot">-&gt;</span> <span class="dt">Async</span> () <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">doProcess ::</span> <span class="dt">Progress</span> <span class="ot">-&gt;</span> <span class="dt">Async</span> () <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
 doProcess r prc <span class="fu">=</span> 
     poll prc <span class="fu">&gt;&gt;=</span> \<span class="kw">case</span> <span class="dt">Nothing</span> <span class="ot">-&gt;</span> pr_inc r <span class="fu">&gt;&gt;</span> threadDelay <span class="dv">10000</span> <span class="fu">&gt;&gt;</span> doProcess r prc
                        <span class="dt">Just</span> _e <span class="ot">-&gt;</span> <span class="kw">case</span> _e <span class="kw">of</span>
@@ -73,9 +73,9 @@ doProcess r prc <span class="fu">=</span>
 
 <span class="ot">asyncReactive ::</span> <span class="dt">IO</span> () <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
 asyncReactive foo <span class="fu">=</span> liftM2_ doProcess (mkProgress stdout)
-                                     <span class="fu">$</span> async foo</code></pre>
+                                     <span class="fu">$</span> async foo</code></pre></div>
 <p>Looks cool but does it works and usage:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell">asyncReactive <span class="fu">$</span> sequence_ [ threadDelay <span class="dv">100000</span> <span class="fu">&gt;&gt;</span> print <span class="st">&quot;A&quot;</span> <span class="fu">|</span> n <span class="ot">&lt;-</span> [<span class="dv">1</span><span class="fu">..</span><span class="dv">50</span>] ]</code></pre>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">asyncReactive <span class="fu">$</span> sequence_ [ threadDelay <span class="dv">100000</span> <span class="fu">&gt;&gt;</span> print <span class="st">&quot;A&quot;</span> <span class="fu">|</span> n <span class="ot">&lt;-</span> [<span class="dv">1</span><span class="fu">..</span><span class="dv">50</span>] ]</code></pre></div>
 <p>that easy, result will be:</p>
 <pre class="shell"><code>..........&quot;A&quot;
 ..........&quot;A&quot;

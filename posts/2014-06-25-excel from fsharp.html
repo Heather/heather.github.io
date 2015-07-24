@@ -57,19 +57,19 @@
 <li>to row <code>endRow</code></li>
 </ul>
 <p>Load file (here is possible to get sheet by name or by number)</p>
-<pre class="sourceCode fsharp"><code class="sourceCode fsharp">using(<span class="kw">new</span> FileStream(fname, FileMode<span class="kw">.</span>Open, FileAccess<span class="kw">.</span>Read)) &lt;| <span class="kw">fun</span> fs -&gt;
+<div class="sourceCode"><pre class="sourceCode fsharp"><code class="sourceCode fsharp">using(<span class="kw">new</span> FileStream(fname, FileMode<span class="kw">.</span>Open, FileAccess<span class="kw">.</span>Read)) &lt;| <span class="kw">fun</span> fs -&gt;
     <span class="kw">let</span> templateWorkbook = <span class="kw">new</span> HSSFWorkbook(fs, <span class="kw">true</span>)
-    <span class="kw">let</span> sheet = templateWorkbook.GetSheetAt(<span class="dv">0</span>) //<span class="co">.GetSheet(shName)</span></code></pre>
+    <span class="kw">let</span> sheet = templateWorkbook.GetSheetAt(<span class="dv">0</span>) //<span class="co">.GetSheet(shName)</span></code></pre></div>
 <p>There is small function to get column number from char and number</p>
-<pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="kw">let</span> cXL name =  
+<div class="sourceCode"><pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="kw">let</span> cXL name =  
     <span class="kw">if</span> name &lt;&gt; <span class="st">&quot;&quot;</span> <span class="kw">then</span>
        (name.ToLower().ToCharArray()
         |&gt; Seq<span class="kw">.</span>map   /&gt; <span class="kw">fun</span> <span class="dt">char</span> -&gt; Convert<span class="kw">.</span>ToInt32 <span class="dt">char</span> - <span class="dv">96</span>
         |&gt; Seq<span class="kw">.</span>sumBy (<span class="kw">fun</span> x -&gt; x + <span class="dv">25</span>)) - <span class="dv">26</span>
     <span class="kw">else</span> <span class="dv">0</span>
-<span class="kw">let</span> cvar = cXL varCol</code></pre>
+<span class="kw">let</span> cvar = cXL varCol</code></pre></div>
 <p>Load data</p>
-<pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="kw">let</span> getData sr er =
+<div class="sourceCode"><pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="kw">let</span> getData sr er =
     [ <span class="kw">for</span> i <span class="kw">in</span> sr..er -&gt; <span class="kw">try</span> Double<span class="kw">.</span>Parse(sheet.GetRow(i<span class="dv">-1</span>).GetCell(cvar).ToString())
                          <span class="kw">with</span> _ -&gt; <span class="fl">0.0</span> ]
 <span class="kw">let</span> sr = <span class="kw">try</span> Int32<span class="kw">.</span>Parse startRow 
@@ -82,15 +82,15 @@
                      counter <span class="dv">0</span>
             | _ -&gt; <span class="kw">try</span> Int32<span class="kw">.</span>Parse endRow
                    <span class="kw">with</span> _ -&gt; <span class="dv">0</span>
-getData sr er</code></pre>
+getData sr er</code></pre></div>
 <p>To load data from all excel files in custom folder</p>
-<pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="kw">let</span> xls = (<span class="kw">new</span> DirectoryInfo(<span class="st">&quot;.&quot;</span>)).GetFiles()
+<div class="sourceCode"><pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="kw">let</span> xls = (<span class="kw">new</span> DirectoryInfo(<span class="st">&quot;.&quot;</span>)).GetFiles()
           |&gt; Seq<span class="kw">.</span>filter ( <span class="kw">fun</span> f -&gt; f.Name<span class="kw">.</span>EndsWith(<span class="st">&quot;.xls&quot;</span>) )
           |&gt; Seq<span class="kw">.</span>map    ( <span class="kw">fun</span> f -&gt; f.Name                  )
-<span class="kw">let</span> xlsData col start fin = xls |&gt; Seq<span class="kw">.</span>map(<span class="kw">fun</span> n -&gt; load n col start fin)</code></pre>
+<span class="kw">let</span> xlsData col start fin = xls |&gt; Seq<span class="kw">.</span>map(<span class="kw">fun</span> n -&gt; load n col start fin)</code></pre></div>
 <p>That’s all…</p>
 <p>Writing data is same simple as reading:</p>
-<pre class="sourceCode fsharp"><code class="sourceCode fsharp">using(<span class="kw">new</span> MemoryStream()) &lt;| <span class="kw">fun</span> ms -&gt;  
+<div class="sourceCode"><pre class="sourceCode fsharp"><code class="sourceCode fsharp">using(<span class="kw">new</span> MemoryStream()) &lt;| <span class="kw">fun</span> ms -&gt;  
     <span class="kw">let</span> templateWorkbook = <span class="kw">new</span> HSSFWorkbook()
     templateWorkbook.Write(ms)         
     <span class="kw">let</span> msA = ms.ToArray()
@@ -98,7 +98,7 @@ getData sr er</code></pre>
     &lt;| <span class="kw">fun</span> newF -&gt;
         <span class="kw">try</span> newF.Write(msA,<span class="dv">0</span>,msA.Length)
             MessageBox<span class="kw">.</span>Show( <span class="st">&quot;X.xls created, check the result&quot;</span> ) |&gt; ignore
-        <span class="kw">with</span> _ -&gt; MessageBox<span class="kw">.</span>Show( <span class="st">&quot;Can't write to file&quot;</span> )       |&gt; ignore</code></pre>
+        <span class="kw">with</span> _ -&gt; MessageBox<span class="kw">.</span>Show( <span class="st">&quot;Can't write to file&quot;</span> )       |&gt; ignore</code></pre></div>
 
 <div id="postfooter">
 </div>

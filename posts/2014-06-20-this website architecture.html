@@ -51,7 +51,7 @@
 <p>It’s just my Blog where I run all the possible experiments…</p>
 <p>Core level has done with <a href="http://jaspervdj.be/hakyll/">Hakyll</a></p>
 <p>Hakyll builds all the html pages, atom.xml and some other candies</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell">match <span class="st">&quot;posts/*&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">match <span class="st">&quot;posts/*&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
     route <span class="fu">$</span> setExtension <span class="st">&quot;html&quot;</span>
     compile <span class="fu">$</span> pandocCompiler
         <span class="fu">&gt;&gt;=</span> loadAndApplyTemplate <span class="st">&quot;templates/post.html&quot;</span>    postCtx
@@ -70,13 +70,13 @@ create [<span class="st">&quot;index.html&quot;</span>] <span class="fu">$</span
         makeItem <span class="st">&quot;&quot;</span>
             <span class="fu">&gt;&gt;=</span> loadAndApplyTemplate <span class="st">&quot;templates/index.html&quot;</span> indexCtx
             <span class="fu">&gt;&gt;=</span> loadAndApplyTemplate <span class="st">&quot;templates/default.html&quot;</span> homeCtx
-            <span class="fu">&gt;&gt;=</span> relativizeUrls</code></pre>
+            <span class="fu">&gt;&gt;=</span> relativizeUrls</code></pre></div>
 <p>My CSS made with <a href="https://github.com/sebastiaanvisser/clay">Clay</a></p>
 <blockquote>
 <p>Clay is a CSS preprocessor like LESS and Sass, but implemented as an embedded domain specific language (EDSL) in Haskell.</p>
 <p>This means that all CSS selectors and style rules are first class Haskell functions, which makes reuse and composability easy.</p>
 </blockquote>
-<pre class="sourceCode haskell"><code class="sourceCode haskell">body <span class="fu">?</span> <span class="kw">do</span> color         <span class="st">&quot;#333&quot;</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">body <span class="fu">?</span> <span class="kw">do</span> color         <span class="st">&quot;#333&quot;</span>
           margin        <span class="dv">0</span> auto <span class="dv">0</span> auto
           width         <span class="fu">$</span>   pct <span class="dv">80</span>
           fontSize      <span class="fu">$</span>   px <span class="dv">16</span>
@@ -84,7 +84,7 @@ create [<span class="st">&quot;index.html&quot;</span>] <span class="fu">$</span
           fontWeight    <span class="fu">$</span>   weight <span class="dv">300</span>
           lineHeight    <span class="fu">$</span>   em <span class="fl">1.5</span>
 
-div <span class="st"># &quot;#header&quot; ? do marginBottom    $  px 44</span>
+div <span class="fu">#</span> <span class="st">&quot;#header&quot;</span> <span class="fu">?</span> <span class="kw">do</span> marginBottom    <span class="fu">$</span>  px <span class="dv">44</span>
                      marginTop       <span class="fu">$</span>  px <span class="dv">44</span>
                      height          <span class="fu">$</span>  px <span class="dv">45</span>
                      <span class="st">&quot;#navigation&quot;</span>   <span class="fu">?</span>
@@ -94,20 +94,20 @@ div <span class="st"># &quot;#header&quot; ? do marginBottom    $  px 44</span>
                                   fontWeight    <span class="fu">$</span> bold
                                   marginLeft    <span class="fu">$</span> px <span class="dv">12</span>
                                   textDecoration none
-                                  textTransform  uppercase</code></pre>
+                                  textTransform  uppercase</code></pre></div>
 <p>JS level has made with <a href="https://www.dartlang.org/">Dart</a>, <a href="https://angulardart.org">AngularDart</a> and <a href="http://rikulo.org/">Rikulo</a></p>
-<pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">import</span> <span class="st">'dart:html'</span>;
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="im">import</span> <span class="st">'dart:html'</span><span class="op">;</span>
 
-<span class="kw">import</span> <span class="st">'package:angular/angular.dart'</span>;
-<span class="kw">import</span> <span class="st">'package:angular/application_factory.dart'</span>;
+<span class="im">import</span> <span class="st">'package:angular/angular.dart'</span><span class="op">;</span>
+<span class="im">import</span> <span class="st">'package:angular/application_factory.dart'</span><span class="op">;</span>
 
-<span class="kw">import</span> <span class="st">'package:dquery/dquery.dart'</span>;
-<span class="kw">import</span> <span class="st">'package:bootjack/bootjack.dart'</span>;
+<span class="im">import</span> <span class="st">'package:dquery/dquery.dart'</span><span class="op">;</span>
+<span class="im">import</span> <span class="st">'package:bootjack/bootjack.dart'</span><span class="op">;</span>
 
-<span class="kw">void</span> <span class="fu">main</span>() {
-    <span class="ot">Bootjack</span>.<span class="fu">useDefault</span>();
-    <span class="fu">applicationFactory</span>().<span class="fu">run</span>();
-}</code></pre>
+<span class="kw">void</span> <span class="at">main</span>() <span class="op">{</span>
+    <span class="va">Bootjack</span>.<span class="at">useDefault</span>()<span class="op">;</span>
+    <span class="at">applicationFactory</span>().<span class="at">run</span>()<span class="op">;</span>
+<span class="op">}</span></code></pre></div>
 
 <div id="postfooter">
 </div>

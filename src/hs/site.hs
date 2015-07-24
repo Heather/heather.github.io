@@ -1,18 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import Control.Applicative ((<$>))
+import           Control.Applicative        ((<$>))
 
-import Data.Monoid (mappend)
 import qualified Data.ByteString.Lazy.Char8 as LB
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as E
+import           Data.Monoid                (mappend)
+import qualified Data.Text                  as T
+import qualified Data.Text.Encoding         as E
 
-import System.Process (system)
-import System.FilePath (replaceExtension, takeDirectory)
+import           System.FilePath            (replaceExtension, takeDirectory)
+import           System.Process             (system)
 
-import Hakyll
+import           Hakyll
 
-import Text.Jasmine
+import           Text.Jasmine
 
 main :: IO ()
 main = hakyll $ do
@@ -30,7 +30,7 @@ main = hakyll $ do
     match "css/*" $ do
         route idRoute
         compile compressCssCompiler
-        
+
     match "js/*" $ do
         route idRoute
         compile compressJsCompiler
@@ -58,7 +58,7 @@ main = hakyll $ do
 
     create ["404.html"] $ do
         route idRoute
-        compile $ do
+        compile $
             makeItem ""
                 >>= loadAndApplyTemplate "templates/404.html" homeCtx
                 >>= loadAndApplyTemplate "templates/top.html" homeCtx
@@ -74,16 +74,16 @@ main = hakyll $ do
             renderAtom feedConfiguration feedCtx posts
 
     match "templates/*" $ compile templateCompiler
-    
+
   where
     runGHC :: Compiler (Item String)
     runGHC = getResourceString >>= withItemBody (unixFilter "runghc" [])
-  
+
     compressJsCompiler :: Compiler (Item String)
     compressJsCompiler = fmap jasmin <$> getResourceString
-    
+
     jasmin :: String -> String
-    jasmin src = LB.unpack $ minify $ LB.fromChunks [(E.encodeUtf8 $ T.pack src)] 
+    jasmin src = LB.unpack $ minify $ LB.fromChunks [E.encodeUtf8 $ T.pack src]
 
 homeCtx :: Context String
 homeCtx =

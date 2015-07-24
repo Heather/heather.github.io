@@ -68,7 +68,7 @@
 <li>for 64 build use something alike: <code>cmake ../Perfume -G&quot;Visual Studio 11 Win64&quot;</code></li>
 </ul>
 <h1 id="server">Server</h1>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">LOG4CPLUS_INFO(logger_, <span class="st">&quot;Running server class&quot;</span>);
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">LOG4CPLUS_INFO(logger_, <span class="st">&quot;Running server class&quot;</span>);
 managed_shared_memory segment
    (create_only, <span class="st">&quot;Patchouli&quot;</span>, <span class="dv">65536</span>);
 
@@ -79,10 +79,10 @@ managed_shared_memory::size_type free_memory =
 segment.construct&lt;sharedString&gt;( <span class="st">&quot;sharedString&quot;</span> )
         (app_name, segment.get_segment_manager());
 
-boost::thread thread(&amp;server::worker, <span class="kw">this</span>);</code></pre>
+boost::thread thread(&amp;server::worker, <span class="kw">this</span>);</code></pre></div>
 <h1 id="client">Client</h1>
 <p><img align="right" src="http://cdn.flaticon.com/png/256/33804.png"></p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">root-&gt;<span class="fu">connect</span>(trayIcon, &amp;<span class="ot">QSystemTrayIcon::</span>activated,
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">root-&gt;<span class="fu">connect</span>(trayIcon, &amp;<span class="ot">QSystemTrayIcon::</span>activated,
   [root] (<span class="ot">QSystemTrayIcon::</span>ActivationReason reason) {
     <span class="kw">switch</span> (reason) {
     <span class="kw">case</span> <span class="ot">QSystemTrayIcon::</span>Trigger<span class="ot">:</span>
@@ -94,7 +94,7 @@ boost::thread thread(&amp;server::worker, <span class="kw">this</span>);</code><
 managed_shared_memory segment(open_only, <span class="st">&quot;Patchouli&quot;</span>);
 std::pair&lt;sharedString * , size_t &gt; p
   = segment.find&lt;sharedString&gt;(<span class="st">&quot;sharedString&quot;</span>);
-((QQuickWindow *)root)-&gt;setTitle( p.first-&gt;c_str() );</code></pre>
+((QQuickWindow *)root)-&gt;setTitle( p.first-&gt;c_str() );</code></pre></div>
 <h1 id="credits">Credits</h1>
 <ul>
 <li>based on https://github.com/snikulov/boost.app.cmake</li>

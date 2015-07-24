@@ -51,7 +51,7 @@
 <p>I never liked and I still don’t like Qt but maybe I will need it in near future. <br /> Here is my fast review.</p>
 <h2 id="path">PATH</h2>
 <p>GUI application that extracts PATH windows variable and gives you easy way to edit it. <br /> For now it just splits by <code>;</code> PATH into different edits with possibility to edit / delete those edits or add new edits. <br /> And finally concatenates them all to one string with <code>;</code> separator.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp">Path::Path() {
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">Path::Path() {
     path = std::getenv(<span class="st">&quot;PATH&quot;</span>);
 }
 
@@ -63,9 +63,9 @@ std::vector&lt;std::string&gt; Path::GetPath() {
 
 <span class="dt">void</span> Path::Reload() {
     path = std::getenv(<span class="st">&quot;PATH&quot;</span>);
-}</code></pre>
+}</code></pre></div>
 <h2 id="gui-header">GUI header</h2>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">class</span> MainWindow : <span class="kw">public</span> <span class="ot">QMainWindow</span> {
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">class</span> MainWindow : <span class="kw">public</span> <span class="ot">QMainWindow</span> {
     <span class="kw">Q_OBJECT</span>
 
 <span class="kw">public</span>:
@@ -82,10 +82,10 @@ std::vector&lt;std::string&gt; Path::GetPath() {
 
     std::unique_ptr&lt;Ui::MainWindow&gt; ui;
     std::unique_ptr&lt;Path&gt; path;
-};</code></pre>
+};</code></pre></div>
 <p>For me it looks sane to use <code>unique_ptr</code> here but for Qt Creator it’s often a problem.</p>
 <h2 id="gui-methods">GUI methods</h2>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> MainWindow::DrawPath() {
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">void</span> MainWindow::DrawPath() {
     <span class="kw">for</span> (std::string str : path-&gt;GetPath()) {
         <span class="kw">auto</span> editForm = <span class="kw">new</span> <span class="ot">QLineEdit</span>();
         <span class="kw">auto</span> btnDelete = <span class="kw">new</span> <span class="ot">QPushButton</span>(<span class="st">&quot;Del&quot;</span>);
@@ -138,7 +138,7 @@ std::vector&lt;std::string&gt; Path::GetPath() {
     window-&gt;setLayout(layout);
     window-&gt;setAttribute(<span class="ot">Qt::</span>WA_DeleteOnClose);
     window-&gt;show();
-}</code></pre>
+}</code></pre></div>
 <p>Maybe there are some weak moments alike: - <code>for (QLineEdit* qle : this-&gt;findChildren&lt;QLineEdit *&gt;())</code> as <code>formLayout</code> strings iteration - <code>setText</code> needs <code>QString</code> and not just std string with some reason</p>
 <p>There is no much to review so far, I plan to check more about what Qt Widgets can do and how I can work with OpenCL there.</p>
 <p>GitHub: <a href="https://github.com/Heather/PATH">PATH</a></p>

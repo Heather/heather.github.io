@@ -67,7 +67,7 @@ Type checking .\Control\Eternal\Operators.idr
 Type checking .\Control\Eternal.idr
 Installing Control\Eternal.ibc to ....\cabal\idris-</code></pre>
 <p>Yaml is <a href="https://github.com/Heather/Idris.Yaml">Idris.Yaml</a> library for parsing config files and it already works, thanks to <a href="https://github.com/ziman/lightyear">lightyear</a> and JSON example there <br /> But there are still being a lot of things to do to make it sane, thanks to</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">YamlValue</span> <span class="fu">=</span> <span class="dt">YamlString</span> <span class="dt">String</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">YamlValue</span> <span class="fu">=</span> <span class="dt">YamlString</span> <span class="dt">String</span>
                <span class="fu">|</span> <span class="dt">YamlNumber</span> <span class="dt">Float</span>
                <span class="fu">|</span> <span class="dt">YamlBool</span> <span class="dt">Bool</span>
                <span class="fu">|</span> <span class="dt">YamlNull</span>
@@ -210,9 +210,9 @@ mutual
   yamlValue <span class="fu">=</span> yamlSpace <span class="fu">$&gt;</span> yamlValue' <span class="fu">&lt;$</span> yamlSpace
 
 yamlToplevelValue <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span>
-yamlToplevelValue <span class="fu">=</span> (map <span class="dt">YamlArray</span> yamlArray) <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlObject</span> yamlObject)</code></pre>
+yamlToplevelValue <span class="fu">=</span> (map <span class="dt">YamlArray</span> yamlArray) <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlObject</span> yamlObject)</code></pre></div>
 <p>Github repository: <a href="https://github.com/Heather/Synthia" class="uri">https://github.com/Heather/Synthia</a> <br /> Code in current state:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell">ls <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">String</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">ls <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">String</span>
 ls path <span class="fu">=</span> readProcess' (<span class="st">&quot;ls &quot;</span> <span class="fu">++</span> path) <span class="dt">False</span> 
 
 <span class="co">{- ETERNAL EFFECT WILL DO LS and stuff in EternalIO -}</span>
@@ -246,30 +246,30 @@ sys ss <span class="fu">=</span> <span class="kw">do</span> system ss
 
 finalInstall <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
 finalInstall repoDir synss flist <span class="fu">=</span>
-    <span class="kw">case</span> (synss <span class="st"># 0) of</span>
+    <span class="kw">case</span> (synss <span class="fu">#</span> <span class="dv">0</span>) <span class="kw">of</span>
         <span class="dt">Just</span> syn <span class="ot">=&gt;</span> <span class="kw">do</span> <span class="co">{- PROCESS PACKAGE INSTALLATION -}</span>
             <span class="kw">let</span> truesyn <span class="fu">=</span> repoDir <span class="fu">++</span> syn
             sys <span class="fu">$</span> <span class="st">&quot;pushd &quot;</span> <span class="fu">++</span> repoDir <span class="fu">++</span> <span class="st">&quot; &amp; Synthia --install &quot;</span> <span class="fu">++</span> truesyn
             
             <span class="co">{- Finishing installation -}</span>
             <span class="kw">let</span> makeF <span class="fu">=</span> filter (<span class="fu">==</span> <span class="st">&quot;Makefile&quot;</span>) flist
-            <span class="kw">case</span> (makeF <span class="st"># 0) of</span>
+            <span class="kw">case</span> (makeF <span class="fu">#</span> <span class="dv">0</span>) <span class="kw">of</span>
                 <span class="dt">Just</span> _ <span class="ot">=&gt;</span> sys <span class="fu">$</span> <span class="st">&quot;pushd &quot;</span> <span class="fu">++</span> repoDir <span class="fu">++</span> <span class="st">&quot; &amp; make &amp; make install&quot;</span>
                 _ <span class="ot">=&gt;</span> <span class="kw">let</span> pkg <span class="fu">=</span> filter (\x <span class="ot">=&gt;</span> isSuffixOf <span class="fu">&lt;|</span> unpack <span class="st">&quot;.ipkg&quot;</span>
                                                         <span class="fu">&lt;|</span> unpack (trim x)) flist
-                     <span class="kw">in</span> <span class="kw">case</span> (pkg <span class="st"># 0) of</span>
+                     <span class="kw">in</span> <span class="kw">case</span> (pkg <span class="fu">#</span> <span class="dv">0</span>) <span class="kw">of</span>
                          <span class="dt">Just</span> pkg <span class="ot">=&gt;</span> sys <span class="fu">$</span> <span class="st">&quot;pushd &quot;</span> <span class="fu">++</span> repoDir <span class="fu">++</span> <span class="st">&quot; &amp; idris --install &quot;</span> <span class="fu">++</span> pkg
                          _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;No ipkg in this repository&quot;</span>
         _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;No synthia in this repository&quot;</span>
 
 install <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
 install [] [] <span class="fu">=</span> putStrLn <span class="st">&quot;try Synthia install GitHubUser/Repo&quot;</span>
-install [] xs <span class="fu">=</span> <span class="kw">let</span> <span class="dt">Just</span> mypkg <span class="fu">=</span> xs <span class="st"># 0</span>
+install [] xs <span class="fu">=</span> <span class="kw">let</span> <span class="dt">Just</span> mypkg <span class="fu">=</span> xs <span class="fu">#</span> <span class="dv">0</span>
                 <span class="kw">in</span> sys <span class="fu">$</span> <span class="st">&quot;idris --install &quot;</span> <span class="fu">++</span> mypkg
 install xs _ <span class="fu">=</span> <span class="kw">do</span>
     <span class="kw">let</span> dir <span class="fu">=</span> <span class="st">&quot;C:\\Idris\\&quot;</span>
-    <span class="kw">let</span> <span class="dt">Just</span> repo <span class="fu">=</span> xs <span class="st"># 0</span>
-    <span class="kw">case</span> (splitOn <span class="ch">'/'</span> (unpack repo)) <span class="st"># 1 of</span>
+    <span class="kw">let</span> <span class="dt">Just</span> repo <span class="fu">=</span> xs <span class="fu">#</span> <span class="dv">0</span>
+    <span class="kw">case</span> (splitOn <span class="ch">'/'</span> (unpack repo)) <span class="fu">#</span> <span class="dv">1</span> <span class="kw">of</span>
         <span class="dt">Just</span> repx <span class="ot">=&gt;</span> <span class="kw">do</span> <span class="kw">let</span> reps <span class="fu">=</span> pack repx
                         sys <span class="fu">$</span> <span class="st">&quot;mkdir &quot;</span> <span class="fu">++</span> dir
                         <span class="kw">let</span> repoDir <span class="fu">=</span> dir <span class="fu">++</span> reps <span class="fu">++</span> <span class="st">&quot;\\&quot;</span>
@@ -284,7 +284,7 @@ install xs _ <span class="fu">=</span> <span class="kw">do</span>
 <span class="co">{- SYMPLY RUN IDRIS WITH ARGUMENTS -}</span>
 goC <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
 goC pkg args cc <span class="fu">=</span>
-    <span class="kw">case</span> (pkg <span class="st"># 0) of</span>
+    <span class="kw">case</span> (pkg <span class="fu">#</span> <span class="dv">0</span>) <span class="kw">of</span>
         <span class="dt">Just</span> mypkg <span class="ot">=&gt;</span> sys <span class="fu">$</span> cc <span class="fu">++</span> concat <span class="fu">&lt;&lt;|</span> drop <span class="dv">2</span> args
                                <span class="fu">++</span> <span class="st">&quot; &quot;</span>
                                <span class="fu">++</span> mypkg
@@ -300,7 +300,7 @@ procs args file p <span class="fu">=</span>
              <span class="kw">else</span> <span class="kw">let</span> pkg <span class="fu">=</span> filter (\x <span class="ot">=&gt;</span> isSuffixOf <span class="fu">&lt;|</span> unpack <span class="st">&quot;.ipkg&quot;</span>
                                                      <span class="fu">&lt;|</span> unpack (trim x))
                               <span class="fu">$</span> splitOn <span class="ch">'\n'</span> <span class="fu">!</span>(els <span class="st">&quot;.&quot;</span>)
-                  <span class="kw">in</span> <span class="kw">case</span> (args <span class="st"># 1) of</span>
+                  <span class="kw">in</span> <span class="kw">case</span> (args <span class="fu">#</span> <span class="dv">1</span>) <span class="kw">of</span>
                         <span class="dt">Just</span> cmd <span class="ot">=&gt;</span> <span class="kw">case</span> cmd <span class="kw">of</span>
                                        <span class="st">&quot;--help&quot;</span>     <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;try Synthia install GitHubUser/Repo&quot;</span>
                                        <span class="st">&quot;--version&quot;</span>  <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;0.0.2&quot;</span>
@@ -315,7 +315,7 @@ procs args file p <span class="fu">=</span>
                                        <span class="st">&quot;list&quot;</span>       <span class="ot">=&gt;</span> sys <span class="st">&quot;ls -d1 C:\\Idris/*/&quot;</span>
                                        
                                        _            <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;What?&quot;</span>
-                        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;What?&quot;</span></code></pre>
+                        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;What?&quot;</span></code></pre></div>
 
 <div id="postfooter">
 </div>
