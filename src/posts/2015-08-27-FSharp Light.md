@@ -56,7 +56,7 @@ let f x = x |> exp
 
 now you can just use real point-free programmign style.
 
- - `let mutable` is deprecated, language is becoming truely functional
+ - `let mutable` is deprecated, language is becoming truly functional
 
 Breaking changes:
 -----------------
