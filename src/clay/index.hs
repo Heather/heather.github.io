@@ -1,4 +1,8 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE
+    OverloadedStrings
+  , UnicodeSyntax
+  #-}
+
 module Main where
 
 import           System.Environment
@@ -12,11 +16,11 @@ import           Prelude            hiding (div, span)
 
 main :: IO ()
 main =
-  do args <- getArgs
+  do args ← getArgs
      case args of
        "compact" : _
-          -> TXT.putStr (renderWith compact [] theStylesheet)
-       _  -> putCss theStylesheet
+          → TXT.putStr (renderWith compact [] theStylesheet)
+       _  → putCss theStylesheet
 
 theStylesheet :: Css
 theStylesheet = do

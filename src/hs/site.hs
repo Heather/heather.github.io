@@ -1,4 +1,7 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE
+    OverloadedStrings
+  , UnicodeSyntax
+  #-}
 
 import           Control.Applicative        ((<$>))
 
@@ -35,7 +38,7 @@ main = hakyll $ do
         route idRoute
         compile compressJsCompiler
 
-    match "posts/*" $ do
+    match "posts/*.md" $ do
         route $ setExtension "html"
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
@@ -45,7 +48,7 @@ main = hakyll $ do
     create ["index.html"] $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
+            posts ← recentFirst =<< loadAll "posts/*"
             let indexCtx =
                     listField "posts" postCtx (return posts) `mappend`
                     constField "title" "Home" `mappend`
@@ -70,7 +73,7 @@ main = hakyll $ do
             let feedCtx = postCtx `mappend`
                     constField "description" "Heather"
 
-            posts <- fmap (take 10) . recentFirst =<< loadAll "posts/*"
+            posts ← fmap (take 10) . recentFirst =<< loadAll "posts/*"
             renderAtom feedConfiguration feedCtx posts
 
     match "templates/*" $ compile templateCompiler
@@ -82,7 +85,7 @@ main = hakyll $ do
     compressJsCompiler :: Compiler (Item String)
     compressJsCompiler = fmap jasmin <$> getResourceString
 
-    jasmin :: String -> String
+    jasmin :: String → String
     jasmin src = LB.unpack $ minify $ LB.fromChunks [E.encodeUtf8 $ T.pack src]
 
 homeCtx :: Context String
@@ -104,27 +107,37 @@ feedConfiguration = FeedConfiguration
     , feedRoot        = "http://heather.github.io"
     }
 
--- | source: https://github.com/jaspervdj/jaspervdj/blob/master/src/Main.hs
-pdflatex :: Item String -> Compiler (Item TmpFile)
+pdflatex :: Item String → Compiler (Item TmpFile)
 pdflatex item = do
-    TmpFile texPath <- newTmpFile "pdflatex.tex"
+    TmpFile texPath ← newTmpFile "pdflatex.tex"
     let tmpDir  = takeDirectory texPath
         pdfPath = replaceExtension texPath "pdf"
 
     unsafeCompiler $ do
         writeFile texPath $ itemBody item
-        _ <- system $ unwords ["pdflatex", "-halt-on-error",
-            "-output-directory", tmpDir, texPath, ">/dev/null", "2>&1"]
+        _ ← system $ unwords [ "pdflatex"
+                             , "-halt-on-error"
+                             , "-output-directory"
+                             , tmpDir
+                             , texPath
+                             , ">/dev/null"
+                             , "2>&1"
+                             ]
         return ()
-
     makeItem $ TmpFile pdfPath
 
-pdfToPng :: Item TmpFile -> Compiler (Item TmpFile)
+pdfToPng :: Item TmpFile → Compiler (Item TmpFile)
 pdfToPng item = do
     let TmpFile pdfPath = itemBody item
         pngPath         = replaceExtension pdfPath "png"
     unsafeCompiler $ do
-        _ <- system $ unwords ["convert", "-density", "150", "-quality", "90",
-                pdfPath, pngPath]
+        _ ← system $ unwords [ "convert"
+                             , "-density"
+                             , "150"
+                             , "-quality"
+                             , "90"
+                             , pdfPath
+                             , pngPath
+                             ]
         return ()
     makeItem $ TmpFile pngPath
