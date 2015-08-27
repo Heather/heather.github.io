@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html ng-app>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        
+        <title>Heather - F# Light</title>
+        <meta name="description" content="Heather">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link href="../atom.xml" rel="alternate" title="Heather" type="application/atom+xml">
+        <link rel="shortcut icon" type="image/ico" href="../favicon.ico" />
+
+        <script src="../bootstrap/jquery-2.1.1.min.js"></script>
+        <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="../bootstrap/bootstrap-theme.min.css">
+        <script src="../bootstrap/bootstrap.min.js"></script>
+        <script src="../bootstrap/angular.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" media="all" href="../css/hasklig.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/octicons.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/syntax.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="../clay/default.css" />
+        
+        <script type="application/javascript" src="../js/auto.js"></script>
+    </head>
+    <body>
+        <div class="band"></div>
+        <div id="header">
+            <div id="logo">
+                <a id="abbr" href="../"></a>
+                <script>
+                    e = document.getElementById("abbr");
+                    setTimeout(r, 0);
+                </script>
+            </div>
+        </div>
+        <div id="content">
+            <h1>F# Light</h1>
+
+<audio id="audio" autoplay loop>
+    <source src="../images/Bween.mp3" type="audio/mp3"></source>
+</audio>
+
+<div id="controls">
+    <img id="playpause" height="20px" width="20px" src="../images/RedPause.png" />
+</div>
+<div class="info">Posted on 27 August 2015</div>
+
+<h1 id="f-light-changes-and-features">F# Light Changes and Features</h1>
+<h2 id="minor-fixes-and-improvements">Minor fixes and improvements:</h2>
+<ul>
+<li>fixed <code>let</code> <code>in</code> incapsulation, e.g. you no longer can use let bindings outside <code>in</code> blocks</li>
+</ul>
+<p>e.g. this code</p>
+<div class="sourceCode"><pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="kw">let</span> x = <span class="dv">0</span>
+<span class="kw">in</span> printfn <span class="st">&quot;x: %d&quot;</span> x
+
+printfn <span class="st">&quot;x: %d&quot;</span> x</code></pre></div>
+<p>will fail in compile time with error “Not in scope: <code>x</code>”</p>
+<ul>
+<li><code>let</code> is <code>letrec</code> but syntax <code>let x, y = 0, 1</code> will be improved</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="kw">let</span> x = <span class="dv">0</span>
+    y = <span class="dv">1</span>
+<span class="kw">in</span> printfn <span class="st">&quot;x: %d, y: %d&quot;</span> x y</code></pre></div>
+<ul>
+<li>applicative generic computation expressions, you no longer need to write <code>xs |&gt; Seq.map</code></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="kw">let</span> lst5n6  = map ((+) <span class="dv">4</span>) [ <span class="dv">1</span>;<span class="dv">2</span> ]
+    arr5n6  = map ((+) <span class="dv">4</span>) [|<span class="dv">1</span>;<span class="dv">2</span>|]
+    lst5n6' = (+) &lt;!&gt; [<span class="dv">4</span>] &lt;*&gt; [<span class="dv">1</span>;<span class="dv">2</span>]</code></pre></div>
+<p>Note: you already can use it with <a href="https://github.com/gmpl/FSharpPlus/tree/master/FSharpPlus/Samples">F#+</a></p>
+<ul>
+<li>improved type inference</li>
+</ul>
+<p>currently you can’t compile <code>Seq.map (fun fi -&gt; fi.Name) fis</code> and that’s why you need that pipe <code>fis |&gt; Seq.map (fun fi -&gt; fi.Name)</code> <a href="http://stackoverflow.com/questions/844733/why-cant-fs-type-inference-handle-this">source</a>. You simply can’t have</p>
+<div class="sourceCode"><pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="kw">let</span> f = exp</code></pre></div>
+<p>if exp if some expression and you need</p>
+<pre><code>let f x = x |&gt; exp</code></pre>
+<p>now you can just use real point-free programmign style.</p>
+<ul>
+<li><code>let mutable</code> is deprecated, language is becoming truely functional</li>
+</ul>
+<h2 id="breaking-changes">Breaking changes:</h2>
+<ul>
+<li>Compiler plugins</li>
+<li>Type calsses (well, sure there is F#+) and GADTs</li>
+<li>.fshproj XML based projects are deprected, instead project files are YAML based and writeable by hand.</li>
+<li>Good module system and tooling.</li>
+<li>.NET platform is deprecated (with dropping all the .NET type system designed for OO languages)</li>
+<li>Native binaries generation!</li>
+<li>Laziness by default</li>
+</ul>
+<h1 id="you-can-use-it-with-old-f-right-now">You can use it with old F# right now!</h1>
+<p>Since F# Light can generate native binaries it also can generate native FFI shared libraries. And they could be called from current F# alike that:</p>
+<div class="sourceCode"><pre class="sourceCode fsharp"><code class="sourceCode fsharp"><span class="ot">module</span> FSharp
+
+<span class="ot">open</span> System
+<span class="ot">open</span> System<span class="kw">.</span>Runtime<span class="kw">.</span>InteropServices
+
+[&lt;DllImport(<span class="st">&quot;FSharpLight.dll&quot;</span>, CallingConvention = CallingConvention<span class="kw">.</span>Cdecl)&gt;]
+<span class="kw">extern</span> <span class="kw">void</span> hs_init
+   ( IntPtr argc
+   , IntPtr argv)
+
+[&lt;DllImport(<span class="st">&quot;FSharpLight.dll&quot;</span>, CallingConvention = CallingConvention<span class="kw">.</span>Cdecl)&gt;]
+<span class="kw">extern</span> <span class="kw">void</span> hs_exit()
+
+[&lt;DllImport(<span class="st">&quot;FSharpLight.dll&quot;</span>, CallingConvention = CallingConvention<span class="kw">.</span>Cdecl)&gt;]
+<span class="kw">extern</span> <span class="dt">int</span> fSharpLight(<span class="dt">string</span> str)
+
+printfn <span class="st">&quot;Initializing runtime...&quot;</span>
+hs_init(IntPtr<span class="kw">.</span>Zero, IntPtr<span class="kw">.</span>Zero)
+
+<span class="kw">try</span>
+    printfn <span class="st">&quot;Calling to FSharpLight...&quot;</span>
+    <span class="kw">let</span> result = fSharpLight(<span class="st">&quot;F#&quot;</span>)
+    printfn <span class="st">&quot;Got result: %d&quot;</span> result
+<span class="kw">with</span>
+| _ <span class="kw">as</span> ex -&gt; printfn <span class="st">&quot;Error: %s&quot;</span> ex.Message
+             hs_exit()</code></pre></div>
+<p>it could be compiled with <code>fsc</code> simply alike:</p>
+<pre class="shell"><code>set fsc=&quot;C:\Program Files (x86)\Microsoft SDKs\F#\3.1\Framework\v4.0\fsc.exe&quot;
+%fsc% hs.fs</code></pre>
+<h2 id="fsharplight.dll">FSharpLight.dll</h2>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="co">{-# LANGUAGE</span>
+<span class="co">    UnicodeSyntax</span>
+<span class="co">  , ForeignFunctionInterface</span>
+<span class="co">  #-}</span>
+
+<span class="kw">module</span> <span class="dt">FSharpLight</span> <span class="kw">where</span>
+
+<span class="kw">import </span><span class="dt">Foreign.C.String</span>
+<span class="kw">import </span><span class="dt">Foreign.C.Types</span>
+
+foreign export ccall
+  fSharpLight <span class="ot">∷</span> <span class="dt">CString</span> <span class="ot">→</span> <span class="dt">IO</span> <span class="dt">CInt</span>
+
+fSharpLight <span class="ot">∷</span> <span class="dt">CString</span> <span class="ot">→</span> <span class="dt">IO</span> <span class="dt">CInt</span>
+fSharpLight c_str <span class="fu">=</span> <span class="kw">do</span>
+  str    <span class="ot">←</span> peekCString c_str
+  result <span class="ot">←</span> fs_foo str
+  return <span class="fu">$</span> fromIntegral result
+
+fs_foo <span class="ot">∷</span> <span class="dt">String</span> <span class="ot">→</span> <span class="dt">IO</span> <span class="dt">Int</span>
+fs_foo str <span class="fu">=</span> <span class="kw">do</span>
+  putStrLn <span class="fu">$</span> <span class="st">&quot;Hello, &quot;</span> <span class="fu">++</span> str
+  return (length str <span class="fu">+</span> <span class="dv">42</span>)</code></pre></div>
+<p>sadly for now there is no FSharpLight compiler but you can simply use <code>GHC</code></p>
+<pre class="shell"><code>ghc -O2 --make -no-hs-main -shared -o FSharpLight.dll FSharpLight.hs</code></pre>
+<p>and run the whole thing with</p>
+<pre class="shell"><code>set LD_LIBRARY_PATH=. &amp;&amp; &quot;FSharp.exe&quot;</code></pre>
+<p>output:</p>
+<pre class="shell"><code>Initializing runtime...
+Calling to FSharpLight...
+Hello, F#
+Got result: 44
+Done</code></pre>
+<p>It’s a parody to <a href="http://fsharpforfunandprofit.com/csharp-light/">this</a> blog post :) Happy Hacking</p>
+
+<div id="postfooter">
+</div>
+
+<script type="text/javascript">
+    $('#playpause').click(function() {
+      if ($('#audio')[0].paused == false) {
+          $('#audio')[0].pause();
+          $('#playpause').attr("src","../images/RedPlay.png");
+      } else {
+          $('#audio')[0].play();
+          $('#playpause').attr("src","../images/RedPause.png");
+      }
+    });
+</script>
+
+<script src="../bootstrap/three.js"></script>
+<script type="text/javascript">
+	var SCREEN_WIDTH = window.innerWidth;
+	var SCREEN_HEIGHT = window.innerHeight;
+	var RADIUS = 200;
+	var QUANTITY = 150;
+
+	var container;
+
+	var camera;
+	var scene;
+	var renderer;
+	
+	var descriptors = [];
+
+	var mouseX = 0;
+	var mouseY = 0;
+
+	var windowHalfX = window.innerWidth / 2;
+	var windowHalfY = window.innerHeight / 2;
+
+	init();
+	setInterval(loop, 1000 / 60);
+
+	function init() {
+
+		container = document.getElementById('postfooter');
+
+		camera = new THREE.Camera(0, 0, 300);
+		camera.focus = 50;
+
+		scene = new THREE.Scene();
+
+		renderer = new THREE.CanvasRenderer();
+		renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT / 4);
+		
+		createParticles();
+		
+		container.appendChild(renderer.domElement);
+
+		document.addEventListener('mousemove', onDocumentMouseMove, false);
+		document.addEventListener('touchstart', onDocumentTouchStart, false);
+		document.addEventListener('touchmove', onDocumentTouchMove, false);
+	}
+
+	function createParticles() {
+		for (var i = 0; i < QUANTITY; i++) {
+			var particle = new THREE.Particle(new THREE.ColorFillMaterial(Math.random() * 0x404040 + 0xaaaaaa, 1));
+			particle.size = 10;
+			
+			particle.position.x = 0;
+			particle.position.y = 0;
+			particle.position.z = 0;
+			
+			particle.offset = { x: 0, y: 0, z: 0 };
+			particle.shift = { x: 0, y: 0 };
+			particle.speed = 0.01+Math.random()*0.04;
+			particle.targetSize = particle.size;
+			
+			scene.add(particle);
+		}
+	}
+
+	function onDocumentMouseMove(event) {
+
+		mouseX = event.clientX - windowHalfX;
+		mouseY = event.clientY - windowHalfY;
+	}
+
+	function onDocumentTouchStart(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function onDocumentTouchMove(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function loop() {
+		camera.updateMatrix();
+		
+		renderer.render(scene, camera);
+		
+		var context = renderer.domElement.getContext("2d")
+		
+		for (var i = 0, len = scene.objects.length; i < len; i++) {
+			var particle = scene.objects[i];
+			
+			particle.offset.x += particle.speed;
+			particle.offset.y += particle.speed;
+			
+			particle.shift.x += ( mouseX - particle.shift.x) * (particle.speed);
+			particle.shift.y += ( -mouseY - particle.shift.y) * (particle.speed);
+			
+			particle.position.x = particle.shift.x + Math.cos(i + particle.offset.x) * RADIUS;
+			particle.position.y = particle.shift.y + Math.sin(i + particle.offset.y) * RADIUS;
+			particle.position.z = i / QUANTITY * RADIUS;
+			
+			particle.size += ( particle.targetSize - particle.size ) * 0.05;
+			
+			if( Math.round( particle.size ) == Math.round( particle.targetSize ) ) {
+				particle.targetSize = 1 + Math.random() * 10;
+			}
+		}
+	}
+	
+	function distanceBetween(p1,p2) {
+		var dx = p2.x-p1.x;
+		var dy = p2.y-p1.y;
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+</script>
+
+<hr />
+
+        </div>
+        
+        <div id="social">
+            <ul>
+              <li>
+                <a href="http://github.com/Heather" title="Github" target="_blank">
+                  <span class="mega-octicon octicon-octoface"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://twitter.com/Cynede" title="Twitter" target="_blank">
+                  <span class="mega-octicon octicon-star"></span>
+                </a>
+              </li>
+              <li>
+                <a href="mailto:heather@live.ru" title="Main mail" target="_blank">
+                  <span class="mega-octicon octicon-mail-read"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank">
+                  <span class="mega-octicon octicon-broadcast"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://grooveshark.com/#!/cynede" title="Grooveshark" target="_blank">
+                  <span class="mega-octicon octicon-squirrel"></span>
+                </a>
+              </li>
+              <li>
+                <a href="../atom.xml" title="RSS" target="_blank">
+                  <span class="mega-octicon octicon-rss"></span>
+                </a>
+              </li>
+            </ul>
+        </div>
+        
+        <div id="footer">
+
+        </div>
+
+    </body>
+</html>

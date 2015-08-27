@@ -8,8 +8,16 @@
         <name>Heather</name>
         <email>heather@live.ru</email>
     </author>
-    <updated>2015-03-27T00:00:00Z</updated>
+    <updated>2015-08-27T00:00:00Z</updated>
     <entry>
+    <title>F# Light</title>
+    <link href="http://heather.github.io/posts/2015-08-27-FSharp%20Light.html" />
+    <id>http://heather.github.io/posts/2015-08-27-FSharp%20Light.html</id>
+    <published>2015-08-27T00:00:00Z</published>
+    <updated>2015-08-27T00:00:00Z</updated>
+    <summary type="html"><![CDATA[Heather]]></summary>
+</entry>
+<entry>
     <title>Selling dependent types</title>
     <link href="http://heather.github.io/posts/2015-03-27-Dependent%20Types.html" />
     <id>http://heather.github.io/posts/2015-03-27-Dependent%20Types.html</id>
@@ -79,14 +87,6 @@
     <id>http://heather.github.io/posts/2014-06-27-Idris%20Effects.html</id>
     <published>2014-06-27T00:00:00Z</published>
     <updated>2014-06-27T00:00:00Z</updated>
-    <summary type="html"><![CDATA[Heather]]></summary>
-</entry>
-<entry>
-    <title>Read/Write Excel from F# with NPOI</title>
-    <link href="http://heather.github.io/posts/2014-06-25-excel%20from%20fsharp.html" />
-    <id>http://heather.github.io/posts/2014-06-25-excel%20from%20fsharp.html</id>
-    <published>2014-06-25T00:00:00Z</published>
-    <updated>2014-06-25T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 
