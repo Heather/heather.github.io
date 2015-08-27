@@ -4,11 +4,11 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        
+
         <title>Heather - Home</title>
         <meta name="description" content="Heather">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
+
         <link href="./atom.xml" rel="alternate" title="Heather" type="application/atom+xml">
         <link rel="shortcut icon" type="image/ico" href="./favicon.ico" />
 
@@ -17,15 +17,15 @@
         <link rel="stylesheet" href="./bootstrap/bootstrap-theme.min.css">
         <script src="./bootstrap/bootstrap.min.js"></script>
         <script src="./bootstrap/angular.min.js"></script>
-        
+
         <link rel="stylesheet" type="text/css" media="all" href="./css/hasklig.css">
         <link rel="stylesheet" type="text/css" media="all" href="./css/octicons.css">
         <link rel="stylesheet" type="text/css" media="all" href="./css/syntax.css" />
-        <link rel="stylesheet" type="text/css" media="all" href="./clay/default.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="./css/default.css" />
     </head>
     <body>
         <div id="content">
-            <link rel="stylesheet" type="text/css" href="./clay/index.css" />
+            <link rel="stylesheet" type="text/css" href="./css/index.css" />
 
 <style>
     div#top {
@@ -54,9 +54,9 @@
             <div class="mright" style="padding-top: 250px;">
                 <h3>Hello {{name}}!</h3>
                     Name: <input type="text" ng-model="name" />
-                    
+
                 <br />
-                
+
                 <button class="btn btn-primary" data-target="#modal" data-toggle="modal">Ping</button>
                 <div id="modal" class="modal fade" tabindex="-1" role="dialog">
                     <div class="modal-dialog">
@@ -116,36 +116,36 @@ var floor  = Math.floor;
 function init() {
     document.body.style.backgroundColor = BACKGROUND_COLOR;
     canvas = document.getElementById('canvas');
-    
+
     document.addEventListener('resize', resize, false);
     resize();
-        
+
     var i;
-    
+
     for (i = 0; i < DRAG_POINT_NUM; i++) {
         dragPoints.push(new DragPoint(canvas.width * random(), canvas.height * random()));
     }
-    
+
     var baseNoiseOpts      = { base: 100000, amplitude: 0.6, speed: 0.02 };
     var lightningNoiseOpts = { base: 90, amplitude: 0.2, speed: 0.05 };
     var childNoiseOpts     = { base: 60, amplitude: 0.8, speed: 0.08 };
-    
+
     baseLine      = new NoiseLine(8,  baseNoiseOpts);
     lightningLine = new NoiseLine(16, lightningNoiseOpts);
     for (i = 0; i < CHILD_NUM; i++) {
         lightningLine.createChild(childNoiseOpts);
     }
-    
+
     // *** Debug
     baseLine.debug = true;
     // *********
-    
+
     document.addEventListener('mousemove', mouseMove, false);
     document.addEventListener('mousedown', mouseDown, false);
     document.addEventListener('mouseup', mouseUp, false);
     document.addEventListener('dblclick', doubleClick, false);
     document.addEventListener('keydown', keyDown, false);
-    
+
     setInterval(loop, 1000 / 30);
 }
 
@@ -158,7 +158,7 @@ function resize(e) {
 
 function mouseMove(e) {
     mouse.set(e.clientX, e.clientY);
-    
+
     var hit = false;
     for (var i = 0, len = dragPoints.length; i < len; i++) {
         if (dragPoints[i].hitTest(mouse)) {
@@ -171,18 +171,18 @@ function mouseMove(e) {
 
 function mouseDown(e) {
     var i, len;
-    
+
     for (i = 0, len = dragPoints.length; i < len; i++) {
         if (dragPoints[i].dragStart(mouse)) return;
     }
-    
+
     for (i = 0; i < len; i++) {
         if (dragPoints[i].hitTest(mouse)) {
             if (len > 1) dragPoints.splice(i, 1);
             return;
         }
     }
-    
+
     if (len < DRAG_POINT_MAX_NUM) {
         dragPoints.push(new DragPoint(e.clientX, e.clientY));
     } else {
@@ -219,11 +219,11 @@ function loop() {
     context.globalCompositeOperation = 'source-over';
     context.fillStyle = BACKGROUND_COLOR;
     context.fillRect(0, 0, canvas.width, canvas.height);
-    
+
     context.globalCompositeOperation = 'lighter';
-    
+
     var i, len, p;
-    
+
     var controls = [];
     for (i = 0, len = dragPoints.length; i < len; i++) {
         p = dragPoints[i];
@@ -240,23 +240,23 @@ function loop() {
             controls.push(p);
         }
     }
-    
+
     controls.sort(sortPoints);
-    
+
     baseLine.update(controls);
-    
+
     lightningLine.update(baseLine.points);
     drawLightningBlur(lightningLine, 50, 30);
     drawLightningLine(lightningLine, 0.75, 1, 1, 5);
     drawLightningCap(lightningLine);
-    
+
     lightningLine.eachChild(function(child, i) {
         drawLightningLine(child, 0, 1, 0, 4);
         drawLightningBlur(child, 50, 30);
     });
-    
+
     Color.l = randomRange(L_MIN, L_MAX);
-    
+
     // * debug
     Debug.exec();
 }
@@ -321,7 +321,7 @@ function randomRange(min, max) {
     //PerlinNoise.useClassic = true;
     var perlinNoise = new PerlinNoise();
     perlinNoise.octaves(3);
-    
+
     function NoiseLine(segmentsNum, noiseOptions) {
         this.segmentsNum = segmentsNum;
 
@@ -397,7 +397,7 @@ function randomRange(min, max) {
                 angle = next.subtract(p).angle();
                 sin = Math.sin(angle);
                 cos = Math.cos(angle);
-                
+
                 av = range * perlinNoise.noise(i / base - offset, offset) * 0.5 * amp;
                 ax = av * sin;
                 ay = av * cos;
@@ -412,7 +412,7 @@ function randomRange(min, max) {
                 py = p.y - (ay - by) * m;
 
                 points.push(pointsOld.length ? pointsOld.shift().set(px, py) : new Point(px, py));
-                
+
                 // *** Debug
                 if (Debug.enabled && this.debug) {
                     Debug.addCommand((function(p, angle) {
@@ -433,7 +433,7 @@ function randomRange(min, max) {
 
     /**
      * NoiseLineChild
-     * 
+     *
      * @super NoiseLine
      */
     function NoiseLineChild(parent, noiseOptions) {
@@ -445,7 +445,7 @@ function randomRange(min, max) {
     NoiseLineChild.prototype = extend({}, NoiseLine.prototype, {
         startStep: 0,
         endStep: 0,
-        
+
         // Clear super class methods
         createChild: undefined,
         eachChild: undefined,
@@ -466,7 +466,7 @@ function randomRange(min, max) {
 
             var range = parent.points.slice(this.startStep, this.endStep);
             var rangeLen = range.length;
-            
+
             var sep = 2;
             var seg = (rangeLen - 1) / sep;
             var controls = [];
@@ -475,7 +475,7 @@ function randomRange(min, max) {
                 j = Math.floor(seg * i);
                 controls.push(range[j]);
             }
-            
+
             // *** Debug
             if (Debug.enabled) {
                 (function() {
@@ -489,7 +489,7 @@ function randomRange(min, max) {
             }
 
             var base = spline(controls, Math.floor(rangeLen / 3));
-            
+
             // *** Debug
             if (Debug.enabled) {
                 (function() {
@@ -506,7 +506,7 @@ function randomRange(min, max) {
             this.points = shortest(this.points);
         }
     });
-    
+
     function spline(controls, segmentsNum) {
         controls.unshift(controls[0]);
         controls.push(controls[controls.length - 1]);
@@ -519,10 +519,10 @@ function randomRange(min, max) {
             p1 = controls[i + 1];
             p2 = controls[i + 2];
             p3 = controls[i + 3];
-            
+
             for (j = 0; j < segmentsNum; j++) {
                 t = (j + 1) / segmentsNum;
-                
+
                 points.push(new Point(
                     catmullRom(p0.x, p1.x, p2.x, p3.x, t),
                     catmullRom(p0.y, p1.y, p2.y, p3.y, t)
@@ -532,13 +532,13 @@ function randomRange(min, max) {
 
         controls.pop();
         points.unshift(controls.shift());
-        
+
         return points;
     }
-    
+
     /**
      * Catmull-Rom Spline Curve
-     * 
+     *
      * @see http://l00oo.oo00l.com/blog/archives/264
      */
     function catmullRom(p0, p1, p2, p3, t) {
@@ -547,7 +547,7 @@ function randomRange(min, max) {
         return (2 * p1 - 2 * p2 + v0 + v1) * t * t * t
             + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t * t + v0 * t + p1;
     }
-    
+
     function shortest(bases) {
         var points = [bases[0]];
         var p, j, p2, dist, minDist, k;
@@ -570,15 +570,15 @@ function randomRange(min, max) {
 
         return points;
     }
-    
+
     window.NoiseLine = NoiseLine;
-    
+
 })(window);
 
 
 /**
  * DragPoint
- * 
+ *
  * @super Point http://jsdo.it/akm2/fhMC
  */
 function DragPoint(x, y) {
@@ -589,13 +589,13 @@ function DragPoint(x, y) {
     this.dragging = false;
     this.dying = false;
     this.dead = false;
-    
+
     this._v = new Point(randomRange(-3, 3), randomRange(-3, 3));
-    
+
     this._mouse = null;
     this._latestMouse = new Point();
     this._mouseDist = null;
-    
+
     this._currentAlpha = 0;
     this._currentRadius = 0;
 }
@@ -614,14 +614,14 @@ DragPoint.prototype = extend({}, Point.prototype, {
         return this.dragging;
     },
 
-    dragEnd: function() {        
+    dragEnd: function() {
         if (this.dragging && this._latestMouse) {
             this._v.set(this._mouse.subtract(this._latestMouse));
         }
         this.dragging = false;
         this._mouse = this._mouseDist = null;
     },
-    
+
     kill: function() {
         this.dying = true;
         this.radius = 0;
@@ -629,7 +629,7 @@ DragPoint.prototype = extend({}, Point.prototype, {
 
     update: function(mouse) {
         var v = this._v;
-        
+
         if (this._mouse) {
             this.set(this._mouse.add(this._mouseDist));
             this._latestMouse.set(this._mouse);
@@ -637,7 +637,7 @@ DragPoint.prototype = extend({}, Point.prototype, {
             this.offset(v);
             v.x *= 0.97;
             v.y *= 0.97;
-            
+
             var vlen = v.length();
             if (vlen > 30) {
                 v.normalize(30);
@@ -645,7 +645,7 @@ DragPoint.prototype = extend({}, Point.prototype, {
                 v.normalize(1);
             }
         }
-        
+
         var radius = this.radius;
 
         if (this.x < radius) {
@@ -663,7 +663,7 @@ DragPoint.prototype = extend({}, Point.prototype, {
             this.y = canvas.height - radius;
             if (v.y > 0) v.y *= -1;
         }
-        
+
         var d;
         // Alpha
         d = this.alpha - this._currentAlpha;
@@ -699,7 +699,7 @@ var Color = new function() {
     this.h = H;
     this.s = S;
     this.l = L_MAX;
-    
+
     this.setAlphaToString = function(alpha) {
         if (typeof alpha === 'undefined' || alpha === null) {
             return 'hsl(' + this.h + ', ' + this.s + '%, ' + this.l + '%)';
@@ -761,7 +761,7 @@ var Debug = {
 </script>
 
         </div>
-        
+
         <div id="social">
             <ul>
               <li>
@@ -796,7 +796,7 @@ var Debug = {
               </li>
             </ul>
         </div>
-        
+
         <div id="footer">
 
         </div>

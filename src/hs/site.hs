@@ -26,11 +26,11 @@ main = hakyll $ do
             >>= loadAndApplyTemplate "templates/formula.tex" defaultContext
             >>= pdflatex >>= pdfToPng
 
-    match "clay/*.hs" $ do
+    match "css/*.hs" $ do
         route $ setExtension "css"
         compile runGHC
 
-    match "css/*" $ do
+    match "css/*.css" $ do
         route idRoute
         compile compressCssCompiler
 
