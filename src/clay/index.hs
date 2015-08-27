@@ -21,6 +21,15 @@ main =
 theStylesheet :: Css
 theStylesheet = do
 
+    iframe # "#main" ? do
+        top    $ px 0
+        left   $ px 0
+        right  $ px 0
+        bottom $ px 0
+        height $ pct 100
+        width  $ pct 100
+        position absolute
+
     div # "#parent" ? do position relative
                          zIndex 1000
     "#canvas" ? do zIndex 99
