@@ -56,6 +56,8 @@ let f x = x |> exp
 
 now you can just use real point-free programmign style.
 
+(Note: however f# type inference should work with that code but intellisense is the reason why it fails)
+
  - `let mutable` is deprecated, language is becoming truly functional
 
 Breaking changes:
