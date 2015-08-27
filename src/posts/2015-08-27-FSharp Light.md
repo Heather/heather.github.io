@@ -8,7 +8,7 @@ F# Light Changes and Features
 Minor fixes and improvements:
 -----------------------------
 
- - fixed `let` `in` incapsulation, e.g. you no longer can use let bindings outside `in` blocks
+ - fixed `let` `in` encapsulation, e.g. you no longer can use let bindings outside `in` blocks
  
 e.g. this code
 
