@@ -29,12 +29,17 @@ main = hakyll $ do
     match "css/*.hs" $ do
         route $ setExtension "css"
         compile $ fmap compressCss <$> runGHC
-
+    match "css/*.styl" $ do
+        route $ setExtension "css"
+        compile runStylus
     match "css/*.css" $ do
         route idRoute
         compile compressCssCompiler
 
-    match "js/*" $ do
+    match "js/*.sjs" $ do
+        route $ setExtension "js"
+        compile runSweet
+    match "js/*.js" $ do
         route idRoute
         compile compressJsCompiler
 
@@ -82,11 +87,22 @@ main = hakyll $ do
     runGHC :: Compiler (Item String)
     runGHC = getResourceString >>= withItemBody (unixFilter "runghc" [])
 
+    runStylus :: Compiler (Item String)
+    runStylus = getResourceString >>=
+        withItemBody (unixFilter "stylus" ["-s", "--scss"]) >>=
+        return . fmap compressCss
+
+    runSweet :: Compiler (Item String)
+    runSweet = getResourceString >>=
+        withItemBody (unixFilter "sjs" ["-s"]) >>=
+        return . fmap jasmin
+
     compressJsCompiler :: Compiler (Item String)
     compressJsCompiler = fmap jasmin <$> getResourceString
 
     jasmin :: String → String
-    jasmin src = LB.unpack $ minify $ LB.fromChunks [E.encodeUtf8 $ T.pack src]
+    jasmin src = LB.unpack $ minify
+                           $ LB.fromChunks [E.encodeUtf8 $ T.pack src]
 
 homeCtx :: Context String
 homeCtx =
