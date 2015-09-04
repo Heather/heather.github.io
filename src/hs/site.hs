@@ -28,7 +28,7 @@ main = hakyll $ do
 
     match "css/*.hs" $ do
         route $ setExtension "css"
-        compile runGHC
+        compile $ fmap compressCss <$> runGHC
 
     match "css/*.css" $ do
         route idRoute
