@@ -27,11 +27,16 @@ page = do
                 $ raw "$partial(\"templates/post-list.html\")$"
             div_ [class_ "mright"] $ img_ [id_ "img", src_ "/images/Hlogo.png"]
   div_ [id_ "main"] "" --fullscreen?
-  termRawWith "script" [src_ "js/eyes.js"] ""
-  termRawWith "script" [src_ "js/youtube.js"] ""
+  script "js/eyes.js"
+  script "js/youtube.js"
  where
   raw :: Monad m => Text -> HtmlT m ()
   raw = toHtmlRaw
+
+  script :: Monad m => Text -> HtmlT m ()
+  script s = script_ [src_ s] empt
+   where empt :: Text
+         empt = ""
 
 main :: IO ()
 main = putStr $ L.unpack (renderText page)

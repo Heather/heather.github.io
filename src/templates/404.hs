@@ -47,8 +47,8 @@ page = do
                           div_ [class_ "modal-footer", style_ "margin: 0"]
                            $ button_ [class_ "btn btn-success", data_dismiss_ "modal"] "OK"
   raw "<audio id=\"audio\" autoplay loop> <source src=\"images/Bween.mp3\" type=\"audio/mp3\" /> <p>Your browser sucks, after all... </p> </audio>"
-  termRawWith "script" [src_ "./js/light.js"] ""
-  termRawWith "script" [src_ "./js/404.js"] ""
+  script "./js/light.js"
+  script "./js/404.js"
  where
   data_target_ :: Text -> Attribute
   data_target_ = makeAttribute "data-target"
@@ -59,17 +59,24 @@ page = do
   data_dismiss_ :: Text -> Attribute
   data_dismiss_ = makeAttribute "data-dismiss"
 
+{- implemented in Lucid
   role_ :: Text -> Attribute
   role_ = makeAttribute "role"
 
   model_ :: Text -> Attribute
   model_ = makeAttribute "model"
+-}
 
   ng_model_ :: Text -> Attribute
   ng_model_ = makeAttribute "ng-model"
 
   raw :: Monad m => Text -> HtmlT m ()
   raw = toHtmlRaw
+
+  script :: Monad m => Text -> HtmlT m ()
+  script s = script_ [src_ s] empt
+   where empt :: Text
+         empt = ""
 
 main :: IO ()
 main = putStr $ L.unpack (renderText page)
