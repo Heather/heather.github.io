@@ -10,6 +10,7 @@ import           Lucid
 import           Lucid.Base
 import           Lucid.Html5
 
+import           Data.Text (Text)
 import qualified Data.Text.Lazy as L
 
 page :: Html ()
@@ -28,6 +29,9 @@ page = do
   div_ [id_ "main"] "" --fullscreen?
   termRawWith "script" [src_ "js/eyes.js"] ""
   termRawWith "script" [src_ "js/youtube.js"] ""
+ where
+  raw :: Monad m => Text -> HtmlT m ()
+  raw = toHtmlRaw
 
 main :: IO ()
 main = putStr $ L.unpack (renderText page)

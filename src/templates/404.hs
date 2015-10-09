@@ -68,5 +68,8 @@ page = do
   ng_model_ :: Text -> Attribute
   ng_model_ = makeAttribute "ng-model"
 
+  raw :: Monad m => Text -> HtmlT m ()
+  raw = toHtmlRaw
+
 main :: IO ()
 main = putStr $ L.unpack (renderText page)
