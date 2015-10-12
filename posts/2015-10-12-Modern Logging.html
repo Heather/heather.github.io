@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html ng-app>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+        <title>Heather - Modern logging with C++ and Elasticsearch</title>
+        <meta name="description" content="Heather">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="../atom.xml" rel="alternate" title="Heather" type="application/atom+xml">
+        <link rel="shortcut icon" type="image/ico" href="../favicon.ico" />
+
+        <script src="../bootstrap/jquery-2.1.1.min.js"></script>
+        <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="../bootstrap/bootstrap-theme.min.css">
+        <script src="../bootstrap/bootstrap.min.js"></script>
+        <script src="../bootstrap/angular.min.js"></script>
+
+        <link rel="stylesheet" type="text/css" media="all" href="../css/hasklig.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/octicons.css">
+        <link rel="stylesheet" type="text/css" media="all" href="../css/syntax.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="../css/default.css" />
+
+        <script type="application/javascript" src="../js/auto.js"></script>
+    </head>
+    <body>
+        <div class="band"></div>
+        <div id="header">
+            <div id="logo">
+                <a id="abbr" href="../"></a>
+                <script>
+                    e = document.getElementById("abbr");
+                    setTimeout(r, 0);
+                </script>
+            </div>
+        </div>
+        <div id="content">
+            <h1>Modern logging with C++ and Elasticsearch</h1>
+
+<audio id="audio" autoplay loop>
+    <source src="../images/Bween.mp3" type="audio/mp3"></source>
+</audio>
+
+<div id="controls">
+    <img id="playpause" height="20px" width="20px" src="../images/RedPause.png" />
+</div>
+<div class="info">Posted on 12 October 2015</div>
+
+<h1 id="elasticsearch">Elasticsearch</h1>
+<p><a href="https://www.elastic.co/">Elasticsearch</a> is modern search engine. It’s opensource and used by ebay, stackoverflow, etc… I’ve used their 2.x branch because 3.x (master) version has incompatibility issues with their Visualization portal (Kibana) And there is logging there is very simple but with good plugins architecture logging service <a href="https://www.elastic.co/products/logstash">Logstash</a> which has out-from-box integration with Elasticsearch. Very simple Logstash config status may look like this:</p>
+<div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="er">input</span> <span class="fu">{</span>
+    <span class="er">tcp</span> <span class="er">{</span>
+        <span class="er">port</span> <span class="er">=&gt;</span> <span class="er">666</span>
+    <span class="fu">}</span>
+<span class="er">}</span>
+<span class="er">output</span> <span class="fu">{</span>
+    <span class="er">elasticsearch</span> <span class="er">{</span>
+        <span class="er">protocol</span> <span class="er">=&gt;</span> <span class="dt">&quot;http&quot;</span>
+    <span class="fu">}</span>
+<span class="er">}</span></code></pre></div>
+<p><a href="https://www.elastic.co/products/kibana">Kibana</a> setup is either pretty easy and needs no additional configuration</p>
+<h1 id="logging">Logging</h1>
+<p>I’m using global logging I will have access from any part of my application, but it’s optional. Sure, with boost.</p>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(x_logger,
+    boost::log::sources::severity_logger&lt; boost::log::trivial::severity_level &gt;)</code></pre></div>
+<p>So I need to log into tcp server with six-six-six port. Well but as interface allows me to do it I will also make local logs Remote server is very good when we need to make some data work there but if we will have no connection having logs locally will be helpful.</p>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">///</span> define helper types <span class="kw">for</span> log sinks
+<span class="kw">typedef</span> boost::log::sinks::asynchronous_sink&lt; boost::log::sinks::text_file_backend &gt; file_sink;
+<span class="kw">typedef</span> boost::log::sinks::asynchronous_sink&lt; boost::log::sinks::text_ostream_backend &gt; tcp_sink;
+
+<span class="co">///</span> initialize <span class="kw">and</span> start loggers
+<span class="dt">void</span> init() {
+    <span class="co">///</span> get global logger
+    src::severity_logger&lt; boost::log::trivial::severity_level &gt; lg = x_logger::get();
+    
+    <span class="co">///</span> init sinks
+    boost::shared_ptr&lt; file_sink &gt; sink1(<span class="kw">new</span> file_sink(
+        keywords::file_name = <span class="st">&quot;</span><span class="ch">%Y%</span><span class="st">m</span><span class="ch">%d</span><span class="st">_</span><span class="ch">%H%</span><span class="st">M</span><span class="ch">%S_%</span><span class="st">5N.xml&quot;</span><span class="co">,</span>
+        keywords::rotation_size = <span class="dv">16384</span>
+        ));
+    boost::shared_ptr&lt; tcp_sink &gt; sink2(<span class="kw">new</span> tcp_sink(backend));
+
+    <span class="co">///</span> init tcp stream
+    boost::shared_ptr&lt; sinks::text_ostream_backend &gt; backend =
+        boost::make_shared&lt; sinks::text_ostream_backend &gt;();
+    boost::shared_ptr&lt; boost::asio::ip::tcp::iostream &gt; stream =
+        boost::make_shared&lt; boost::asio::ip::tcp::iostream &gt;();
+    stream-&gt;<span class="fu">connect</span>(<span class="st">&quot;127.0.0.1&quot;</span><span class="co">,</span> <span class="st">&quot;666&quot;</span><span class="co">)</span>;
+    backend-&gt;add_stream(stream);
+    backend-&gt;auto_flush(<span class="kw">true</span>);
+    
+    <span class="co">///</span> set xml format <span class="kw">for</span> file logger
+    sink-&gt;locked_backend()-&gt;set_file_collector(sinks::file::make_collector(
+        keywords::target = path,                        <span class="co">/*&lt; the target directory &gt;*/</span>
+        keywords::max_size = <span class="dv">64</span> * <span class="dv">1024</span> * <span class="dv">1024</span>,          <span class="co">/*&lt; maximum total size of the stored files, in bytes &gt;*/</span>
+        keywords::min_free_space = <span class="dv">100</span> * <span class="dv">1024</span> * <span class="dv">1024</span>    <span class="co">/*&lt; minimum free space on the drive, in bytes &gt;*/</span>
+    ));
+    sink-&gt;set_formatter (
+        expr::format(<span class="st">&quot;</span><span class="ch">\t</span><span class="st">&lt;record id=</span><span class="ch">\&quot;%1%\&quot;</span><span class="st"> timestamp=</span><span class="ch">\&quot;%2%\&quot;</span><span class="st">&gt;</span><span class="ch">%3%</span><span class="st">&lt;/record&gt;&quot;</span><span class="co">)</span>
+        % expr::attr&lt; <span class="dt">unsigned</span> <span class="dt">int</span> &gt;(<span class="st">&quot;RecordID&quot;</span>)
+        % expr::attr&lt; boost::posix_time::ptime &gt;(<span class="st">&quot;TimeStamp&quot;</span>)
+        % expr::xml_decor[expr::stream &lt;&lt; expr::smessage]
+    );
+    <span class="kw">auto</span> write_header = [](sinks::text_file_backend::stream_type&amp; file) {
+        file &lt;&lt; <span class="st">&quot;&lt;?xml version=</span><span class="ch">\&quot;</span><span class="st">1.0</span><span class="ch">\&quot;</span><span class="st">?&gt;</span><span class="ch">\n</span><span class="st">&lt;log&gt;</span><span class="ch">\n</span><span class="st">&quot;</span>;
+    };
+    <span class="kw">auto</span> write_footer = [](sinks::text_file_backend::stream_type&amp; file) {
+        file &lt;&lt; <span class="st">&quot;&lt;/log&gt;</span><span class="ch">\n</span><span class="st">&quot;</span>;
+    };
+    <span class="co">///</span> Set header <span class="kw">and</span> footer writing functors
+    sink-&gt;locked_backend()-&gt;set_open_handler(write_header);
+    sink-&gt;locked_backend()-&gt;set_close_handler(write_footer);
+    <span class="co">///</span> Add the sink to the core
+    logging::core::get()-&gt;add_sink(sink);
+    logging::core::get()-&gt;add_sink(sink2);
+    logging::core::get()-&gt;add_global_attribute(<span class="st">&quot;TimeStamp&quot;</span><span class="co">,</span> attrs::local_clock());
+    logging::core::get()-&gt;add_global_attribute(<span class="st">&quot;RecordID&quot;</span><span class="co">,</span> attrs::counter&lt; <span class="dt">unsigned</span> <span class="dt">int</span> &gt;());
+    logging::add_common_attributes();
+
+    BOOST_LOG_SEV(lg, boost::log::trivial::trace) &lt;&lt; <span class="st">&quot;Loggers initialization complete&quot;</span><span class="co">;</span>
+}</code></pre></div>
+<p>To simplify calling <code>BOOST_LOG_SEV</code> from any part application there could be macros alike</p>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#define X_INFO BOOST_LOG_STREAM_SEV(x_logger::get(), boost::log::trivial::info)</span>
+<span class="ot">#define X_ERROR BOOST_LOG_STREAM_SEV(x_logger::get(), boost::log::trivial::error)</span>
+...</code></pre></div>
+<p>It will log either into Elasticsearch and into some path creating xmls for each application run</p>
+<h1 id="p.s.">P.S.</h1>
+<p>Additional thanks to Chris Allen for <a href="https://github.com/bitemyapp/bloodhound">bloodhound</a> for making it easy to have Haskell clients to those logs :P</p>
+
+<div id="postfooter">
+</div>
+
+<script type="text/javascript">
+    $('#playpause').click(function() {
+      if ($('#audio')[0].paused == false) {
+          $('#audio')[0].pause();
+          $('#playpause').attr("src","../images/RedPlay.png");
+      } else {
+          $('#audio')[0].play();
+          $('#playpause').attr("src","../images/RedPause.png");
+      }
+    });
+</script>
+
+<script src="../bootstrap/three.js"></script>
+<script type="text/javascript">
+	var SCREEN_WIDTH = window.innerWidth;
+	var SCREEN_HEIGHT = window.innerHeight;
+	var RADIUS = 200;
+	var QUANTITY = 150;
+
+	var container;
+
+	var camera;
+	var scene;
+	var renderer;
+	
+	var descriptors = [];
+
+	var mouseX = 0;
+	var mouseY = 0;
+
+	var windowHalfX = window.innerWidth / 2;
+	var windowHalfY = window.innerHeight / 2;
+
+	init();
+	setInterval(loop, 1000 / 60);
+
+	function init() {
+
+		container = document.getElementById('postfooter');
+
+		camera = new THREE.Camera(0, 0, 300);
+		camera.focus = 50;
+
+		scene = new THREE.Scene();
+
+		renderer = new THREE.CanvasRenderer();
+		renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT / 4);
+		
+		createParticles();
+		
+		container.appendChild(renderer.domElement);
+
+		document.addEventListener('mousemove', onDocumentMouseMove, false);
+		document.addEventListener('touchstart', onDocumentTouchStart, false);
+		document.addEventListener('touchmove', onDocumentTouchMove, false);
+	}
+
+	function createParticles() {
+		for (var i = 0; i < QUANTITY; i++) {
+			var particle = new THREE.Particle(new THREE.ColorFillMaterial(Math.random() * 0x404040 + 0xaaaaaa, 1));
+			particle.size = 10;
+			
+			particle.position.x = 0;
+			particle.position.y = 0;
+			particle.position.z = 0;
+			
+			particle.offset = { x: 0, y: 0, z: 0 };
+			particle.shift = { x: 0, y: 0 };
+			particle.speed = 0.01+Math.random()*0.04;
+			particle.targetSize = particle.size;
+			
+			scene.add(particle);
+		}
+	}
+
+	function onDocumentMouseMove(event) {
+
+		mouseX = event.clientX - windowHalfX;
+		mouseY = event.clientY - windowHalfY;
+	}
+
+	function onDocumentTouchStart(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function onDocumentTouchMove(event) {
+
+		if(event.touches.length == 1) {
+
+			event.preventDefault();
+
+			mouseX = event.touches[0].pageX - windowHalfX;
+			mouseY = event.touches[0].pageY - windowHalfY;
+		}
+	}
+
+	function loop() {
+		camera.updateMatrix();
+		
+		renderer.render(scene, camera);
+		
+		var context = renderer.domElement.getContext("2d")
+		
+		for (var i = 0, len = scene.objects.length; i < len; i++) {
+			var particle = scene.objects[i];
+			
+			particle.offset.x += particle.speed;
+			particle.offset.y += particle.speed;
+			
+			particle.shift.x += ( mouseX - particle.shift.x) * (particle.speed);
+			particle.shift.y += ( -mouseY - particle.shift.y) * (particle.speed);
+			
+			particle.position.x = particle.shift.x + Math.cos(i + particle.offset.x) * RADIUS;
+			particle.position.y = particle.shift.y + Math.sin(i + particle.offset.y) * RADIUS;
+			particle.position.z = i / QUANTITY * RADIUS;
+			
+			particle.size += ( particle.targetSize - particle.size ) * 0.05;
+			
+			if( Math.round( particle.size ) == Math.round( particle.targetSize ) ) {
+				particle.targetSize = 1 + Math.random() * 10;
+			}
+		}
+	}
+	
+	function distanceBetween(p1,p2) {
+		var dx = p2.x-p1.x;
+		var dy = p2.y-p1.y;
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+</script>
+
+<hr />
+
+        </div>
+
+        <div id="social">
+            <ul>
+              <li>
+                <a href="http://github.com/Heather" title="Github" target="_blank">
+                  <span class="mega-octicon octicon-octoface"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://twitter.com/Cynede" title="Twitter" target="_blank">
+                  <span class="mega-octicon octicon-star"></span>
+                </a>
+              </li>
+              <li>
+                <a href="mailto:heather@live.ru" title="Main mail" target="_blank">
+                  <span class="mega-octicon octicon-mail-read"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank">
+                  <span class="mega-octicon octicon-broadcast"></span>
+                </a>
+              </li>
+              <li>
+                <a href="http://grooveshark.com/#!/cynede" title="Grooveshark" target="_blank">
+                  <span class="mega-octicon octicon-squirrel"></span>
+                </a>
+              </li>
+              <li>
+                <a href="../atom.xml" title="RSS" target="_blank">
+                  <span class="mega-octicon octicon-rss"></span>
+                </a>
+              </li>
+            </ul>
+        </div>
+
+        <div id="footer">
+
+        </div>
+
+    </body>
+</html>
