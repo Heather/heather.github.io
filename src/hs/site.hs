@@ -10,7 +10,7 @@ import           Data.Monoid                (mappend)
 import qualified Data.Text                  as T
 import qualified Data.Text.Encoding         as E
 
-import           System.FilePath            (replaceExtension, takeDirectory)
+import           System.FilePath
 import           System.Process             (system)
 
 import           Hakyll
@@ -25,6 +25,10 @@ main = hakyll $ do
         compile $ getResourceBody
             >>= loadAndApplyTemplate "templates/formula.tex" defaultContext
             >>= pdflatex >>= pdfToPng
+
+    match "templates/*.hs" $ do
+        route $ customRoute $ toSrc . toFilePath
+        compile runGHC
 
     match "css/*.hs" $ do
         route $ setExtension "css"
@@ -84,6 +88,13 @@ main = hakyll $ do
     match "templates/*" $ compile templateCompiler
 
   where
+    changeExtension :: FilePath → String → FilePath
+    changeExtension path to =
+      addExtension (dropExtension path) to
+
+    toSrc :: String → String
+    toSrc p = "src" </> (changeExtension p ".html")
+
     runGHC :: Compiler (Item String)
     runGHC = getResourceString >>= withItemBody (unixFilter "runghc" [])
 
@@ -103,6 +114,7 @@ main = hakyll $ do
     jasmin :: String → String
     jasmin src = LB.unpack $ minify
                            $ LB.fromChunks [E.encodeUtf8 $ T.pack src]
+
 
 homeCtx :: Context String
 homeCtx =
