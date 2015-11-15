@@ -1,14 +1,13 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE
+    OverloadedStrings
+  , UnicodeSyntax
+  #-}
 
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 
 module Main where
 
-import           Control.Monad
-
 import           Lucid
-import           Lucid.Base
-import           Lucid.Html5
 
 import           Data.Text (Text)
 import qualified Data.Text.Lazy as L
@@ -30,10 +29,10 @@ page = do
   script "js/eyes.js"
   script "js/youtube.js"
  where
-  raw :: Monad m => Text -> HtmlT m ()
+  raw :: Monad m => Text → HtmlT m ()
   raw = toHtmlRaw
 
-  script :: Monad m => Text -> HtmlT m ()
+  script :: Monad m => Text → HtmlT m ()
   script s = script_ [src_ s] empt
    where empt :: Text
          empt = ""

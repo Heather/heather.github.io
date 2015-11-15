@@ -1,17 +1,14 @@
 {-# LANGUAGE
     OverloadedStrings
+  , UnicodeSyntax
   #-}
 
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 
 module Main where
 
-import           Control.Monad
-
 import           Lucid
 import           Lucid.Base
-import           Lucid.Bootstrap
-import           Lucid.Html5
 
 import           Data.Text (Text)
 import qualified Data.Text.Lazy          as L
@@ -50,30 +47,22 @@ page = do
   script "./js/light.js"
   script "./js/404.js"
  where
-  data_target_ :: Text -> Attribute
+  data_target_ :: Text → Attribute
   data_target_ = makeAttribute "data-target"
 
-  data_toggle_ :: Text -> Attribute
+  data_toggle_ :: Text → Attribute
   data_toggle_ = makeAttribute "data-toggle"
 
-  data_dismiss_ :: Text -> Attribute
+  data_dismiss_ :: Text → Attribute
   data_dismiss_ = makeAttribute "data-dismiss"
 
-{- implemented in Lucid
-  role_ :: Text -> Attribute
-  role_ = makeAttribute "role"
-
-  model_ :: Text -> Attribute
-  model_ = makeAttribute "model"
--}
-
-  ng_model_ :: Text -> Attribute
+  ng_model_ :: Text → Attribute
   ng_model_ = makeAttribute "ng-model"
 
-  raw :: Monad m => Text -> HtmlT m ()
+  raw :: Monad m => Text → HtmlT m ()
   raw = toHtmlRaw
 
-  script :: Monad m => Text -> HtmlT m ()
+  script :: Monad m => Text → HtmlT m ()
   script s = script_ [src_ s] empt
    where empt :: Text
          empt = ""
