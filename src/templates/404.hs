@@ -17,7 +17,7 @@ page :: Html ()
 page = do
   link_ [rel_ "stylesheet", type_ "text/css", href_ "./css/index.css"]
   link_ [rel_ "stylesheet", type_ "text/css", href_ "./css/404.css"]
-  canvas_ [id_ "canvas"] ""
+  div_ [id_ "main"] "" --fullscreen?
   div_ [id_ "parent"]
     $ div_ [id_ "top"]
       $ div_ [class_ "mlr"]
@@ -43,9 +43,9 @@ page = do
                                      li_ "Clay"
                           div_ [class_ "modal-footer", style_ "margin: 0"]
                            $ button_ [class_ "btn btn-success", data_dismiss_ "modal"] "OK"
-  raw "<audio id=\"audio\" autoplay loop> <source src=\"images/Bween.mp3\" type=\"audio/mp3\" /> <p>Your browser sucks, after all... </p> </audio>"
   script "./js/light.js"
   script "./js/404.js"
+  script "./js/youtube404.js"
  where
   data_target_ :: Text → Attribute
   data_target_ = makeAttribute "data-target"
