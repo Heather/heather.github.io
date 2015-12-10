@@ -52,6 +52,9 @@ page = do
       div_ [id_ "social"] $
         ul_ $ do
           li_ $
+            a_ [href_ "http://github.com/Heather", title_ "Github", target_ "_blank"] $
+              span_ [class_ "mega-octicon octicon-octoface"] ""
+          li_ $
             a_ [href_ "http://twitter.com/Cynede", title_ "Twitter", target_ "_blank"] $
               span_ [class_ "mega-octicon octicon-star"] ""
           li_ $
