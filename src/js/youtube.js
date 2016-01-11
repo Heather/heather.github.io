@@ -10,8 +10,8 @@ function onYouTubePlayerAPIReady() {
     videoId: 'v93rM8-bU2g',
     playerVars: {
       autoplay: 1,
-      start: 15,
-      end: 25,
+      start: 10,
+      end: 20,
       controls: 0,
       disablekb: 1,
       hl: 'en-US',
