@@ -7,11 +7,11 @@ function onYouTubePlayerAPIReady() {
   player = new YT.Player('main', {
     height: '100%',
     width: '100%',
-    videoId: '8tfRRwn0RRw',
+    videoId: 'v93rM8-bU2g',
     playerVars: {
       autoplay: 1,
-      start: 461,
-      end: 569,
+      start: 15,
+      end: 25,
       controls: 0,
       disablekb: 1,
       hl: 'en-US',
