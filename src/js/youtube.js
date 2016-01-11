@@ -11,7 +11,7 @@ function onYouTubePlayerAPIReady() {
     playerVars: {
       autoplay: 1,
       start: 10,
-      end: 22,
+      end: 21,
       controls: 0,
       disablekb: 1,
       hl: 'en-US',
