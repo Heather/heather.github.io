@@ -4,7 +4,7 @@
 
 module Main where
 
-import           Lucid
+import Lucid
 
 import qualified Data.Text.Lazy as L
 
@@ -14,7 +14,8 @@ page =
     "$for(posts)$"
     li_ $ do
       a_ [href_ "$url$"] "$title$"
-      " - $date$"
+      " "
+      span_ " - $date$"
     "$endfor$"
 
 main :: IO ()
