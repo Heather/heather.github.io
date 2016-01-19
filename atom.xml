@@ -8,8 +8,16 @@
         <name>Heather</name>
         <email>heather@live.ru</email>
     </author>
-    <updated>2015-10-12T00:00:00Z</updated>
+    <updated>2016-01-16T00:00:00Z</updated>
     <entry>
+    <title>Haskell disorder</title>
+    <link href="http://heather.github.io/posts/2016-01-16-Haskell%20disorder.html" />
+    <id>http://heather.github.io/posts/2016-01-16-Haskell%20disorder.html</id>
+    <published>2016-01-16T00:00:00Z</published>
+    <updated>2016-01-16T00:00:00Z</updated>
+    <summary type="html"><![CDATA[Heather]]></summary>
+</entry>
+<entry>
     <title>Modern logging with C++ and Elasticsearch</title>
     <link href="http://heather.github.io/posts/2015-10-12-Modern%20Logging.html" />
     <id>http://heather.github.io/posts/2015-10-12-Modern%20Logging.html</id>
@@ -79,14 +87,6 @@
     <id>http://heather.github.io/posts/2014-10-20-Imprerative%20bits%20of%20Haskell.html</id>
     <published>2014-10-20T00:00:00Z</published>
     <updated>2014-10-20T00:00:00Z</updated>
-    <summary type="html"><![CDATA[Heather]]></summary>
-</entry>
-<entry>
-    <title>Async Reactive Haskell</title>
-    <link href="http://heather.github.io/posts/2014-08-19-Async%20Reactive%20Haskell.html" />
-    <id>http://heather.github.io/posts/2014-08-19-Async%20Reactive%20Haskell.html</id>
-    <published>2014-08-19T00:00:00Z</published>
-    <updated>2014-08-19T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 
