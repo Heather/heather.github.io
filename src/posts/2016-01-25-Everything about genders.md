@@ -28,3 +28,5 @@ There are a lot of people who don't accept difference but from my position those
 84% of the world's population is affiliated with one of the five largest religions and almost 100% is affiliated with some gender.
 
 I don't care.
+
+(note if you will like or rt this post on twitter you may get some unfollowers)
