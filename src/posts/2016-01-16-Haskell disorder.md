@@ -55,7 +55,7 @@ but because it's Setup.lhs you can't use `MIN_VERSION_Cabal` MIN_VERSION_Cabal i
 so you pick either people with old cabal will always fail or people with new cabal will always fail, such stuff are all around haskell
 
 In conclusion this problem is known outside haskell. Often some C++ projects shipping with patched Qt or Boost whenever you have it installed
-you build and install those monsters in addition to existing and then suffer from possible conflicts. This scheme oftene used for production,
+you build and install those monsters in addition to existing and then suffer from possible conflicts. This scheme often used for production,
 enterprise software, however most of opensource ecosystem don't act like that. In haskell community people act like they're always alike in
 production / enterprise and that's what I can't understand, when sandbox became something mandatory?
 
