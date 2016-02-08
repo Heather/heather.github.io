@@ -73,3 +73,9 @@ Error, rule "dist/build/Cr.exe" failed to build file:
 ```
 
 I was trying to understand realization and I've got some bits. It's impossible to have analitics without wrapping IO into Rules and Action and maybe custom functions for those wrappers. I was trying to get deeper and repeat something alike with `free` alike in this example https://github.com/ekmett/free/blob/master/examples/RetryTH.hs - and it's really not that simple to understand what's actually happening there. And there `withRetry` block is sure not IO () block, just yet another wrapper. Yes, wrapped Rules and Actions are easy to process but I don't want to learn that stuff so far, I don't want to lift from IO to Action and bind it to Rule everytime I want to make small change. This library/util is tiny but practical, it's doing very simple things and using imerative way including global mutable state to resolve things alike `phony` in dirty (but simple) way.
+
+Sharingan (yet another sync util)
+---------------------------------
+
+Simply folder worker performing various synchronization actions && custom actions from yml configs just alike travis and I don't know sane method of doing it for now, alternative.
+Maybe simple script can do it but it's not handy to write such script each time.
