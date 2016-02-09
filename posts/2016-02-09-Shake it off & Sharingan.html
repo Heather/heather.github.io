@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE html><html ng-app><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="description" content="Heather"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link title="Heather" type="application/atom+xml" rel="alternate" href="../atom.xml"><link type="image/ico" rel="shortcut icon" href="../favicon.ico"><script src="../bootstrap/jquery-2.1.1.min.js"></script><link rel="stylesheet" href="../bootstrap/bootstrap.min.css"><link rel="stylesheet" href="../bootstrap/bootstrap-theme.min.css"><script src="../bootstrap/bootstrap.min.js"></script><script src="../bootstrap/angular.min.js"></script><link media="all" type="text/css" rel="stylesheet" href="../css/hasklig.css"><link media="all" type="text/css" rel="stylesheet" href="../css/octicons.css"><link media="all" type="text/css" rel="stylesheet" href="../css/syntax.css"><link media="all" type="text/css" rel="stylesheet" href="../css/default.css"><title>Heather - Small haskell utils</title><script src="../js/auto.js"></script></head><body><div class="band"></div><div id="header"><div id="logo"><a id="abbr" href="../"></a><script>e = document.getElementById("abbr");setTimeout(r, 0);</script></div></div><div id="content"><h1>Small haskell utils</h1><audio loop id="audio" autoplay><source src="../images/Bween.mp3" type="audio/mp3"></audio><div id="controls"><img src="../images/RedPause.png" id="playpause" height="20px" width="20px"></div><div class="info">Posted on  9 February 2016</div><h2 id="work-in-progess">Work in progess</h2>
+<p>There are few utils I used to write and wanted to explain how do I use them and what was the reason of creating them. This article is work in progress. First small util is actually poor shake clone, imperative and weak</p>
+<h2 id="example">Example</h2>
+<p><code>shake.it.hs</code> file (or <code>shake.it.lhs</code>)</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">Shake.It.Off</span>
+
+<span class="ot">main ::</span> <span class="dt">IO</span> ()
+main <span class="fu">=</span> shake <span class="fu">$</span> <span class="kw">do</span>
+  phony <span class="st">&quot;clean&quot;</span> <span class="fu">$</span> cabal [<span class="st">&quot;clean&quot;</span>]
+
+  obj <span class="st">&quot;dist/build/Cr.exe&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
+    cabal [<span class="st">&quot;install&quot;</span>, <span class="st">&quot;--only-dependencies&quot;</span>]
+    cabal [<span class="st">&quot;configure&quot;</span>]
+    cabal [<span class="st">&quot;build&quot;</span>]</code></pre></div>
+<p>every time you run <code>shake</code> on this file if <code>shake.it.off</code> is outdated or not exists it will be rebuild (otherwise you will just run shake.it.off); when you will run <code>shake clean</code> it will process just <code>cabal clean</code>, if you will run it with no arguments then it will rebuild project, if you will run it with <code>shake clean install</code> it will process <code>shake clean</code> first then in case if there will be <code>shake install</code> phony it will process it, else way it will process default case (rebuilding) after cleaning. (because it’s simple stupid imperative)</p>
+<p>more complex example with Unicode operators:</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">{-# LANGUAGE UnicodeSyntax #-}</span>
+
+<span class="kw">import </span><span class="dt">Shake.It.Off</span>
+
+<span class="ot">main ::</span> <span class="dt">IO</span> ()
+main <span class="fu">=</span> shake <span class="fu">$</span> <span class="kw">do</span>
+  <span class="co">-- phony clean @&gt; is non-unicode operator alternative</span>
+  <span class="st">&quot;clean&quot;</span> ∫ cabal [<span class="st">&quot;clean&quot;</span>]
+
+  <span class="co">-- building object rule #&gt; is non-unicode operator alternative</span>
+  buildPath <span class="fu">&lt;/&gt;</span> <span class="st">&quot;shake.exe&quot;</span> ♯ <span class="kw">do</span>
+    cabal [<span class="st">&quot;install&quot;</span>, <span class="st">&quot;--only-dependencies&quot;</span>]
+    cabal [<span class="st">&quot;configure&quot;</span>]
+    cabal [<span class="st">&quot;build&quot;</span>]
+
+  <span class="co">-- install phony depending on obj, @@&gt; is non-unicode operator alternative</span>
+  <span class="co">-- ##&gt; or ♯♯ is for dependent object rule, ◉ is just uncarry operator</span>
+  <span class="st">&quot;install&quot;</span> ◉ [buildPath <span class="fu">&lt;/&gt;</span> <span class="st">&quot;shake.exe&quot;</span>] ∰
+    cabal [<span class="st">&quot;install&quot;</span>]
+
+ <span class="kw">where</span><span class="ot"> buildPath ::</span> <span class="dt">String</span>
+       buildPath <span class="fu">=</span> <span class="st">&quot;dist/build/Shake&quot;</span></code></pre></div>
+<ul>
+<li><code>.dll</code> extensions treated as <code>.so</code> on linux and <code>.exe</code> extensions will be dropped there.</li>
+<li>TODO: it honestly should be optional and no need for .NET</li>
+</ul>
+<h2 id="user-story">User story</h2>
+<p>I like haskell and it will be cool to just use <code>haskell</code> to build some complex application and discovered <code>shake</code> but there was some strange things which was a bit complicated for me</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="st">&quot;dist/build/Cr&quot;</span> <span class="fu">&lt;.&gt;</span> exe <span class="fu">%&gt;</span> \out <span class="ot">-&gt;</span> <span class="kw">do</span> traced <span class="st">&quot;blabla&quot;</span> <span class="fu">.....</span> <span class="fu">&gt;&gt;</span> return ()
+<span class="dt">Linking</span> dist\build\<span class="dt">Cr</span>\Cr.exe <span class="fu">...</span>
+<span class="dt">Error</span> when running <span class="dt">Shake</span> build system<span class="fu">:</span>
+<span class="fu">*</span> dist<span class="fu">/</span>build<span class="fu">/</span>Cr.exe
+<span class="dt">Error</span>, rule <span class="st">&quot;dist/build/Cr.exe&quot;</span> failed to build file<span class="fu">:</span>
+  dist<span class="fu">/</span>build<span class="fu">/</span>Cr.exe</code></pre></div>
+<p>I was trying to understand realization and I’ve got some bits. It’s impossible to have analitics without wrapping IO into Rules and Action and maybe custom functions for those wrappers. I was trying to get deeper and repeat something alike with <code>free</code> alike in this example https://github.com/ekmett/free/blob/master/examples/RetryTH.hs - and it’s really not that simple to understand what’s actually happening there. And there <code>withRetry</code> block is sure not IO () block, just yet another wrapper. Yes, wrapped Rules and Actions are easy to process but I don’t want to learn that stuff so far, I don’t want to lift from IO to Action and bind it to Rule everytime I want to make small change. This library/util is tiny but practical, it’s doing very simple things and using imerative way including global mutable state to resolve things alike <code>phony</code> in dirty (but simple) way.</p><div id="postfooter"></div><script src="../js/playpause.js"></script><script src="../bootstrap/three.js"></script><script src="../js/bubbles.js"></script></div><div id="social"><ul><li><a title="Github" target="_blank" href="http://github.com/Heather"><span class="mega-octicon octicon-octoface"></span></a></li><li><a title="Twitter" target="_blank" href="http://twitter.com/Cynede"><span class="mega-octicon octicon-star"></span></a></li><li><a title="mail" target="_blank" href="mailto:heather@live.ru"><span class="mega-octicon octicon-mail-read"></span></a></li><li><a title="Last.fm" target="_blank" href="http://www.last.fm/user/Cynede"><span class="mega-octicon octicon-broadcast"></span></a></li><li><a title="Stackoverflow" target="_blank" href="http://stackoverflow.com/users/238232/heather"><span class="mega-octicon octicon-squirrel"></span></a></li><li><a title="RSS" target="_blank" href="../atom.xml"><span class="mega-octicon octicon-rss"></span></a></li></ul></div><div id="footer"></div></body></html>
