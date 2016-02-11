@@ -4,6 +4,7 @@
   #-}
 
 import           Control.Applicative        ((<$>))
+import           Control.Monad              (liftM)
 
 import qualified Data.ByteString.Lazy.Char8 as LB
 import           Data.Monoid                (mappend)
@@ -89,24 +90,23 @@ main = hakyll $ do
 
   where
     changeExtension :: FilePath → String → FilePath
-    changeExtension path to =
-      addExtension (dropExtension path) to
+    changeExtension path = addExtension (dropExtension path)
 
     toSrc :: String → String
-    toSrc p = "src" </> (changeExtension p ".html")
+    toSrc p = "src" </> changeExtension p ".html"
 
     runGHC :: Compiler (Item String)
     runGHC = getResourceString >>= withItemBody (unixFilter "runghc" [])
 
     runStylus :: Compiler (Item String)
-    runStylus = getResourceString >>=
-        withItemBody (unixFilter "stylus" ["-s", "--scss"]) >>=
-        return . fmap compressCss
+    runStylus = liftM (fmap compressCss)
+      (getResourceString >>=
+       withItemBody (unixFilter "stylus" ["-s", "--scss"]))
 
     runSweet :: Compiler (Item String)
-    runSweet = getResourceString >>=
-        withItemBody (unixFilter "sjs" ["-s"]) >>=
-        return . fmap jasmin
+    runSweet = liftM (fmap compressCss)
+      (getResourceString >>=
+       withItemBody (unixFilter "stylus" ["-s", "--scss"]))
 
     compressJsCompiler :: Compiler (Item String)
     compressJsCompiler = fmap jasmin <$> getResourceString
