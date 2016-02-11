@@ -2,6 +2,13 @@
 title: Everything about genders
 ---
 
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#audio')[0].pause();
+  $('#playpause').attr("src","../images/RedPlay.png");
+})
+</script>
+
 In short, everything you should know about genders is Nothing
 
 TLDR
@@ -27,6 +34,6 @@ However if you can accept that position then we're done in making step forward i
 There are a lot of people who don't accept difference but from my position those people don't accept just you (being yourself ("being yourself")).
 84% of the world's population is affiliated with one of the five largest religions and almost 100% is affiliated with some gender as some stigma.
 
-I don't care.
-
-(note if you will like or rt this post on twitter you may get some unfollowers)
+<iframe width="640"
+src="http://www.youtube.com/embed/53bo_54Opnw?autoplay=1">
+</iframe>
