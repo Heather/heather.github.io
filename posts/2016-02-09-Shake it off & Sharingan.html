@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE html><html ng-app><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="description" content="Heather"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link title="Heather" type="application/atom+xml" rel="alternate" href="../atom.xml"><link type="image/ico" rel="shortcut icon" href="../favicon.ico"><script src="../bootstrap/jquery-2.1.1.min.js"></script><link rel="stylesheet" href="../bootstrap/bootstrap.min.css"><link rel="stylesheet" href="../bootstrap/bootstrap-theme.min.css"><script src="../bootstrap/bootstrap.min.js"></script><script src="../bootstrap/angular.min.js"></script><link media="all" type="text/css" rel="stylesheet" href="../css/hasklig.css"><link media="all" type="text/css" rel="stylesheet" href="../css/octicons.css"><link media="all" type="text/css" rel="stylesheet" href="../css/syntax.css"><link media="all" type="text/css" rel="stylesheet" href="../css/default.css"><title>Heather - Small haskell utils</title><script src="../js/auto.js"></script></head><body><div class="band"></div><div id="header"><div id="logo"><a id="abbr" href="../"></a><script>e = document.getElementById("abbr");setTimeout(r, 0);</script></div></div><div id="content"><h1>Small haskell utils</h1><audio loop id="audio" autoplay><source src="../images/Bween.mp3" type="audio/mp3"></audio><div id="controls"><img src="../images/RedPause.png" id="playpause" height="20px" width="20px"></div><div class="info">Posted on  9 February 2016</div><h2 id="work-in-progess">Work in progess</h2>
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE html><html ng-app><head><meta charset="utf-8"><meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"><meta content="Heather" name="description"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="../atom.xml" title="Heather" type="application/atom+xml" rel="alternate"><link href="../favicon.ico" type="image/ico" rel="shortcut icon"><script src="../bootstrap/jquery-2.1.1.min.js"></script><link href="../bootstrap/bootstrap.min.css" rel="stylesheet"><link href="../bootstrap/bootstrap-theme.min.css" rel="stylesheet"><script src="../bootstrap/bootstrap.min.js"></script><script src="../bootstrap/angular.min.js"></script><link href="../css/hasklig.css" media="all" type="text/css" rel="stylesheet"><link href="../css/octicons.css" media="all" type="text/css" rel="stylesheet"><link href="../css/syntax.css" media="all" type="text/css" rel="stylesheet"><link href="../css/default.css" media="all" type="text/css" rel="stylesheet"><title>Heather - Small haskell utils</title><script src="../js/auto.js"></script></head><body><div class="band"></div><div id="header"><div id="logo"><a href="../" id="abbr"></a><script>e = document.getElementById("abbr");setTimeout(r, 0);</script></div></div><div id="content"><h1>Small haskell utils</h1><audio autoplay loop id="audio"><source src="../images/Bween.mp3" type="audio/mp3"></audio><div id="controls"><img height="20px" width="20px" src="../images/RedPause.png" id="playpause"></div><div class="info">Posted on  9 February 2016</div><h2 id="work-in-progess">Work in progess</h2>
 <p>There are few utils I used to write and wanted to explain how do I use them and what was the reason of creating them. This article is work in progress. First small util is actually poor shake clone, imperative and weak</p>
 <h2 id="example">Example</h2>
 <p><code>shake.it.hs</code> file (or <code>shake.it.lhs</code>)</p>
@@ -18,28 +18,33 @@ main <span class="fu">=</span> shake <span class="fu">$</span> <span class="kw">
 
 <span class="kw">import </span><span class="dt">Shake.It.Off</span>
 
+<span class="kw">import </span><span class="dt">System.Exit</span>
+<span class="kw">import </span><span class="dt">System.Process</span>
+
+<span class="kw">import </span><span class="dt">Control.Monad</span>
+
 <span class="ot">main ::</span> <span class="dt">IO</span> ()
 main <span class="fu">=</span> shake <span class="fu">$</span> <span class="kw">do</span>
-  <span class="co">-- phony clean @&gt; is non-unicode operator alternative</span>
   <span class="st">&quot;clean&quot;</span> ∫ cabal [<span class="st">&quot;clean&quot;</span>]
 
-  <span class="co">-- building object rule #&gt; is non-unicode operator alternative</span>
-  buildPath <span class="fu">&lt;/&gt;</span> <span class="st">&quot;shake.exe&quot;</span> ♯ <span class="kw">do</span>
+  weathermanExecutable ♯ <span class="kw">do</span>
     cabal [<span class="st">&quot;install&quot;</span>, <span class="st">&quot;--only-dependencies&quot;</span>]
     cabal [<span class="st">&quot;configure&quot;</span>]
     cabal [<span class="st">&quot;build&quot;</span>]
 
-  <span class="co">-- install phony depending on obj, @@&gt; is non-unicode operator alternative</span>
-  <span class="co">-- ##&gt; or ♯♯ is for dependent object rule, ◉ is just uncarry operator</span>
-  <span class="st">&quot;install&quot;</span> ◉ [buildPath <span class="fu">&lt;/&gt;</span> <span class="st">&quot;shake.exe&quot;</span>] ∰
-    cabal [<span class="st">&quot;install&quot;</span>]
+  <span class="st">&quot;install&quot;</span> ∫ cabal [<span class="st">&quot;install&quot;</span>]
+
+  <span class="st">&quot;test&quot;</span> ◉ [weathermanExecutable] ∰ w [<span class="st">&quot;--version&quot;</span>]
 
  <span class="kw">where</span><span class="ot"> buildPath ::</span> <span class="dt">String</span>
-       buildPath <span class="fu">=</span> <span class="st">&quot;dist/build/Shake&quot;</span></code></pre></div>
-<ul>
-<li><code>.dll</code> extensions treated as <code>.so</code> on linux and <code>.exe</code> extensions will be dropped there.</li>
-<li>TODO: it honestly should be optional and no need for .NET</li>
-</ul>
+       buildPath <span class="fu">=</span> <span class="st">&quot;dist/build/w&quot;</span>
+
+<span class="ot">       weathermanExecutable ::</span> <span class="dt">String</span>
+       weathermanExecutable <span class="fu">=</span> buildPath <span class="fu">&lt;/&gt;</span> <span class="st">&quot;w.exe&quot;</span>
+
+<span class="ot">       w ::</span> [<span class="dt">String</span>] <span class="ot">→</span> <span class="dt">IO</span> ()
+       w xs <span class="fu">=</span> rawSystem weathermanExecutable xs <span class="fu">&gt;&gt;=</span> checkExitCode
+               <span class="fu">&gt;&gt;</span> exitSuccess</code></pre></div>
 <h2 id="user-story">User story</h2>
 <p>I like haskell and it will be cool to just use <code>haskell</code> to build some complex application and discovered <code>shake</code> but there was some strange things which was a bit complicated for me</p>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="st">&quot;dist/build/Cr&quot;</span> <span class="fu">&lt;.&gt;</span> exe <span class="fu">%&gt;</span> \out <span class="ot">-&gt;</span> <span class="kw">do</span> traced <span class="st">&quot;blabla&quot;</span> <span class="fu">.....</span> <span class="fu">&gt;&gt;</span> return ()
@@ -49,5 +54,224 @@ main <span class="fu">=</span> shake <span class="fu">$</span> <span class="kw">
 <span class="dt">Error</span>, rule <span class="st">&quot;dist/build/Cr.exe&quot;</span> failed to build file<span class="fu">:</span>
   dist<span class="fu">/</span>build<span class="fu">/</span>Cr.exe</code></pre></div>
 <p>I was trying to understand realization and I’ve got some bits. It’s impossible to have analitics without wrapping IO into Rules and Action and maybe custom functions for those wrappers. I was trying to get deeper and repeat something alike with <code>free</code> alike in this example https://github.com/ekmett/free/blob/master/examples/RetryTH.hs - and it’s really not that simple to understand what’s actually happening there. And there <code>withRetry</code> block is sure not IO () block, just yet another wrapper. Yes, wrapped Rules and Actions are easy to process but I don’t want to learn that stuff so far, I don’t want to lift from IO to Action and bind it to Rule everytime I want to make small change. This library/util is tiny but practical, it’s doing very simple things and using imerative way including global mutable state to resolve things alike <code>phony</code> in dirty (but simple) way.</p>
-<h2 id="sharingan-yet-another-sync-util">Sharingan (yet another sync util)</h2>
-<p>Simply folder worker performing various synchronization actions &amp;&amp; custom actions from yml configs just alike travis and I don’t know sane method of doing it for now, alternative. Maybe simple script can do it but it’s not handy to write such script each time.</p><div id="postfooter"></div><script src="../js/playpause.js"></script><script src="../bootstrap/three.js"></script><script src="../js/bubbles.js"></script></div><div id="social"><ul><li><a title="Github" target="_blank" href="http://github.com/Heather"><span class="mega-octicon octicon-octoface"></span></a></li><li><a title="Twitter" target="_blank" href="http://twitter.com/Cynede"><span class="mega-octicon octicon-star"></span></a></li><li><a title="mail" target="_blank" href="mailto:heather@live.ru"><span class="mega-octicon octicon-mail-read"></span></a></li><li><a title="Last.fm" target="_blank" href="http://www.last.fm/user/Cynede"><span class="mega-octicon octicon-broadcast"></span></a></li><li><a title="Stackoverflow" target="_blank" href="http://stackoverflow.com/users/238232/heather"><span class="mega-octicon octicon-squirrel"></span></a></li><li><a title="RSS" target="_blank" href="../atom.xml"><span class="mega-octicon octicon-rss"></span></a></li></ul></div><div id="footer"></div></body></html>
+<h2 id="simple-time-tracking">Simple time tracking</h2>
+<p>github: https://github.com/Heather/Weatherman</p>
+<p>Idea is pretty simple stupid, when you start tracking some task it writes down start time in yaml file with track number</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">trackFile ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">String</span> <span class="ot">→</span> <span class="dt">IO</span> ()
+trackFile id startDate <span class="fu">=</span> <span class="kw">do</span>
+  (_, trackFile) <span class="ot">←</span> getTrack id
+  trackYaml <span class="ot">←</span> startTrack trackFile
+  <span class="kw">let</span> trackStart <span class="fu">=</span>
+        trackYaml { start <span class="fu">=</span> startDate
+                  , pause <span class="fu">=</span> <span class="dt">Nothing</span>
+                  , tracked <span class="fu">=</span> <span class="dt">Nothing</span>
+                  }
+  yEncode trackFile trackStart
+  
+<span class="ot">trackTask ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> ()
+trackTask id <span class="fu">=</span> <span class="kw">do</span>
+  c1 <span class="ot">←</span> getCurrentTime
+  <span class="kw">let</span> dateString <span class="fu">=</span> show c1
+  putStrLn dateString
+  <span class="kw">if</span> id <span class="fu">/=</span> <span class="dv">0</span>
+    <span class="kw">then</span> <span class="kw">do</span>
+      putStrLn <span class="fu">$</span> <span class="st">&quot;tracking &quot;</span> <span class="fu">++</span> show id
+      trackFile id dateString
+    <span class="kw">else</span> <span class="kw">do</span> putStrLn <span class="st">&quot;Press any key to stop tracking&quot;</span>
+            waitForKeyPress
+            putStr <span class="st">&quot;Tracked &quot;</span>
+            diff <span class="ot">←</span> diffTime c1
+            putStrLn <span class="fu">$</span> humanReadableTimeDiff diff</code></pre></div>
+<p>When you pause it calculates tracked time (diff) and set paused flag</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">pauseT ::</span> (<span class="dt">String</span>, <span class="dt">String</span>) <span class="ot">→</span> <span class="dt">IO</span> ()
+pauseT (t,p) <span class="fu">=</span> <span class="kw">do</span>
+  trackYaml <span class="ot">←</span> openTrack p
+  <span class="kw">case</span> trackYaml <span class="kw">of</span>
+    <span class="dt">Nothing</span>    <span class="ot">→</span> exitFailure
+    <span class="dt">Just</span> yaml  <span class="ot">→</span> <span class="kw">do</span>
+      pauseDate <span class="ot">←</span> getCurrentTime
+      <span class="kw">let</span> startDate <span class="fu">=</span> read <span class="fu">$</span> start<span class="ot"> yaml ::</span> <span class="dt">UTCTime</span>
+          currentTracked <span class="fu">=</span> fromMaybe <span class="st">&quot;0&quot;</span> (tracked yaml)
+          currentTime <span class="fu">=</span> read<span class="ot"> currentTracked ::</span> <span class="dt">Int</span>
+      difft <span class="ot">←</span> diffTime startDate
+      <span class="kw">let</span> diff <span class="fu">=</span> fromEnum<span class="ot"> difft ::</span> <span class="dt">Int</span>
+          total <span class="fu">=</span> show <span class="fu">$</span> diff <span class="fu">+</span> currentTime
+          pauseString <span class="fu">=</span> show pauseDate
+          trackStart  <span class="fu">=</span>
+            yaml { pause <span class="fu">=</span> <span class="dt">Just</span> pauseString
+                 , tracked <span class="fu">=</span> <span class="dt">Just</span> total
+                 }
+      putStrLn <span class="fu">$</span> t <span class="fu">++</span> <span class="st">&quot; paused at &quot;</span> <span class="fu">++</span> pauseString
+      yEncode p trackStart</code></pre></div>
+<p>When you resume it simply changes start time</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">resumeT ::</span> (<span class="dt">String</span>, <span class="dt">String</span>) <span class="ot">→</span> <span class="dt">IO</span> ()
+resumeT (t,p) <span class="fu">=</span> <span class="kw">do</span>
+  trackYaml <span class="ot">←</span> openTrack p
+  <span class="kw">case</span> trackYaml <span class="kw">of</span>
+    <span class="dt">Nothing</span>    <span class="ot">→</span> exitFailure
+    <span class="dt">Just</span> yaml  <span class="ot">→</span> <span class="kw">do</span>
+      resumeDate <span class="ot">←</span> getCurrentTime
+      <span class="kw">let</span> resumeString <span class="fu">=</span> show resumeDate
+          trackStart <span class="fu">=</span>
+            yaml { pause <span class="fu">=</span> <span class="dt">Nothing</span>
+                 , start <span class="fu">=</span> resumeString
+                 }
+      putStrLn <span class="fu">$</span> t <span class="fu">++</span> <span class="st">&quot; resumed at &quot;</span> <span class="fu">++</span> resumeString
+      yEncode p trackStart</code></pre></div>
+<p>When you finish you calculated tracked time sum with diff from current to start time</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">getTotalTracked ::</span> <span class="dt">Track</span> <span class="ot">→</span> <span class="dt">IO</span> <span class="dt">NominalDiffTime</span>
+getTotalTracked cfg <span class="fu">=</span> <span class="kw">do</span>
+  difft <span class="ot">←</span> <span class="kw">case</span> pause cfg <span class="kw">of</span>
+      <span class="dt">Just</span> _  <span class="ot">→</span> return <span class="dv">0</span>
+      <span class="dt">Nothing</span> <span class="ot">→</span> diffTime c1
+  <span class="kw">let</span> diffInPicos  <span class="fu">=</span> fromEnum difft
+      totalTracked <span class="fu">=</span>
+        toEnum (diffInPicos <span class="fu">+</span> trackedTime)<span class="ot"> ::</span> <span class="dt">NominalDiffTime</span>
+  return totalTracked
+ <span class="kw">where</span><span class="ot"> startDate ::</span> <span class="dt">String</span>
+       startDate <span class="fu">=</span> start cfg
+<span class="ot">       trackedTime ::</span> <span class="dt">Int</span>
+       trackedTime <span class="fu">=</span>
+         <span class="kw">case</span> tracked cfg <span class="kw">of</span>
+           <span class="dt">Just</span> t  <span class="ot">→</span> read<span class="ot"> t ::</span> <span class="dt">Int</span>
+           <span class="dt">Nothing</span> <span class="ot">→</span> <span class="dv">0</span>
+<span class="ot">       c1 ::</span> <span class="dt">UTCTime</span>
+       c1 <span class="fu">=</span> read<span class="ot"> startDate ::</span> <span class="dt">UTCTime</span>
+
+<span class="ot">finishT ::</span> <span class="dt">Bool</span> <span class="ot">→</span> (<span class="dt">String</span>, <span class="dt">String</span>) <span class="ot">→</span> <span class="dt">IO</span> ()
+finishT remove (t,p) <span class="fu">=</span> <span class="kw">do</span>
+  trackYaml <span class="ot">←</span> openTrack p
+  <span class="kw">case</span> trackYaml <span class="kw">of</span>
+    <span class="dt">Nothing</span>    <span class="ot">→</span> exitFailure
+    <span class="dt">Just</span> yaml  <span class="ot">→</span> <span class="kw">do</span>
+      totalTracked <span class="ot">←</span> getTotalTracked yaml
+      putStr <span class="fu">$</span> <span class="st">&quot;* &quot;</span> <span class="fu">++</span> t <span class="fu">++</span> <span class="st">&quot; : &quot;</span>
+      putStrLn <span class="fu">$</span> humanReadableTimeDiff totalTracked
+      when remove <span class="fu">$</span> removeFile p</code></pre></div>
+<p>also you can iterate all tracks and pause / resume /finish all</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">iterateTasks ::</span> ((<span class="dt">String</span>, <span class="dt">String</span>) <span class="ot">→</span> <span class="dt">IO</span> ()) <span class="ot">→</span> <span class="dt">IO</span> ()
+iterateTasks action <span class="fu">=</span> <span class="kw">do</span>
+  workDir <span class="ot">←</span> getWorkDir
+  content <span class="ot">←</span> getDirectoryContents workDir
+  <span class="kw">let</span> tasks <span class="fu">=</span> filter (isPrefixOf <span class="st">&quot;task-&quot;</span>) content
+      abslt <span class="fu">=</span> map (\t <span class="ot">→</span> (t, workDir <span class="fu">&lt;/&gt;</span> t)) tasks
+  forM_ abslt action
+  
+<span class="ot">pauseTask ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> ()
+pauseTask id <span class="fu">=</span> pauseT <span class="fu">=&lt;&lt;</span> getTrack id
+
+<span class="ot">resumeTask ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> ()
+resumeTask id <span class="fu">=</span> resumeT <span class="fu">=&lt;&lt;</span> getTrack id
+
+<span class="ot">finishTask ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> ()
+finishTask id <span class="fu">=</span> finishT <span class="dt">True</span> <span class="fu">=&lt;&lt;</span> getTrack id
+
+<span class="ot">list ::</span> <span class="dt">IO</span> ()
+list <span class="fu">=</span> iterateTasks (finishT <span class="dt">False</span>)
+
+<span class="ot">pauseAll ::</span> <span class="dt">IO</span> ()
+pauseAll <span class="fu">=</span> iterateTasks pauseT
+
+<span class="ot">resumeAll ::</span> <span class="dt">IO</span> ()
+resumeAll <span class="fu">=</span> iterateTasks resumeT
+
+<span class="ot">finishAll ::</span> <span class="dt">IO</span> ()
+finishAll <span class="fu">=</span> iterateTasks (finishT <span class="dt">True</span>)</code></pre></div>
+<p>functions startTrack / openTrack are simply manipulations with yaml</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">condM ::</span> <span class="dt">Monad</span> m <span class="ot">⇒</span> [(m <span class="dt">Bool</span>, m a)] <span class="ot">→</span> m a
+condM ((test,action) <span class="fu">:</span> rest) <span class="fu">=</span>
+  test <span class="fu">&gt;&gt;=</span> \t <span class="ot">→</span> <span class="kw">if</span> t <span class="kw">then</span> action
+                     <span class="kw">else</span> condM rest
+
+getWorkDir <span class="ot">∷</span> <span class="dt">IO</span> FilePath
+getWorkDir <span class="fu">=</span>
+  <span class="kw">if</span> <span class="fu">|</span> os ∈ [<span class="st">&quot;win32&quot;</span>, <span class="st">&quot;mingw32&quot;</span>, <span class="st">&quot;cygwin32&quot;</span>] <span class="ot">→</span>
+        (takeDirectory <span class="fu">&lt;$&gt;</span> getExecutablePath)
+     <span class="fu">|</span> otherwise <span class="ot">→</span> getHomeDirectory
+
+getTrack <span class="ot">∷</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> (<span class="dt">String</span>, FilePath)
+getTrack id <span class="fu">=</span> getWorkDir <span class="fu">&gt;&gt;=</span> \w <span class="ot">→</span>
+                return (τ, w <span class="fu">&lt;/&gt;</span> τ)
+ <span class="kw">where</span> τ<span class="ot"> ::</span> <span class="dt">String</span>
+       τ <span class="fu">=</span> <span class="st">&quot;task-&quot;</span> <span class="fu">++</span> show id
+
+startTrack <span class="ot">∷</span> <span class="dt">String</span> <span class="ot">→</span> <span class="dt">IO</span> <span class="dt">Track</span>
+startTrack trackFile <span class="fu">=</span>
+  condM [ (doesFileExist trackFile, yDecode trackFile <span class="ot">∷</span> <span class="dt">IO</span> <span class="dt">Track</span>)
+        , ( return <span class="dt">True</span>
+          , return <span class="dt">Track</span> { tracked <span class="fu">=</span> <span class="dt">Nothing</span>
+                         , start <span class="fu">=</span> <span class="st">&quot;0&quot;</span>
+                         , pause <span class="fu">=</span> <span class="dt">Nothing</span>
+                         })]
+
+openTrack <span class="ot">∷</span> <span class="dt">String</span> <span class="ot">→</span> <span class="dt">IO</span> (<span class="dt">Maybe</span> <span class="dt">Track</span>)
+openTrack trackFile <span class="fu">=</span>
+  condM [ (doesFileExist trackFile
+         , <span class="dt">Just</span> <span class="fu">&lt;$&gt;</span> (yDecode trackFile <span class="ot">∷</span> <span class="dt">IO</span> <span class="dt">Track</span>))
+         , ( return <span class="dt">True</span>
+           , return <span class="dt">Nothing</span>)]</code></pre></div>
+<h2 id="yet-another-sync-util-sharingan">Yet another sync util (Sharingan)</h2>
+<p>Simply folder worker performing various synchronization actions &amp;&amp; custom actions from yml configs just alike travis and I don’t know sane method of doing it for now, alternative. Maybe simple script can do it but it’s not handy to write such script each time.</p>
+<p>Honestly I’m really lazy to rewrite current implementation of this tool :D</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">synchronize     <span class="co">-- actual synchronization function</span>
+  <span class="ot">∷</span> <span class="dt">CommonOpts</span>  <span class="co">-- common options</span>
+  <span class="ot">→</span> <span class="dt">SyncOpts</span>    <span class="co">-- synchronization options</span>
+  <span class="ot">→</span> <span class="dt">IO</span>()
+synchronize _o so <span class="fu">=</span> <span class="co">-- ( ◜ ①‿‿① )◜</span>
+  withDefaultsConfig <span class="fu">$</span> \defx <span class="ot">→</span>
+   withConfig <span class="fu">$</span> \ymlx <span class="ot">→</span> despair <span class="fu">$</span> <span class="kw">do</span>
+    jsdat <span class="ot">←</span> yDecode ymlx <span class="ot">∷</span> <span class="dt">IO</span> [<span class="dt">RepositoryWrapper</span>]
+    jfdat <span class="ot">←</span> yDecode defx <span class="ot">∷</span> <span class="dt">IO</span> <span class="dt">DefaultsWrapper</span>
+    myenv <span class="ot">←</span> getEnv
+    <span class="kw">let</span> dfdat <span class="fu">=</span> _getDefaults jfdat
+        rsdat <span class="fu">=</span> map _getRepository jsdat
+<span class="st">#if ( defined(mingw32_HOST_OS) || defined(__MINGW32__) )</span>
+    when (syncFull so ∨ (fromMaybe <span class="dt">False</span> (full dfdat))) <span class="fu">$</span> <span class="kw">do</span>
+      when (fromMaybe <span class="dt">True</span> (updateCabal dfdat)) cabalUpdate
+      when (fromMaybe <span class="dt">False</span> (updateStack dfdat)) stackUpdate
+<span class="st">#endif</span>
+    forM_ rsdat <span class="fu">$</span> sync myenv dfdat <span class="kw">where</span>
+<span class="ot">  sync ::</span> <span class="dt">MyEnv</span>       <span class="co">-- environment</span>
+        <span class="ot">→</span> <span class="dt">Defaults</span>    <span class="co">-- default options</span>
+        <span class="ot">→</span> <span class="dt">Repository</span>  <span class="co">-- repository (iterating)</span>
+        <span class="ot">→</span> <span class="dt">IO</span> ()
+  sync myEnv dfdata repo <span class="fu">=</span>
+    <span class="kw">let</span> loc <span class="fu">=</span> location repo
+        isenabled <span class="fu">=</span> fromMaybe <span class="dt">True</span> (enabled repo)
+        frs <span class="fu">=</span> syncForce so
+        ntr <span class="fu">=</span> syncInteractive so
+        nps <span class="fu">=</span> syncNoPush so
+    <span class="kw">in</span> when (<span class="kw">case</span> syncFilter so <span class="kw">of</span>
+                    <span class="dt">Nothing</span>  <span class="ot">→</span> <span class="kw">case</span> syncGroups so <span class="kw">of</span>
+                                    [] <span class="ot">→</span> isenabled
+                                    gx  <span class="ot">→</span> <span class="kw">case</span> syncGroup repo <span class="kw">of</span>
+                                                <span class="dt">Just</span> gg <span class="ot">→</span> isenabled ∧ (gg ∈ gx)
+                                                <span class="dt">Nothing</span> <span class="ot">→</span> <span class="dt">False</span>
+                    <span class="dt">Just</span> snc <span class="ot">→</span> isInfixOf <span class="fu">&lt;|</span> map toLower snc
+                                         <span class="fu">&lt;|</span> map toLower loc)
+      <span class="fu">$</span> <span class="kw">let</span> ups <span class="fu">=</span> splitOn <span class="st">&quot; &quot;</span> <span class="fu">$</span> upstream repo
+            snc <span class="fu">=</span> sharingan (syncInteractive so) adm
+            cln <span class="fu">=</span> fromMaybe <span class="dt">False</span> (clean repo)
+            adm <span class="fu">=</span> fromMaybe <span class="dt">False</span> (root repo)
+            noq <span class="fu">=</span> not <span class="fu">$</span> fromMaybe <span class="dt">False</span> (quick dfdata)
+            tsk <span class="fu">=</span> task repo
+            vcx <span class="fu">=</span> vcs repo
+            u b <span class="fu">=</span> <span class="kw">do</span>
+              printf <span class="st">&quot; - %s : %s\n&quot;</span> loc b
+              <span class="kw">if</span> nps ∧ tsk <span class="fu">/=</span> <span class="st">&quot;pull&quot;</span>
+                <span class="kw">then</span> return (<span class="dt">True</span>, <span class="dt">True</span>)
+                <span class="kw">else</span> amaterasu tsk loc b ups (syncUnsafe so)
+                        frs cln adm (hash repo) myEnv vcx
+            eye (_, r) <span class="fu">=</span> when ((r ∨ frs) ∧ not (syncQuick so) ∧ noq)
+              <span class="fu">$</span> <span class="kw">do</span> <span class="kw">let</span> shx <span class="fu">=</span> loc <span class="fu">&lt;/&gt;</span> <span class="st">&quot;.sharingan.yml&quot;</span>
+                       ps  <span class="fu">=</span> postRebuild repo
+                   doesFileExist shx ≫<span class="fu">=</span> sharingan
+                        ntr adm shx loc
+                   when (isJust ps) <span class="fu">$</span> forM_ (fromJust ps) <span class="fu">$</span> \psc <span class="ot">→</span>
+                      <span class="kw">let</span> pshx <span class="fu">=</span> psc <span class="fu">&lt;/&gt;</span> <span class="st">&quot;.sharingan.yml&quot;</span>
+                      <span class="kw">in</span> doesFileExist pshx≫<span class="fu">=</span> snc pshx psc
+        <span class="kw">in</span> <span class="kw">do</span> forM_ (tails (branches repo))
+               <span class="fu">$</span> \<span class="kw">case</span> [x] <span class="ot">→</span> u x ≫<span class="fu">=</span> eye <span class="co">-- Tail</span>
+                       x<span class="fu">:</span>_ <span class="ot">→</span> u x ≫<span class="fu">=</span> (\_ <span class="ot">→</span> return ())
+                       []  <span class="ot">→</span> return ()
+              putStrLn ⊲ replicate <span class="dv">80</span> <span class="ch">'_'</span></code></pre></div><div id="postfooter"></div><script src="../js/playpause.js"></script><script src="../bootstrap/three.js"></script><script src="../js/bubbles.js"></script></div><div id="social"><ul><li><a href="http://github.com/Heather" title="Github" target="_blank"><span class="mega-octicon octicon-octoface"></span></a></li><li><a href="http://twitter.com/Cynede" title="Twitter" target="_blank"><span class="mega-octicon octicon-star"></span></a></li><li><a href="mailto:heather@live.ru" title="mail" target="_blank"><span class="mega-octicon octicon-mail-read"></span></a></li><li><a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank"><span class="mega-octicon octicon-broadcast"></span></a></li><li><a href="http://stackoverflow.com/users/238232/heather" title="Stackoverflow" target="_blank"><span class="mega-octicon octicon-squirrel"></span></a></li><li><a href="../atom.xml" title="RSS" target="_blank"><span class="mega-octicon octicon-rss"></span></a></li></ul></div><div id="footer"></div></body></html>
