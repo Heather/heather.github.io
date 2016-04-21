@@ -2,6 +2,61 @@
 title: Haskell disorder
 ---
 
+Prelude
+=======
+
+Many different people have different opinions of what language ecosystem should be.
+Many people don't care.
+Some people don't care and have opinion in the same time.
+How is that?
+Simply they are able to build their project and run it using their tool.
+They don't need other changes.
+They just want to be safe in their (sometimes very specific) workflow.
+And that could be even named alike "time-tested strategies that are known to work (like known-good package sets)".
+There are could be different reasoning but mostly people tell that they care.
+People care about their own workflow.
+Sometimes we just need to point that they are not alone.
+When you say that something is distro-specific, os-specific, language-specific, workflow-specific
+you just face the limitation and limitation is something most people would like to avoid.
+
+Haskell
+=======
+
+> Haskell programs and libraries extensively reuse entitites (types,
+> functions, rewrite rules, type instances, other stuff) exported from
+> external libraries as non-opaque entities to allow aggressive cross-module
+> inlining to compile away deep layers of abstraction. It's language's feature.
+> If you accept the fact transitive dependencies being able to break ABI is not a GHC bug
+
+> what actually affects real ABI (exported inlines, exported datatype layout changes, modules
+> names, strictness annotations, unpack pragmas)
+> ghc --show-iface can help in tracking ABI drift.
+
+I've seen that people tell that `stack` and `cabal` are much better than `pip` for example
+
+However when you install library or executable `A` whcih is depending on `B` it's likely already dangerous
+Because when we have libraries that have had their dependencies changed it's likely broken (in case of changed ABI)
+And neither `stack` neither `cabal` can help you with your broken environment
+Neither `python` ever used to had this problem
+That could be work for some `package manager` and could be called `revdep-rebuild`
+That's how you manage dynamic libraries updating on system level
+
+Community
+=========
+
+Most of haskell community has no idea that haskell projects even can be installed to system.
+
+I mean for real. Haskellers think that haskell is something that you only run once.
+To build small executable inside small sanbox on userspace.
+And they are proud of it.
+
+And usually they point you to NixOS or stack (they love stack) tricks alike
+
+> stack has brought a new era of stability to haskell in the real world.
+> yes, it's a hack, but it usually works really well.
+
+But actually not everyone can even understand that it's a hack.
+
 Sandbox all the things!
 =======================
 
@@ -58,12 +113,3 @@ In conclusion this problem is known outside haskell. Often some C++ projects shi
 you build and install those monsters in addition to existing and then suffer from possible conflicts. This scheme often used for production,
 enterprise software, however most of opensource ecosystem don't act like that. In haskell community people act like they're always alike in
 production / enterprise and that's what I can't understand, when sandbox became something mandatory?
-
-Do you even know what is induction?
-===================================
-
-Yes, Haskell is very hard and maybe I just don't understand anything
-
-<iframe width="420" height="315"
-src="http://www.youtube.com/embed/v93rM8-bU2g?autoplay=1">
-</iframe>
