@@ -19,8 +19,8 @@ main = shake $ do
     putStrLn " -> Cleaning..."
     removeIfExists index
     removeIfExists "404.html"
-    removeIfExists "css"
-    removeIfExists "posts"
+    removeDirIfExists "css"
+    removeDirIfExists "posts"
     removeDirIfExists "js"
     cwd ← getCurrentDirectory
     let srcDir = cwd </> "src"
