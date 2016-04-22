@@ -39,7 +39,10 @@ Because when we have libraries that have had their dependencies changed it's lik
 And neither `stack` neither `cabal` can help you with your broken environment
 Neither `python` ever used to had this problem
 That could be work for some `package manager` and could be called `revdep-rebuild`
+(scan libs for missing shared library dependencies and attempts to fix them by rebuilding broken libs)
 That's how you manage dynamic libraries updating on system level
+
+From what I see currently stack is something unmanaged, I can't update some root library used for system binaries
 
 Community
 =========
@@ -56,6 +59,18 @@ And usually they point you to NixOS or stack (they love stack) tricks alike
 > yes, it's a hack, but it usually works really well.
 
 But actually not everyone can even understand that it's a hack.
+
+Actually stack and sandboxed workflow could be useful for development
+But that workflow could be dangerous because people stop thinking about other cases
+So Haskell projects is becoming sandbox-only
+
+For example when one project, for example Idris, start using changed (bumped)
+library which is shipped with `GHC` it feels absolutely fine on sandbox
+But when user will install idris (and that library to system) all other libraries
+will become broken because their dependencies is changed by that
+That's why some core packages has `-compat` compatibility layers
+Sure developers tell me that they don't care and everything works fine
+in sandboxes and downgrading this library is `distro-patch`
 
 Sandbox all the things!
 =======================
