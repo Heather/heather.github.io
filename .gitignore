@@ -13,7 +13,6 @@
 /packages/
 /build/
 
-/_site/
-/_cache/
-/site
 /src/hs/.stack-work
+/src/_site
+/src/_cache
