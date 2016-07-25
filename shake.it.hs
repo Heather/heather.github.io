@@ -1,19 +1,19 @@
-{-# LANGUAGE
-    UnicodeSyntax
-  , CPP
-  #-}
+{-# LANGUAGE CPP           #-}
+{-# LANGUAGE MultiWayIf    #-}
+{-# LANGUAGE UnicodeSyntax #-}
+
 
 -- TODO: Linux support
 
-import Shake.It.Off
+import           Shake.It.Off
 
-import System.Exit
-import System.Process
-import System.Directory
+--import           System.Directory
+--import           System.Exit
+--import           System.Process
 
-import Control.Monad
+import           Control.Monad
 
-main :: IO ()
+main ∷ IO ()
 main = shake $ do
   "clean" ∫ do
     putStrLn " -> Cleaning..."
@@ -35,7 +35,8 @@ main = shake $ do
     cwd ← getCurrentDirectory
     putStrLn " -> Change current dir to src"
     let srcDir = cwd </> "src"
-        siteHK = srcDir </> "site.exe"
+        siteHK = if | os ∈ ["win32", "mingw32", "cygwin32"] → srcDir </> "src/site.exe"
+                    | otherwise → srcDir </> "site.exe"
         tempSite = srcDir </> "_site"
         tempCache = srcDir </> "_cache"
         site a =
@@ -62,11 +63,13 @@ main = shake $ do
         removeDirIfExists tempCache
         removeDirIfExists tempSite
 
- where index :: String
+ where index ∷ String
        index = "index.html"
 
-       siteSrc :: String
+       siteSrc ∷ String
        siteSrc = "src/hs/site.hs"
 
-       siteOut :: String
-       siteOut  = "src/site.exe"
+       siteOut ∷ String
+       siteOut =
+         if | os ∈ ["win32", "mingw32", "cygwin32"] → "src/site.exe"
+            | otherwise → "src/site"

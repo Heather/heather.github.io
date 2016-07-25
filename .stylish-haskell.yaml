@@ -1,0 +1,37 @@
+steps:
+  - unicode_syntax:
+      add_language_pragma: true
+
+  # Align the right hand side of some elements.  This is quite conservative
+  # and only applies to statements where each element occupies a single
+  # line.
+  - simple_align:
+      cases: true
+      top_level_patterns: true
+      records: true
+
+  # Import cleanup
+  - imports:
+      align: global
+      list_align: after_alias
+      long_list_align: multiline
+      list_padding: 2
+      separate_lists: true
+
+  # Language pragmas
+  - language_pragmas:
+      style: vertical
+      align: true
+      remove_redundant: true
+
+  # Replace tabs by spaces. This is disabled by default.
+  - tabs:
+      spaces: 2
+
+  # Remove trailing whitespace
+  - trailing_whitespace: {}
+
+# A common setting is the number of columns (parts of) code will be wrapped
+# to. Different steps take this into account. Default: 80.
+columns: 80
+newline: lf
