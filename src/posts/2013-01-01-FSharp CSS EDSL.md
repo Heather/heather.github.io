@@ -1,5 +1,5 @@
 ---
-title: Failess : CSS EDSL in FSharp
+title: Failess ':' CSS EDSL in FSharp
 ---
 
 [Failess](https://github.com/Heather/Failess) features:
@@ -14,7 +14,7 @@ title: Failess : CSS EDSL in FSharp
 open Fake
 open Failess
 
-Target "custom.css" (fun () -> 
+Target "custom.css" (fun () ->
     CSS ("..\css\custom.css") [
         code @ Color.black
         "/* When highlighted code blocks are too wide, they wrap. Resulting in the */"
@@ -57,13 +57,13 @@ fieldset << [
     ★  [    
         margin -/ [em 1.0; px 0]
         padding -- em 1.0
-        Border.set (px 1) Solid "#ccc" 
+        Border.set (px 1) Solid "#ccc"
         ]
     ☆ p @ margin -/ px4 2 12 10 10
-    ⠂ "login" ++ label 
-        >< ⠂ "register" ++ label 
-        >< ⠂ "changePassword" ++ label 
-            @ Display.block 
+    ⠂ "login" ++ label
+        >< ⠂ "register" ++ label
+        >< ⠂ "changePassword" ++ label
+            @ Display.block
     ]
 ⠂ loginDisplay << [
     ★  [
@@ -71,7 +71,7 @@ fieldset << [
         padding        -- px 10
         Display.block
         TextAlign.right
-        Color.white 
+        Color.white
         ]
     ☆ a << [
         ⠅ link     @ Color.white
@@ -91,17 +91,17 @@ How does it work
 It's designed to use custom F# operators with right priority in mind and basically it replaces custom keywords to strings and merges all the stuff
 
 ``` fsharp
-let inline (~+.) st = 
+let inline (~+.) st =
     match st with
     | [] -> ""
     | [ _ ] -> sprintf " {{ %s }}" st.Head
-    | _ -> 
-        let pars = 
-            [for s in st -> 
-                sprintf "%s%s" 
+    | _ ->
+        let pars =
+            [for s in st ->
+                sprintf "%s%s"
                 <| tab
                 <| s]
-        sprintf " {{%s%s%s%s}}" 
+        sprintf " {{%s%s%s%s}}"
         <| System.Environment.NewLine
         <| String.Join(System.Environment.NewLine, pars)
         <| System.Environment.NewLine
