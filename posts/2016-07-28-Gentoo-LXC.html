@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE html><html ng-app><head><meta charset="utf-8"><meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"><meta content="Heather" name="description"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="../atom.xml" title="Heather" type="application/atom+xml" rel="alternate"><link href="../favicon.ico" type="image/ico" rel="shortcut icon"><script src="../bootstrap/jquery-2.1.1.min.js"></script><link href="../bootstrap/bootstrap.min.css" rel="stylesheet"><link href="../bootstrap/bootstrap-theme.min.css" rel="stylesheet"><script src="../bootstrap/bootstrap.min.js"></script><script src="../bootstrap/angular.min.js"></script><link href="../css/hasklig.css" media="all" type="text/css" rel="stylesheet"><link href="../css/octicons.css" media="all" type="text/css" rel="stylesheet"><link href="../css/syntax.css" media="all" type="text/css" rel="stylesheet"><link href="../css/default.css" media="all" type="text/css" rel="stylesheet"><title>Heather - LXC Containers Server with Gentoo, NetworkManager and Systemd</title><script src="../js/auto.js"></script></head><body><div class="band"></div><div id="header"><div id="logo"><a href="../" id="abbr"></a><script>e = document.getElementById("abbr");setTimeout(r, 0);</script></div></div><div id="content"><h1>LXC Containers Server with Gentoo, NetworkManager and Systemd</h1><audio autoplay loop id="audio"><source src="../images/Bween.mp3" type="audio/mp3"></audio><div id="controls"><img height="20px" width="20px" src="../images/RedPause.png" id="playpause"></div><div class="info">Posted on 28 July 2016</div><h2 id="why-lxc">Why LXC?</h2>
+<p>Some things in below list is just my imho and don’t take it very serious</p>
+<ul>
+<li>Kernel level virtualization is better than (hyper-v, vbox, vmware) due control level, no-drivers virtualization, scalability, etc…</li>
+<li>FreeBSD Jail is actually interesting alternative but portage is more handy as package manager (as for me) and I really needed Linux kernel there.</li>
+<li>I don’t know much about Linux VServer but as for me it’s very separated project and I hardly can belong on it.</li>
+<li>OpenVZ was actually my first Idea but I wanted last btrfs improvements and stuff and last supported kernel there is 2.6.x (they’ve just made support for 3.10x but now it only close to one distribution, and it is actually weak)</li>
+<li>LXC (and possibly LXD) feels like future on kernel level virtualization for Linux because it’s developed with vanilla kernel and slowly getting most of OpenVZ functionality, nowadays it’s really just usable, I’m considering stick with it for now.</li>
+</ul>
+<h2 id="why-gentoo">Why Gentoo?</h2>
+<p>Simply because of maximum level of comfort and flexibility, another system I can suggest there is CoreOS (which is also based on Gentoo) however being Gentoo dev my choice is obvious.</p>
+<p>Most of tutorials shows bridge configuration based on openrc’s /etc/conf.d/net services but it’s not any harder and even simpler with <code>nmcli</code></p>
+<p>basically (example from <a href="https://people.freedesktop.org/~lkundrak/nm-docs/nmcli-examples.html">freedesktop.org</a>):</p>
+<pre class="shell"><code>$ nmcli con add type bridge con-name TowerBridge ifname TowerBridge
+$ nmcli con add type ethernet con-name br-slave-1 ifname ens3 master TowerBridge
+$ nmcli con add type ethernet con-name br-slave-2 ifname ens4 master TowerBridge
+$ nmcli con modify TowerBridge bridge.stp no</code></pre>
+<p>Anything LXC specific could be done via <a href="https://wiki.gentoo.org/wiki/LXC#Host_setup">Gentoo Wiki Tutorial</a></p>
+<p>Some basic container config with own network will look alike this:</p>
+<div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="er">lxc.network.type</span> <span class="er">=</span> <span class="er">veth</span>
+<span class="er">lxc.network.link</span> <span class="er">=</span> <span class="er">lxbridge</span>
+<span class="er">lxc.network.flags</span> <span class="er">=</span> <span class="er">up</span>
+<span class="er">lxc.network.ipv4</span> <span class="er">=</span> <span class="er">192.168.3.146/24</span>
+<span class="er">lxc.network.ipv4.gateway</span> <span class="er">=</span> <span class="er">192.168.3.254</span>
+
+<span class="er">lxc.group</span> <span class="er">=</span> <span class="er">onboot</span>
+<span class="er">lxc.start.auto</span> <span class="er">=</span> <span class="er">1</span>
+<span class="er">lxc.start.delay</span> <span class="er">=</span> <span class="er">5</span>
+
+<span class="er">lxc.rootfs</span> <span class="er">=</span> <span class="er">/srv/C</span>
+<span class="er">lxc.rootfs.backend</span> <span class="er">=</span> <span class="er">dir</span>
+<span class="er">###</span> <span class="er">lxc-gentoo</span> <span class="er">template</span> <span class="er">stuff</span> <span class="er">starts</span> <span class="er">here</span>
+<span class="er">#</span> <span class="er">sets</span> <span class="er">container</span> <span class="er">architecture</span>
+<span class="er">#</span> <span class="er">If</span> <span class="er">desired</span> <span class="er">architecture</span> <span class="er">!=</span> <span class="er">amd64</span> <span class="er">or</span> <span class="er">x86,</span> <span class="er">then</span> <span class="er">we</span> <span class="er">leave</span> <span class="er">it</span> <span class="er">unset</span> <span class="er">as</span>
+<span class="er">#</span> <span class="er">LXC</span> <span class="er">does</span> <span class="er">not</span> <span class="er">oficially</span> <span class="er">support</span> <span class="er">anything</span> <span class="er">other</span> <span class="er">than</span> <span class="er">x86</span> <span class="er">or</span> <span class="er">amd64.</span>
+<span class="er">lxc.arch</span> <span class="er">=</span> <span class="er">amd64</span>
+
+<span class="er">#</span> <span class="er">set</span> <span class="er">the</span> <span class="er">hostname</span>
+<span class="er">lxc.utsname</span> <span class="er">=</span> <span class="er">Cloyster</span>
+<span class="er">lxc.tty</span> <span class="er">=</span> <span class="er">1</span>
+
+<span class="er">#container</span> <span class="er">set</span> <span class="er">with</span> <span class="er">shared</span> <span class="er">portage</span>
+<span class="er">lxc.mount.entry=/usr/portage</span> <span class="er">usr/portage</span> <span class="er">none</span> <span class="er">ro,bind</span> <span class="er">0</span> <span class="er">0</span>
+<span class="er">lxc.mount.entry=/usr/portage/distfiles</span> <span class="er">usr/portage/distfiles</span> <span class="er">none</span> <span class="er">rw,bind</span> <span class="er">0</span> <span class="er">0</span>
+<span class="er">#If</span> <span class="er">you</span> <span class="er">use</span> <span class="er">eix,</span> <span class="er">you</span> <span class="er">should</span> <span class="er">uncomment</span> <span class="er">this</span>
+<span class="er">#lxc.mount.entry=/var/cache/eix</span> <span class="er">var/cache/eix</span> <span class="er">none</span> <span class="er">ro,bind</span> <span class="er">0</span> <span class="er">0</span>
+
+<span class="er">lxc.include</span> <span class="er">=</span> <span class="er">/usr/share/lxc/config/gentoo.common.conf</span></code></pre></div>
+<p>working with containers using on-host lxc commands is pretty simple</p>
+<pre class="shell"><code>lxc-start -n C
+lxc-console -n C</code></pre>
+<p>default gentoo container password is <code>toor</code></p>
+<p>inside basic Gentoo lxc container there is OpenRC so very basic veth config will follow:</p>
+<pre class="shell"><code>rc_keyword=&quot;-stop&quot;
+
+#config_eth0=&quot;dhcp&quot;
+config_eth0=&quot;192.168.3.146 netmask 255.255.255.0 brd 192.168.0.254&quot;
+routes_eth0=&quot;default via 192.168.3.254&quot;
+dns_servers_eth0=&quot;192.168.3.254 192.168.3...&quot;</code></pre>
+<p>don’t forget to set it on autostart</p>
+<pre class="shell"><code>rc-config add net.eth0</code></pre>
+<p>I had problems with running it on system start so I was forced to write some systemd service to automate it</p>
+<pre class="shell"><code>[Unit]
+Description=LXCAutostart
+After=network.target
+After=dbus.service
+After=iscsid.service
+After=apparmor.service
+After=local-fs.target
+After=remote-fs.target
+After=lxc.service
+After=lxcfs.service
+After=NetworkManager.service
+After=dnsmasq.service
+After=nfs-client.target
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+ExecStart=/usr/bin/lxc-autostart -g onboot
+TimeoutStopSec=1
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+<p>put it into <code>/etc/systemd/system</code> and <code>systemctl enable</code> it</p>
+<p>There the basic setup is done.</p>
+<p>Interesting article to <a href="https://www.flockport.com/run-gui-apps-in-lxc-containers/">Run Accelerated GUI apps in LXC containers</a></p><div id="postfooter"></div><script src="../js/playpause.js"></script><script src="../bootstrap/three.js"></script><script src="../js/bubbles.js"></script></div><div id="social"><ul><li><a href="http://github.com/Heather" title="Github" target="_blank"><span class="mega-octicon octicon-octoface"></span></a></li><li><a href="http://twitter.com/Cynede" title="Twitter" target="_blank"><span class="mega-octicon octicon-star"></span></a></li><li><a href="mailto:heather@live.ru" title="mail" target="_blank"><span class="mega-octicon octicon-mail-read"></span></a></li><li><a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank"><span class="mega-octicon octicon-broadcast"></span></a></li><li><a href="http://stackoverflow.com/users/238232/heather" title="Stackoverflow" target="_blank"><span class="mega-octicon octicon-squirrel"></span></a></li><li><a href="../atom.xml" title="RSS" target="_blank"><span class="mega-octicon octicon-rss"></span></a></li></ul></div><div id="footer"></div></body></html>
