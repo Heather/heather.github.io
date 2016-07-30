@@ -122,4 +122,20 @@ put it into `/etc/systemd/system` and `systemctl enable` it
 
 There the basic setup is done.
 
+Very handy web interface for LXC could be [LXC Web Panel](https://lxc-webpanel.github.io/)
+
+it's very tiny and only wants few python packages to run, prettty easy could be automated alike `LXCAutostart` service
+you only need specify `WorkingDirectory` for service and `ExecStart=/usr/bin/python lwp.py`.
+Also `RemainAfterExit=yes` and `TimeoutStopSec=1` obviously not needed there because it's real service :)
+
+100% working containers are `Debian` and sure `Gentoo`
+
+I'm using `Gentoo` openrc containers for some XLess services and `Debian` for virtual desktops
+
+To share virtual desktop from container without phisical monitor it's very handy to use X2Go
+
+there instructions for debian: http://wiki.x2go.org/doku.php/wiki:repositories:debian
+
+and on client you just need x2go client (works almost everywhere)
+
 Interesting article to [Run Accelerated GUI apps in LXC containers](https://www.flockport.com/run-gui-apps-in-lxc-containers/)

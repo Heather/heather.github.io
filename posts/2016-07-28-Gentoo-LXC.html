@@ -84,4 +84,11 @@ TimeoutStopSec=1
 WantedBy=multi-user.target</code></pre>
 <p>put it into <code>/etc/systemd/system</code> and <code>systemctl enable</code> it</p>
 <p>There the basic setup is done.</p>
+<p>Very handy web interface for LXC could be <a href="https://lxc-webpanel.github.io/">LXC Web Panel</a></p>
+<p>it’s very tiny and only wants few python packages to run, prettty easy could be automated alike <code>LXCAutostart</code> service you only need specify <code>WorkingDirectory</code> for service and <code>ExecStart=/usr/bin/python lwp.py</code>. Also <code>RemainAfterExit=yes</code> and <code>TimeoutStopSec=1</code> obviously not needed there because it’s real service :)</p>
+<p>100% working containers are <code>Debian</code> and sure <code>Gentoo</code></p>
+<p>I’m using <code>Gentoo</code> openrc containers for some XLess services and <code>Debian</code> for virtual desktops</p>
+<p>To share virtual desktop from container without phisical monitor it’s very handy to use X2Go</p>
+<p>there instructions for debian: http://wiki.x2go.org/doku.php/wiki:repositories:debian</p>
+<p>and on client you just need x2go client (works almost everywhere)</p>
 <p>Interesting article to <a href="https://www.flockport.com/run-gui-apps-in-lxc-containers/">Run Accelerated GUI apps in LXC containers</a></p><div id="postfooter"></div><script src="../js/playpause.js"></script><script src="../bootstrap/three.js"></script><script src="../js/bubbles.js"></script></div><div id="social"><ul><li><a href="http://github.com/Heather" title="Github" target="_blank"><span class="mega-octicon octicon-octoface"></span></a></li><li><a href="http://twitter.com/Cynede" title="Twitter" target="_blank"><span class="mega-octicon octicon-star"></span></a></li><li><a href="mailto:heather@live.ru" title="mail" target="_blank"><span class="mega-octicon octicon-mail-read"></span></a></li><li><a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank"><span class="mega-octicon octicon-broadcast"></span></a></li><li><a href="http://stackoverflow.com/users/238232/heather" title="Stackoverflow" target="_blank"><span class="mega-octicon octicon-squirrel"></span></a></li><li><a href="../atom.xml" title="RSS" target="_blank"><span class="mega-octicon octicon-rss"></span></a></li></ul></div><div id="footer"></div></body></html>
