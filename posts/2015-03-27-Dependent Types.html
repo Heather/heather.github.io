@@ -19,7 +19,7 @@
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">let program = <span class="st">&quot;+ + * - /&quot;</span>;
 let mut accumulator = <span class="dv">0</span>;
 
-<span class="kw">for</span> token in program.chars() {
+<span class="cf">for</span> token in program.chars() {
     match token {
         <span class="st">'+'</span> =&gt; accumulator += <span class="dv">1</span>,
         <span class="st">'-'</span> =&gt; accumulator -= <span class="dv">1</span>,

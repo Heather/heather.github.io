@@ -13,51 +13,51 @@
 <p><a href="https://www.elastic.co/products/kibana">Kibana</a> setup is either pretty easy and needs no additional configuration</p>
 <h1 id="logging">Logging</h1>
 <p>I’m using global logging I will have access from any part of my application, but it’s optional. Sure, with boost.</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(x_logger,
-    boost::log::sources::severity_logger&lt; boost::log::trivial::severity_level &gt;)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ex">BOOST_</span>LOG_INLINE_GLOBAL_LOGGER_DEFAULT(x_logger,
+    <span class="ex">boost::</span>log<span class="ex">::</span>sources<span class="ex">::</span>severity_logger&lt; <span class="ex">boost::</span>log<span class="ex">::</span>trivial<span class="ex">::</span>severity_level &gt;)</code></pre></div>
 <p>So I need to log into tcp server with six-six-six port. Well but as interface allows me to do it I will also make local logs Remote server is very good when we need to make some data work there but if we will have no connection having logs locally will be helpful.</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">///</span> define helper types <span class="kw">for</span> log sinks
-<span class="kw">typedef</span> boost::log::sinks::asynchronous_sink&lt; boost::log::sinks::text_file_backend &gt; file_sink;
-<span class="kw">typedef</span> boost::log::sinks::asynchronous_sink&lt; boost::log::sinks::text_ostream_backend &gt; tcp_sink;
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">///</span> define helper types <span class="cf">for</span> log sinks
+<span class="kw">typedef</span> <span class="ex">boost::</span>log<span class="ex">::</span>sinks<span class="ex">::</span>asynchronous_sink&lt; <span class="ex">boost::</span>log<span class="ex">::</span>sinks<span class="ex">::</span>text_file_backend &gt; file_sink;
+<span class="kw">typedef</span> <span class="ex">boost::</span>log<span class="ex">::</span>sinks<span class="ex">::</span>asynchronous_sink&lt; <span class="ex">boost::</span>log<span class="ex">::</span>sinks<span class="ex">::</span>text_ostream_backend &gt; tcp_sink;
 
 <span class="co">///</span> initialize <span class="kw">and</span> start loggers
 <span class="dt">void</span> init() {
     <span class="co">///</span> get global logger
-    src::severity_logger&lt; boost::log::trivial::severity_level &gt; lg = x_logger::get();
+    src::severity_logger&lt; <span class="ex">boost::</span>log<span class="ex">::</span>trivial<span class="ex">::</span>severity_level &gt; lg = x_logger::get();
     
     <span class="co">///</span> init sinks
-    boost::shared_ptr&lt; file_sink &gt; sink1(<span class="kw">new</span> file_sink(
-        keywords::file_name = <span class="st">&quot;</span><span class="ch">%Y%</span><span class="st">m</span><span class="ch">%d</span><span class="st">_</span><span class="ch">%H%</span><span class="st">M</span><span class="ch">%S_%</span><span class="st">5N.xml&quot;</span><span class="co">,</span>
+    <span class="ex">boost::</span>shared_ptr&lt; file_sink &gt; sink1(<span class="kw">new</span> file_sink(
+        keywords::file_name = <span class="st">&quot;</span><span class="sc">%Y%</span><span class="st">m</span><span class="sc">%d</span><span class="st">_</span><span class="sc">%H%</span><span class="st">M</span><span class="sc">%S_%</span><span class="st">5N.xml&quot;</span><span class="co">,</span>
         keywords::rotation_size = <span class="dv">16384</span>
         ));
-    boost::shared_ptr&lt; tcp_sink &gt; sink2(<span class="kw">new</span> tcp_sink(backend));
+    <span class="ex">boost::</span>shared_ptr&lt; tcp_sink &gt; sink2(<span class="kw">new</span> tcp_sink(backend));
 
     <span class="co">///</span> init tcp stream
-    boost::shared_ptr&lt; sinks::text_ostream_backend &gt; backend =
-        boost::make_shared&lt; sinks::text_ostream_backend &gt;();
-    boost::shared_ptr&lt; boost::asio::ip::tcp::iostream &gt; stream =
-        boost::make_shared&lt; boost::asio::ip::tcp::iostream &gt;();
+    <span class="ex">boost::</span>shared_ptr&lt; sinks::text_ostream_backend &gt; backend =
+        <span class="ex">boost::</span>make_shared&lt; sinks::text_ostream_backend &gt;();
+    <span class="ex">boost::</span>shared_ptr&lt; <span class="ex">boost::</span>asio<span class="ex">::</span>ip<span class="ex">::</span>tcp<span class="ex">::</span>iostream &gt; stream =
+        <span class="ex">boost::</span>make_shared&lt; <span class="ex">boost::</span>asio<span class="ex">::</span>ip<span class="ex">::</span>tcp<span class="ex">::</span>iostream &gt;();
     stream-&gt;<span class="fu">connect</span>(<span class="st">&quot;127.0.0.1&quot;</span><span class="co">,</span> <span class="st">&quot;666&quot;</span><span class="co">)</span>;
     backend-&gt;add_stream(stream);
     backend-&gt;auto_flush(<span class="kw">true</span>);
     
-    <span class="co">///</span> set xml format <span class="kw">for</span> file logger
+    <span class="co">///</span> set xml format <span class="cf">for</span> file logger
     sink-&gt;locked_backend()-&gt;set_file_collector(sinks::file::make_collector(
         keywords::target = path,                        <span class="co">/*&lt; the target directory &gt;*/</span>
         keywords::max_size = <span class="dv">64</span> * <span class="dv">1024</span> * <span class="dv">1024</span>,          <span class="co">/*&lt; maximum total size of the stored files, in bytes &gt;*/</span>
         keywords::min_free_space = <span class="dv">100</span> * <span class="dv">1024</span> * <span class="dv">1024</span>    <span class="co">/*&lt; minimum free space on the drive, in bytes &gt;*/</span>
     ));
     sink-&gt;set_formatter (
-        expr::format(<span class="st">&quot;</span><span class="ch">\t</span><span class="st">&lt;record id=</span><span class="ch">\&quot;%1%\&quot;</span><span class="st"> timestamp=</span><span class="ch">\&quot;%2%\&quot;</span><span class="st">&gt;</span><span class="ch">%3%</span><span class="st">&lt;/record&gt;&quot;</span><span class="co">)</span>
+        expr::format(<span class="st">&quot;</span><span class="sc">\t</span><span class="st">&lt;record id=</span><span class="sc">\&quot;%1%\&quot;</span><span class="st"> timestamp=</span><span class="sc">\&quot;%2%\&quot;</span><span class="st">&gt;</span><span class="sc">%3%</span><span class="st">&lt;/record&gt;&quot;</span><span class="co">)</span>
         % expr::attr&lt; <span class="dt">unsigned</span> <span class="dt">int</span> &gt;(<span class="st">&quot;RecordID&quot;</span>)
-        % expr::attr&lt; boost::posix_time::ptime &gt;(<span class="st">&quot;TimeStamp&quot;</span>)
+        % expr::attr&lt; <span class="ex">boost::</span>posix_time<span class="ex">::</span>ptime &gt;(<span class="st">&quot;TimeStamp&quot;</span>)
         % expr::xml_decor[expr::stream &lt;&lt; expr::smessage]
     );
-    <span class="kw">auto</span> write_header = [](sinks::text_file_backend::stream_type&amp; file) {
-        file &lt;&lt; <span class="st">&quot;&lt;?xml version=</span><span class="ch">\&quot;</span><span class="st">1.0</span><span class="ch">\&quot;</span><span class="st">?&gt;</span><span class="ch">\n</span><span class="st">&lt;log&gt;</span><span class="ch">\n</span><span class="st">&quot;</span>;
+    <span class="kw">auto</span> write_header = [](sinks::text_file_backend::<span class="dt">stream_type</span>&amp; file) {
+        file &lt;&lt; <span class="st">&quot;&lt;?xml version=</span><span class="sc">\&quot;</span><span class="st">1.0</span><span class="sc">\&quot;</span><span class="st">?&gt;</span><span class="sc">\n</span><span class="st">&lt;log&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;
     };
-    <span class="kw">auto</span> write_footer = [](sinks::text_file_backend::stream_type&amp; file) {
-        file &lt;&lt; <span class="st">&quot;&lt;/log&gt;</span><span class="ch">\n</span><span class="st">&quot;</span>;
+    <span class="kw">auto</span> write_footer = [](sinks::text_file_backend::<span class="dt">stream_type</span>&amp; file) {
+        file &lt;&lt; <span class="st">&quot;&lt;/log&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;
     };
     <span class="co">///</span> Set header <span class="kw">and</span> footer writing functors
     sink-&gt;locked_backend()-&gt;set_open_handler(write_header);
@@ -69,11 +69,11 @@
     logging::core::get()-&gt;add_global_attribute(<span class="st">&quot;RecordID&quot;</span><span class="co">,</span> attrs::counter&lt; <span class="dt">unsigned</span> <span class="dt">int</span> &gt;());
     logging::add_common_attributes();
 
-    BOOST_LOG_SEV(lg, boost::log::trivial::trace) &lt;&lt; <span class="st">&quot;Loggers initialization complete&quot;</span><span class="co">;</span>
+    <span class="ex">BOOST_</span>LOG_SEV(lg, <span class="ex">boost::</span>log<span class="ex">::</span>trivial<span class="ex">::</span>trace) &lt;&lt; <span class="st">&quot;Loggers initialization complete&quot;</span><span class="co">;</span>
 }</code></pre></div>
 <p>To simplify calling <code>BOOST_LOG_SEV</code> from any part application there could be macros alike</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#define X_INFO BOOST_LOG_STREAM_SEV(x_logger::get(), boost::log::trivial::info)</span>
-<span class="ot">#define X_ERROR BOOST_LOG_STREAM_SEV(x_logger::get(), boost::log::trivial::error)</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#define X_INFO BOOST_LOG_STREAM_SEV(x_logger::get(), boost::log::trivial::info)</span>
+<span class="pp">#define X_ERROR BOOST_LOG_STREAM_SEV(x_logger::get(), boost::log::trivial::error)</span>
 ...</code></pre></div>
 <p>It will log either into Elasticsearch and into some path creating xmls for each application run</p>
 <h1 id="p.s.">P.S.</h1>

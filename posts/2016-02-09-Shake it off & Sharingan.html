@@ -225,11 +225,11 @@ synchronize _o so <span class="fu">=</span> <span class="co">-- ( ◜ ①‿‿�
     myenv <span class="ot">←</span> getEnv
     <span class="kw">let</span> dfdat <span class="fu">=</span> _getDefaults jfdat
         rsdat <span class="fu">=</span> map _getRepository jsdat
-<span class="st">#if ( defined(mingw32_HOST_OS) || defined(__MINGW32__) )</span>
+<span class="ot">#if ( defined(mingw32_HOST_OS) || defined(__MINGW32__) )</span>
     when (syncFull so ∨ (fromMaybe <span class="dt">False</span> (full dfdat))) <span class="fu">$</span> <span class="kw">do</span>
       when (fromMaybe <span class="dt">True</span> (updateCabal dfdat)) cabalUpdate
       when (fromMaybe <span class="dt">False</span> (updateStack dfdat)) stackUpdate
-<span class="st">#endif</span>
+<span class="ot">#endif</span>
     forM_ rsdat <span class="fu">$</span> sync myenv dfdat <span class="kw">where</span>
 <span class="ot">  sync ::</span> <span class="dt">MyEnv</span>       <span class="co">-- environment</span>
         <span class="ot">→</span> <span class="dt">Defaults</span>    <span class="co">-- default options</span>

@@ -37,7 +37,7 @@
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> Singleton(<span class="bu">object</span>):
     _instances <span class="op">=</span> {}
     <span class="kw">def</span> <span class="fu">__new__</span>(class_, <span class="op">*</span>args, <span class="op">**</span>kwargs):
-        <span class="cf">if</span> class_ <span class="op">not</span> <span class="op">in</span> class_._instances:
+        <span class="cf">if</span> class_ <span class="kw">not</span> <span class="kw">in</span> class_._instances:
             class_._instances[class_] <span class="op">=</span> <span class="bu">super</span>(Singleton, class_).<span class="fu">__new__</span>(class_, <span class="op">*</span>args, <span class="op">**</span>kwargs)
         <span class="cf">return</span> class_._instances[class_]</code></pre></div>
 <h2 id="usage">Usage</h2>

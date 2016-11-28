@@ -162,8 +162,8 @@ foreign <span class="kw">import </span>ccall unsafe &quot;string.h&quot;
 <li><a href="https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-week/basic-lensing">FPComplete: Basic Lensing</a></li>
 <li><a href="http://adit.io/posts/2013-07-22-lenses-in-pictures.html">Lenses In Pictures</a></li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Point</span> <span class="fu">=</span> <span class="dt">Point</span> { _x, _<span class="ot">y   ::</span> <span class="dt">Double</span> }
-<span class="kw">data</span> <span class="dt">Mario</span> <span class="fu">=</span> <span class="dt">Mario</span> { _<span class="ot">location ::</span> <span class="dt">Point</span> }
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Point</span> <span class="fu">=</span> <span class="dt">Point</span> { _x,<span class="ot"> _y   ::</span> <span class="dt">Double</span> }
+<span class="kw">data</span> <span class="dt">Mario</span> <span class="fu">=</span> <span class="dt">Mario</span> {<span class="ot"> _location ::</span> <span class="dt">Point</span> }
 
 player1 <span class="fu">=</span> <span class="dt">Mario</span> (<span class="dt">Point</span> <span class="dv">0</span> <span class="dv">0</span>)
 
