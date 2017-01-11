@@ -24,7 +24,7 @@ theStylesheet :: Css
 theStylesheet = do -- Overall site-wide styling rules.
 
     body ? do color         "#333"
-              margin        nil auto nil auto
+              margin        nil nil nil nil
               width         $   pct 80
               height        $   pct 100
               fontSize      $   px 16
