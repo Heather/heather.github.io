@@ -24,13 +24,12 @@ theStylesheet :: Css
 theStylesheet = do -- Overall site-wide styling rules.
 
     body ? do color         "#333"
-              margin        nil nil nil nil
-              width         $   pct 80
-              height        $   pct 100
-              fontSize      $   px 16
+              margin        nil nil nil (px 25)
+              width         $ pct 90
+              fontSize      $ px 16
               fontFamily    ["Helvetica Neue Light", "Helvetica Neue", "Helvetica"] [sansSerif]
-              fontWeight    $   weight 300
-              lineHeight    $   em 1.5
+              fontWeight    $ weight 300
+              lineHeight    $ em 1.5
               overflowX     hidden
 
     div # "#header" ? do marginBottom    $  px 44
