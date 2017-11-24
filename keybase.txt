@@ -1,0 +1,52 @@
+https://keybase.io/cynede
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://heather.github.io
+  * I am cynede (https://keybase.io/cynede) on keybase.
+  * I have a public key ASD68HVWfbbbEGd9eRRCYKxXFrnlFmZuC_jkAj93gHIkPAo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0101fde83431064901dfaf6ed1a665e8807b35fdd0c601e061884fb8775eeec1124a0a",
+      "host": "keybase.io",
+      "kid": "0120faf075567db6db10677d79144260ac5716b9e516666e0bf8e4023f778072243c0a",
+      "uid": "4a37baaf94c9e2c6ea6abe85df8f1219",
+      "username": "cynede"
+    },
+    "merkle_root": {
+      "ctime": 1511515004,
+      "hash": "df4a6b2d40b8a5daed41d7e0b6961409c4bf66f34c1a3d133f0bc0c08e3500d01e3d3f05ea86edfa5103b1cce4d0380431b6df80bdbfe2914f16b5014e03d724",
+      "hash_meta": "ddac0e75ec6c0ec02a2dcae022fca25f71160fce654b842257cb7bae01e7c30b",
+      "seqno": 1741774
+    },
+    "service": {
+      "hostname": "heather.github.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "1.0.36"
+  },
+  "ctime": 1511515052,
+  "expire_in": 504576000,
+  "prev": "0e14be977f8f6caf0dc3c0530525042650c077647db33c6078e1aaa0882b1089",
+  "seqno": 62,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEg+vB1Vn222xBnfXkUQmCsVxa55RZmbgv45AI/d4ByJDwKp3BheWxvYWTFA0h7ImJvZHkiOnsia2V5Ijp7ImVsZGVzdF9raWQiOiIwMTAxZmRlODM0MzEwNjQ5MDFkZmFmNmVkMWE2NjVlODgwN2IzNWZkZDBjNjAxZTA2MTg4NGZiODc3NWVlZWMxMTI0YTBhIiwiaG9zdCI6ImtleWJhc2UuaW8iLCJraWQiOiIwMTIwZmFmMDc1NTY3ZGI2ZGIxMDY3N2Q3OTE0NDI2MGFjNTcxNmI5ZTUxNjY2NmUwYmY4ZTQwMjNmNzc4MDcyMjQzYzBhIiwidWlkIjoiNGEzN2JhYWY5NGM5ZTJjNmVhNmFiZTg1ZGY4ZjEyMTkiLCJ1c2VybmFtZSI6ImN5bmVkZSJ9LCJtZXJrbGVfcm9vdCI6eyJjdGltZSI6MTUxMTUxNTAwNCwiaGFzaCI6ImRmNGE2YjJkNDBiOGE1ZGFlZDQxZDdlMGI2OTYxNDA5YzRiZjY2ZjM0YzFhM2QxMzNmMGJjMGMwOGUzNTAwZDAxZTNkM2YwNWVhODZlZGZhNTEwM2IxY2NlNGQwMzgwNDMxYjZkZjgwYmRiZmUyOTE0ZjE2YjUwMTRlMDNkNzI0IiwiaGFzaF9tZXRhIjoiZGRhYzBlNzVlYzZjMGVjMDJhMmRjYWUwMjJmY2EyNWY3MTE2MGZjZTY1NGI4NDIyNTdjYjdiYWUwMWU3YzMwYiIsInNlcW5vIjoxNzQxNzc0fSwic2VydmljZSI6eyJob3N0bmFtZSI6ImhlYXRoZXIuZ2l0aHViLmlvIiwicHJvdG9jb2wiOiJodHRwczoifSwidHlwZSI6IndlYl9zZXJ2aWNlX2JpbmRpbmciLCJ2ZXJzaW9uIjoxfSwiY2xpZW50Ijp7Im5hbWUiOiJrZXliYXNlLmlvIGdvIGNsaWVudCIsInZlcnNpb24iOiIxLjAuMzYifSwiY3RpbWUiOjE1MTE1MTUwNTIsImV4cGlyZV9pbiI6NTA0NTc2MDAwLCJwcmV2IjoiMGUxNGJlOTc3ZjhmNmNhZjBkYzNjMDUzMDUyNTA0MjY1MGMwNzc2NDdkYjMzYzYwNzhlMWFhYTA4ODJiMTA4OSIsInNlcW5vIjo2MiwidGFnIjoic2lnbmF0dXJlIn2jc2lnxEDyOjkMKUpE6C9nthj1SAX83yY8G34NYB8sSK4Ts5JERXW4URDylf04Kxpo4MS7vODaoL0RP7psEH/dTuO5KMgBqHNpZ190eXBlIKRoYXNogqR0eXBlCKV2YWx1ZcQgiuaPDW1NvJKG2WA8o+J8HKnOvl22/PdfKtJcjJMP5CajdGFnzQICp3ZlcnNpb24B
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/cynede
