@@ -4,68 +4,68 @@
 <li><a href="https://github.com/ziman/lightyear">lightyear</a> parser combinator library</li>
 <li>Idris <a href="http://www.idris-lang.org/documentation/effects/">Effects</a></li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="fu">|||</span> <span class="dt">A</span> parser that skips whitespace without jumping over lines
-yamlSpace <span class="fu">:</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> <span class="dt">ParserT</span> m <span class="dt">String</span> ()
-yamlSpace <span class="fu">=</span> skip (many <span class="fu">$</span> satisfy (\c <span class="ot">=&gt;</span> c <span class="fu">/=</span> <span class="ch">'\n'</span> <span class="fu">&amp;&amp;</span> isSpace c)) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;yamlSpace&quot;</span>
-
-mutual
-    yamlArray <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">List</span> <span class="dt">YamlValue</span>)
-    yamlArray <span class="fu">=</span> char <span class="ch">'-'</span> <span class="fu">$!&gt;</span> (yamlArrayValue <span class="ot">`sepBy`</span> (char <span class="ch">'-'</span>))
-
-    keyValuePair <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">String</span>, <span class="dt">YamlValue</span>)
-    keyValuePair <span class="fu">=</span> <span class="kw">do</span> key <span class="ot">&lt;-</span> map pack (many (satisfy <span class="fu">$</span> not <span class="fu">.</span> isSpace)) <span class="fu">&lt;$</span> space
-                      val <span class="ot">&lt;-</span> char <span class="ch">':'</span> <span class="fu">$&gt;</span> yamlValue
-                      pure (key, val)
-
-    yamlObject <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)
-    yamlObject <span class="fu">=</span> map fromList <span class="fu">$</span> keyValuePair <span class="ot">`sepBy`</span> (char <span class="ch">'\n'</span>)
-
-    <span class="co">-- TODO check id indent is bigger than in array start</span>
-    yamlObjectA <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)
-    yamlObjectA <span class="fu">=</span> map fromList <span class="fu">$</span> keyValuePair <span class="ot">`sepBy`</span> (char <span class="ch">'\n'</span>)
-
-    yamlValue' <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span>
-    yamlValue' <span class="fu">=</span>  (map <span class="dt">YamlString</span> yamlString)
-            <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlNumber</span> yamlNumber)
-            <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlBool</span>   yamlBool)
-            <span class="fu">&lt;|&gt;</span> (pure <span class="dt">YamlNull</span> <span class="fu">&lt;$</span> yamlNull)
-            <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlArray</span>  yamlArray
-            <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlObject</span> yamlObject</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb1-1" title="1"><span class="fu">|||</span> <span class="dt">A</span> parser that skips whitespace without jumping over <span class="fu">lines</span></a>
+<a class="sourceLine" id="cb1-2" title="2">yamlSpace <span class="fu">:</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> <span class="dt">ParserT</span> m <span class="dt">String</span> ()</a>
+<a class="sourceLine" id="cb1-3" title="3">yamlSpace <span class="fu">=</span> skip (many <span class="fu">$</span> satisfy (\c <span class="ot">=&gt;</span> c <span class="fu">/=</span> <span class="ch">'\n'</span> <span class="fu">&amp;&amp;</span> <span class="fu">isSpace</span> c)) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;yamlSpace&quot;</span></a>
+<a class="sourceLine" id="cb1-4" title="4"></a>
+<a class="sourceLine" id="cb1-5" title="5">mutual</a>
+<a class="sourceLine" id="cb1-6" title="6">    yamlArray <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">List</span> <span class="dt">YamlValue</span>)</a>
+<a class="sourceLine" id="cb1-7" title="7">    yamlArray <span class="fu">=</span> char <span class="ch">'-'</span> <span class="fu">$!&gt;</span> (yamlArrayValue <span class="ot">`sepBy`</span> (char <span class="ch">'-'</span>))</a>
+<a class="sourceLine" id="cb1-8" title="8"></a>
+<a class="sourceLine" id="cb1-9" title="9">    keyValuePair <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">String</span>, <span class="dt">YamlValue</span>)</a>
+<a class="sourceLine" id="cb1-10" title="10">    keyValuePair <span class="fu">=</span> <span class="kw">do</span> key <span class="ot">&lt;-</span> <span class="fu">map</span> <span class="fu">pack</span> (many (satisfy <span class="fu">$</span> <span class="fu">not</span> <span class="fu">.</span> <span class="fu">isSpace</span>)) <span class="fu">&lt;$</span> space</a>
+<a class="sourceLine" id="cb1-11" title="11">                      val <span class="ot">&lt;-</span> char <span class="ch">':'</span> <span class="fu">$&gt;</span> yamlValue</a>
+<a class="sourceLine" id="cb1-12" title="12">                      <span class="fu">pure</span> (key, val)</a>
+<a class="sourceLine" id="cb1-13" title="13"></a>
+<a class="sourceLine" id="cb1-14" title="14">    yamlObject <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)</a>
+<a class="sourceLine" id="cb1-15" title="15">    yamlObject <span class="fu">=</span> <span class="fu">map</span> fromList <span class="fu">$</span> keyValuePair <span class="ot">`sepBy`</span> (char <span class="ch">'\n'</span>)</a>
+<a class="sourceLine" id="cb1-16" title="16"></a>
+<a class="sourceLine" id="cb1-17" title="17">    <span class="co">-- TODO check id indent is bigger than in array start</span></a>
+<a class="sourceLine" id="cb1-18" title="18">    yamlObjectA <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)</a>
+<a class="sourceLine" id="cb1-19" title="19">    yamlObjectA <span class="fu">=</span> <span class="fu">map</span> fromList <span class="fu">$</span> keyValuePair <span class="ot">`sepBy`</span> (char <span class="ch">'\n'</span>)</a>
+<a class="sourceLine" id="cb1-20" title="20"></a>
+<a class="sourceLine" id="cb1-21" title="21">    yamlValue' <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span></a>
+<a class="sourceLine" id="cb1-22" title="22">    yamlValue' <span class="fu">=</span>  (<span class="fu">map</span> <span class="dt">YamlString</span> yamlString)</a>
+<a class="sourceLine" id="cb1-23" title="23">            <span class="fu">&lt;|&gt;</span> (<span class="fu">map</span> <span class="dt">YamlNumber</span> yamlNumber)</a>
+<a class="sourceLine" id="cb1-24" title="24">            <span class="fu">&lt;|&gt;</span> (<span class="fu">map</span> <span class="dt">YamlBool</span>   yamlBool)</a>
+<a class="sourceLine" id="cb1-25" title="25">            <span class="fu">&lt;|&gt;</span> (<span class="fu">pure</span> <span class="dt">YamlNull</span> <span class="fu">&lt;$</span> yamlNull)</a>
+<a class="sourceLine" id="cb1-26" title="26">            <span class="fu">&lt;|&gt;|</span> <span class="fu">map</span> <span class="dt">YamlArray</span>  yamlArray</a>
+<a class="sourceLine" id="cb1-27" title="27">            <span class="fu">&lt;|&gt;|</span> <span class="fu">map</span> <span class="dt">YamlObject</span> yamlObject</a></code></pre></div>
 <h1 id="usage">Usage</h1>
 <p>Here is simple example of code that reads and parse YML files</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">Main</span>
-
-<span class="kw">import </span><span class="dt">Yaml</span>
-
-<span class="kw">import </span>public <span class="dt">Effects</span>
-<span class="kw">import </span>public <span class="dt">Effect.StdIO</span>
-<span class="kw">import </span>public <span class="dt">Effect.File</span>
-
-<span class="dt">FileIO</span> <span class="fu">:</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span>
-<span class="dt">FileIO</span> st t <span class="fu">=</span> { [<span class="dt">FILE_IO</span> st, <span class="dt">STDIO</span>] } <span class="dt">Eff</span> t 
-
-readFile <span class="fu">:</span> <span class="dt">FileIO</span> (<span class="dt">OpenFile</span> <span class="dt">Read</span>) (<span class="dt">List</span> <span class="dt">String</span>)
-readFile <span class="fu">=</span> readAcc [] <span class="kw">where</span>
-  readAcc <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">FileIO</span> (<span class="dt">OpenFile</span> <span class="dt">Read</span>) (<span class="dt">List</span> <span class="dt">String</span>)
-  readAcc acc <span class="fu">=</span> <span class="kw">if</span> (not <span class="fu">!</span>eof) <span class="kw">then</span> readAcc <span class="fu">$</span> <span class="fu">!</span><span class="ot">readLine ::</span> acc
-                              <span class="kw">else</span> return  <span class="fu">$</span> reverse acc
-
-procs <span class="fu">:</span> (<span class="dt">List</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>] } <span class="dt">Eff</span> ()
-procs file <span class="fu">=</span> <span class="kw">case</span> parse yamlToplevelValue config <span class="kw">of</span>
-                      <span class="dt">Left</span> err <span class="ot">=&gt;</span> putStrLn <span class="fu">$</span> <span class="st">&quot;error: &quot;</span> <span class="fu">++</span> err
-                      <span class="dt">Right</span> v  <span class="ot">=&gt;</span> putStrLn <span class="fu">$</span> show v
-  <span class="kw">where</span> config <span class="fu">=</span> concat file
-
-test <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">FileIO</span> () ()
-test f <span class="fu">=</span> <span class="kw">case</span> <span class="fu">!</span>(open f <span class="dt">Read</span>) <span class="kw">of</span>
-                <span class="dt">True</span> <span class="ot">=&gt;</span> <span class="kw">do</span> procs <span class="fu">!</span>readFile
-                           close <span class="co">{- =&lt;&lt; -}</span>
-                <span class="dt">False</span> <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;Error!&quot;</span>
-
-main <span class="fu">:</span> <span class="dt">IO</span> ()
-main <span class="fu">=</span> <span class="kw">do</span>
-  run <span class="fu">$</span> test <span class="st">&quot;test1.yml&quot;</span>
-  run <span class="fu">$</span> test <span class="st">&quot;test2.yml&quot;</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">module</span> <span class="dt">Main</span></a>
+<a class="sourceLine" id="cb2-2" title="2"></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="kw">import</span> <span class="dt">Yaml</span></a>
+<a class="sourceLine" id="cb2-4" title="4"></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="kw">import</span> public <span class="dt">Effects</span></a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="kw">import</span> public <span class="dt">Effect.StdIO</span></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="kw">import</span> public <span class="dt">Effect.File</span></a>
+<a class="sourceLine" id="cb2-8" title="8"></a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="dt">FileIO</span> <span class="fu">:</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span></a>
+<a class="sourceLine" id="cb2-10" title="10"><span class="dt">FileIO</span> st t <span class="fu">=</span> { [<span class="dt">FILE_IO</span> st, <span class="dt">STDIO</span>] } <span class="dt">Eff</span> t </a>
+<a class="sourceLine" id="cb2-11" title="11"></a>
+<a class="sourceLine" id="cb2-12" title="12"><span class="fu">readFile</span> <span class="fu">:</span> <span class="dt">FileIO</span> (<span class="dt">OpenFile</span> <span class="dt">Read</span>) (<span class="dt">List</span> <span class="dt">String</span>)</a>
+<a class="sourceLine" id="cb2-13" title="13"><span class="fu">readFile</span> <span class="fu">=</span> readAcc [] <span class="kw">where</span></a>
+<a class="sourceLine" id="cb2-14" title="14">  readAcc <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">FileIO</span> (<span class="dt">OpenFile</span> <span class="dt">Read</span>) (<span class="dt">List</span> <span class="dt">String</span>)</a>
+<a class="sourceLine" id="cb2-15" title="15">  readAcc acc <span class="fu">=</span> <span class="kw">if</span> (<span class="fu">not</span> <span class="fu">!</span>eof) <span class="kw">then</span> readAcc <span class="fu">$</span> <span class="fu">!</span><span class="ot">readLine ::</span> acc</a>
+<a class="sourceLine" id="cb2-16" title="16">                              <span class="kw">else</span> <span class="fu">return</span>  <span class="fu">$</span> <span class="fu">reverse</span> acc</a>
+<a class="sourceLine" id="cb2-17" title="17"></a>
+<a class="sourceLine" id="cb2-18" title="18">procs <span class="fu">:</span> (<span class="dt">List</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>] } <span class="dt">Eff</span> ()</a>
+<a class="sourceLine" id="cb2-19" title="19">procs file <span class="fu">=</span> <span class="kw">case</span> parse yamlToplevelValue config <span class="kw">of</span></a>
+<a class="sourceLine" id="cb2-20" title="20">                      <span class="dt">Left</span> err <span class="ot">=&gt;</span> <span class="fu">putStrLn</span> <span class="fu">$</span> <span class="st">&quot;error: &quot;</span> <span class="fu">++</span> err</a>
+<a class="sourceLine" id="cb2-21" title="21">                      <span class="dt">Right</span> v  <span class="ot">=&gt;</span> <span class="fu">putStrLn</span> <span class="fu">$</span> <span class="fu">show</span> v</a>
+<a class="sourceLine" id="cb2-22" title="22">  <span class="kw">where</span> config <span class="fu">=</span> <span class="fu">concat</span> file</a>
+<a class="sourceLine" id="cb2-23" title="23"></a>
+<a class="sourceLine" id="cb2-24" title="24">test <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">FileIO</span> () ()</a>
+<a class="sourceLine" id="cb2-25" title="25">test f <span class="fu">=</span> <span class="kw">case</span> <span class="fu">!</span>(open f <span class="dt">Read</span>) <span class="kw">of</span></a>
+<a class="sourceLine" id="cb2-26" title="26">                <span class="dt">True</span> <span class="ot">=&gt;</span> <span class="kw">do</span> procs <span class="fu">!readFile</span></a>
+<a class="sourceLine" id="cb2-27" title="27">                           close <span class="co">{- =&lt;&lt; -}</span></a>
+<a class="sourceLine" id="cb2-28" title="28">                <span class="dt">False</span> <span class="ot">=&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;Error!&quot;</span></a>
+<a class="sourceLine" id="cb2-29" title="29"></a>
+<a class="sourceLine" id="cb2-30" title="30">main <span class="fu">:</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb2-31" title="31">main <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb2-32" title="32">  run <span class="fu">$</span> test <span class="st">&quot;test1.yml&quot;</span></a>
+<a class="sourceLine" id="cb2-33" title="33">  run <span class="fu">$</span> test <span class="st">&quot;test2.yml&quot;</span></a></code></pre></div>
 <p>Script to run:</p>
 <pre class="shell"><code>idris Test.idr -p lightyear -p yaml -p effects -o test
 ./test</code></pre><div id="postfooter"></div><script src="../js/playpause.js"></script><script src="../bootstrap/three.js"></script><script src="../js/bubbles.js"></script></div><div id="social"><ul><li><a href="http://github.com/Heather" title="Github" target="_blank"><span class="mega-octicon octicon-octoface"></span></a></li><li><a href="http://twitter.com/Cynede" title="Twitter" target="_blank"><span class="mega-octicon octicon-star"></span></a></li><li><a href="mailto:heather@live.ru" title="mail" target="_blank"><span class="mega-octicon octicon-mail-read"></span></a></li><li><a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank"><span class="mega-octicon octicon-broadcast"></span></a></li><li><a href="http://stackoverflow.com/users/238232/heather" title="Stackoverflow" target="_blank"><span class="mega-octicon octicon-squirrel"></span></a></li><li><a href="../atom.xml" title="RSS" target="_blank"><span class="mega-octicon octicon-rss"></span></a></li></ul></div><div id="footer"></div></body></html>

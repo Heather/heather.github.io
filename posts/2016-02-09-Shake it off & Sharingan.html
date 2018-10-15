@@ -2,276 +2,276 @@
 <p>There are few utils I used to write and wanted to explain how do I use them and what was the reason of creating them. This article is work in progress. First small util is actually poor shake clone, imperative and weak</p>
 <h2 id="example">Example</h2>
 <p><code>shake.it.hs</code> file (or <code>shake.it.lhs</code>)</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">Shake.It.Off</span>
-
-<span class="ot">main ::</span> <span class="dt">IO</span> ()
-main <span class="fu">=</span> shake <span class="fu">$</span> <span class="kw">do</span>
-  phony <span class="st">&quot;clean&quot;</span> <span class="fu">$</span> cabal [<span class="st">&quot;clean&quot;</span>]
-
-  obj <span class="st">&quot;dist/build/Cr.exe&quot;</span> <span class="fu">$</span> <span class="kw">do</span>
-    cabal [<span class="st">&quot;install&quot;</span>, <span class="st">&quot;--only-dependencies&quot;</span>]
-    cabal [<span class="st">&quot;configure&quot;</span>]
-    cabal [<span class="st">&quot;build&quot;</span>]</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">import</span> <span class="dt">Shake.It.Off</span></a>
+<a class="sourceLine" id="cb1-2" title="2"></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="ot">main ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb1-4" title="4">main <span class="fu">=</span> shake <span class="fu">$</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb1-5" title="5">  phony <span class="st">&quot;clean&quot;</span> <span class="fu">$</span> cabal [<span class="st">&quot;clean&quot;</span>]</a>
+<a class="sourceLine" id="cb1-6" title="6"></a>
+<a class="sourceLine" id="cb1-7" title="7">  obj <span class="st">&quot;dist/build/Cr.exe&quot;</span> <span class="fu">$</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb1-8" title="8">    cabal [<span class="st">&quot;install&quot;</span>, <span class="st">&quot;--only-dependencies&quot;</span>]</a>
+<a class="sourceLine" id="cb1-9" title="9">    cabal [<span class="st">&quot;configure&quot;</span>]</a>
+<a class="sourceLine" id="cb1-10" title="10">    cabal [<span class="st">&quot;build&quot;</span>]</a></code></pre></div>
 <p>every time you run <code>shake</code> on this file if <code>shake.it.off</code> is outdated or not exists it will be rebuild (otherwise you will just run shake.it.off); when you will run <code>shake clean</code> it will process just <code>cabal clean</code>, if you will run it with no arguments then it will rebuild project, if you will run it with <code>shake clean install</code> it will process <code>shake clean</code> first then in case if there will be <code>shake install</code> phony it will process it, else way it will process default case (rebuilding) after cleaning. (because it’s simple stupid imperative)</p>
 <p>more complex example with Unicode operators:</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">{-# LANGUAGE UnicodeSyntax #-}</span>
-
-<span class="kw">import </span><span class="dt">Shake.It.Off</span>
-
-<span class="kw">import </span><span class="dt">System.Exit</span>
-<span class="kw">import </span><span class="dt">System.Process</span>
-
-<span class="kw">import </span><span class="dt">Control.Monad</span>
-
-<span class="ot">main ::</span> <span class="dt">IO</span> ()
-main <span class="fu">=</span> shake <span class="fu">$</span> <span class="kw">do</span>
-  <span class="st">&quot;clean&quot;</span> ∫ cabal [<span class="st">&quot;clean&quot;</span>]
-
-  weathermanExecutable ♯ <span class="kw">do</span>
-    cabal [<span class="st">&quot;install&quot;</span>, <span class="st">&quot;--only-dependencies&quot;</span>]
-    cabal [<span class="st">&quot;configure&quot;</span>]
-    cabal [<span class="st">&quot;build&quot;</span>]
-
-  <span class="st">&quot;install&quot;</span> ∫ cabal [<span class="st">&quot;install&quot;</span>]
-
-  <span class="st">&quot;test&quot;</span> ◉ [weathermanExecutable] ∰ w [<span class="st">&quot;--version&quot;</span>]
-
- <span class="kw">where</span><span class="ot"> buildPath ::</span> <span class="dt">String</span>
-       buildPath <span class="fu">=</span> <span class="st">&quot;dist/build/w&quot;</span>
-
-<span class="ot">       weathermanExecutable ::</span> <span class="dt">String</span>
-       weathermanExecutable <span class="fu">=</span> buildPath <span class="fu">&lt;/&gt;</span> <span class="st">&quot;w.exe&quot;</span>
-
-<span class="ot">       w ::</span> [<span class="dt">String</span>] <span class="ot">→</span> <span class="dt">IO</span> ()
-       w xs <span class="fu">=</span> rawSystem weathermanExecutable xs <span class="fu">&gt;&gt;=</span> checkExitCode
-               <span class="fu">&gt;&gt;</span> exitSuccess</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" title="1"><span class="ot">{-# LANGUAGE UnicodeSyntax #-}</span></a>
+<a class="sourceLine" id="cb2-2" title="2"></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="kw">import</span> <span class="dt">Shake.It.Off</span></a>
+<a class="sourceLine" id="cb2-4" title="4"></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="kw">import</span> <span class="dt">System.Exit</span></a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="kw">import</span> <span class="dt">System.Process</span></a>
+<a class="sourceLine" id="cb2-7" title="7"></a>
+<a class="sourceLine" id="cb2-8" title="8"><span class="kw">import</span> <span class="dt">Control.Monad</span></a>
+<a class="sourceLine" id="cb2-9" title="9"></a>
+<a class="sourceLine" id="cb2-10" title="10"><span class="ot">main ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb2-11" title="11">main <span class="fu">=</span> shake <span class="fu">$</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb2-12" title="12">  <span class="st">&quot;clean&quot;</span> ∫ cabal [<span class="st">&quot;clean&quot;</span>]</a>
+<a class="sourceLine" id="cb2-13" title="13"></a>
+<a class="sourceLine" id="cb2-14" title="14">  weathermanExecutable ♯ <span class="kw">do</span></a>
+<a class="sourceLine" id="cb2-15" title="15">    cabal [<span class="st">&quot;install&quot;</span>, <span class="st">&quot;--only-dependencies&quot;</span>]</a>
+<a class="sourceLine" id="cb2-16" title="16">    cabal [<span class="st">&quot;configure&quot;</span>]</a>
+<a class="sourceLine" id="cb2-17" title="17">    cabal [<span class="st">&quot;build&quot;</span>]</a>
+<a class="sourceLine" id="cb2-18" title="18"></a>
+<a class="sourceLine" id="cb2-19" title="19">  <span class="st">&quot;install&quot;</span> ∫ cabal [<span class="st">&quot;install&quot;</span>]</a>
+<a class="sourceLine" id="cb2-20" title="20"></a>
+<a class="sourceLine" id="cb2-21" title="21">  <span class="st">&quot;test&quot;</span> ◉ [weathermanExecutable] ∰ w [<span class="st">&quot;--version&quot;</span>]</a>
+<a class="sourceLine" id="cb2-22" title="22"></a>
+<a class="sourceLine" id="cb2-23" title="23"> <span class="kw">where</span><span class="ot"> buildPath ::</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb2-24" title="24">       buildPath <span class="fu">=</span> <span class="st">&quot;dist/build/w&quot;</span></a>
+<a class="sourceLine" id="cb2-25" title="25"></a>
+<a class="sourceLine" id="cb2-26" title="26"><span class="ot">       weathermanExecutable ::</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb2-27" title="27">       weathermanExecutable <span class="fu">=</span> buildPath <span class="fu">&lt;/&gt;</span> <span class="st">&quot;w.exe&quot;</span></a>
+<a class="sourceLine" id="cb2-28" title="28"></a>
+<a class="sourceLine" id="cb2-29" title="29"><span class="ot">       w ::</span> [<span class="dt">String</span>] <span class="ot">→</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb2-30" title="30">       w xs <span class="fu">=</span> rawSystem weathermanExecutable xs <span class="fu">&gt;&gt;=</span> checkExitCode</a>
+<a class="sourceLine" id="cb2-31" title="31">               <span class="fu">&gt;&gt;</span> exitSuccess</a></code></pre></div>
 <h2 id="user-story">User story</h2>
 <p>I like haskell and it will be cool to just use <code>haskell</code> to build some complex application and discovered <code>shake</code> but there was some strange things which was a bit complicated for me</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="st">&quot;dist/build/Cr&quot;</span> <span class="fu">&lt;.&gt;</span> exe <span class="fu">%&gt;</span> \out <span class="ot">-&gt;</span> <span class="kw">do</span> traced <span class="st">&quot;blabla&quot;</span> <span class="fu">.....</span> <span class="fu">&gt;&gt;</span> return ()
-<span class="dt">Linking</span> dist\build\<span class="dt">Cr</span>\Cr.exe <span class="fu">...</span>
-<span class="dt">Error</span> when running <span class="dt">Shake</span> build system<span class="fu">:</span>
-<span class="fu">*</span> dist<span class="fu">/</span>build<span class="fu">/</span>Cr.exe
-<span class="dt">Error</span>, rule <span class="st">&quot;dist/build/Cr.exe&quot;</span> failed to build file<span class="fu">:</span>
-  dist<span class="fu">/</span>build<span class="fu">/</span>Cr.exe</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb3-1" title="1"><span class="st">&quot;dist/build/Cr&quot;</span> <span class="fu">&lt;.&gt;</span> exe <span class="fu">%&gt;</span> \out <span class="ot">-&gt;</span> <span class="kw">do</span> traced <span class="st">&quot;blabla&quot;</span> <span class="fu">.....</span> <span class="fu">&gt;&gt;</span> <span class="fu">return</span> ()</a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="dt">Linking</span> dist\build\<span class="dt">Cr</span>\Cr.exe <span class="fu">...</span></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="dt">Error</span> when running <span class="dt">Shake</span> build system<span class="fu">:</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="fu">*</span> dist<span class="fu">/</span>build<span class="fu">/</span>Cr.exe</a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="dt">Error</span>, rule <span class="st">&quot;dist/build/Cr.exe&quot;</span> failed to build file<span class="fu">:</span></a>
+<a class="sourceLine" id="cb3-6" title="6">  dist<span class="fu">/</span>build<span class="fu">/</span>Cr.exe</a></code></pre></div>
 <p>I was trying to understand realization and I’ve got some bits. It’s impossible to have analitics without wrapping IO into Rules and Action and maybe custom functions for those wrappers. I was trying to get deeper and repeat something alike with <code>free</code> alike in this example https://github.com/ekmett/free/blob/master/examples/RetryTH.hs - and it’s really not that simple to understand what’s actually happening there. And there <code>withRetry</code> block is sure not IO () block, just yet another wrapper. Yes, wrapped Rules and Actions are easy to process but I don’t want to learn that stuff so far, I don’t want to lift from IO to Action and bind it to Rule everytime I want to make small change. This library/util is tiny but practical, it’s doing very simple things and using imerative way including global mutable state to resolve things alike <code>phony</code> in dirty (but simple) way.</p>
 <h2 id="simple-time-tracking">Simple time tracking</h2>
 <p>github: https://github.com/Heather/Weatherman</p>
 <p>Idea is pretty simple stupid, when you start tracking some task it writes down start time in yaml file with track number</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">trackFile ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">String</span> <span class="ot">→</span> <span class="dt">IO</span> ()
-trackFile id startDate <span class="fu">=</span> <span class="kw">do</span>
-  (_, trackFile) <span class="ot">←</span> getTrack id
-  trackYaml <span class="ot">←</span> startTrack trackFile
-  <span class="kw">let</span> trackStart <span class="fu">=</span>
-        trackYaml { start <span class="fu">=</span> startDate
-                  , pause <span class="fu">=</span> <span class="dt">Nothing</span>
-                  , tracked <span class="fu">=</span> <span class="dt">Nothing</span>
-                  }
-  yEncode trackFile trackStart
-  
-<span class="ot">trackTask ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> ()
-trackTask id <span class="fu">=</span> <span class="kw">do</span>
-  c1 <span class="ot">←</span> getCurrentTime
-  <span class="kw">let</span> dateString <span class="fu">=</span> show c1
-  putStrLn dateString
-  <span class="kw">if</span> id <span class="fu">/=</span> <span class="dv">0</span>
-    <span class="kw">then</span> <span class="kw">do</span>
-      putStrLn <span class="fu">$</span> <span class="st">&quot;tracking &quot;</span> <span class="fu">++</span> show id
-      trackFile id dateString
-    <span class="kw">else</span> <span class="kw">do</span> putStrLn <span class="st">&quot;Press any key to stop tracking&quot;</span>
-            waitForKeyPress
-            putStr <span class="st">&quot;Tracked &quot;</span>
-            diff <span class="ot">←</span> diffTime c1
-            putStrLn <span class="fu">$</span> humanReadableTimeDiff diff</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb4-1" title="1"><span class="ot">trackFile ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">String</span> <span class="ot">→</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb4-2" title="2">trackFile <span class="fu">id</span> startDate <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb4-3" title="3">  (_, trackFile) <span class="ot">←</span> getTrack <span class="fu">id</span></a>
+<a class="sourceLine" id="cb4-4" title="4">  trackYaml <span class="ot">←</span> startTrack trackFile</a>
+<a class="sourceLine" id="cb4-5" title="5">  <span class="kw">let</span> trackStart <span class="fu">=</span></a>
+<a class="sourceLine" id="cb4-6" title="6">        trackYaml { start <span class="fu">=</span> startDate</a>
+<a class="sourceLine" id="cb4-7" title="7">                  , pause <span class="fu">=</span> <span class="dt">Nothing</span></a>
+<a class="sourceLine" id="cb4-8" title="8">                  , tracked <span class="fu">=</span> <span class="dt">Nothing</span></a>
+<a class="sourceLine" id="cb4-9" title="9">                  }</a>
+<a class="sourceLine" id="cb4-10" title="10">  yEncode trackFile trackStart</a>
+<a class="sourceLine" id="cb4-11" title="11">  </a>
+<a class="sourceLine" id="cb4-12" title="12"><span class="ot">trackTask ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb4-13" title="13">trackTask <span class="fu">id</span> <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb4-14" title="14">  c1 <span class="ot">←</span> getCurrentTime</a>
+<a class="sourceLine" id="cb4-15" title="15">  <span class="kw">let</span> dateString <span class="fu">=</span> <span class="fu">show</span> c1</a>
+<a class="sourceLine" id="cb4-16" title="16">  <span class="fu">putStrLn</span> dateString</a>
+<a class="sourceLine" id="cb4-17" title="17">  <span class="kw">if</span> <span class="fu">id</span> <span class="fu">/=</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb4-18" title="18">    <span class="kw">then</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb4-19" title="19">      <span class="fu">putStrLn</span> <span class="fu">$</span> <span class="st">&quot;tracking &quot;</span> <span class="fu">++</span> <span class="fu">show</span> <span class="fu">id</span></a>
+<a class="sourceLine" id="cb4-20" title="20">      trackFile <span class="fu">id</span> dateString</a>
+<a class="sourceLine" id="cb4-21" title="21">    <span class="kw">else</span> <span class="kw">do</span> <span class="fu">putStrLn</span> <span class="st">&quot;Press any key to stop tracking&quot;</span></a>
+<a class="sourceLine" id="cb4-22" title="22">            waitForKeyPress</a>
+<a class="sourceLine" id="cb4-23" title="23">            <span class="fu">putStr</span> <span class="st">&quot;Tracked &quot;</span></a>
+<a class="sourceLine" id="cb4-24" title="24">            diff <span class="ot">←</span> diffTime c1</a>
+<a class="sourceLine" id="cb4-25" title="25">            <span class="fu">putStrLn</span> <span class="fu">$</span> humanReadableTimeDiff diff</a></code></pre></div>
 <p>When you pause it calculates tracked time (diff) and set paused flag</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">pauseT ::</span> (<span class="dt">String</span>, <span class="dt">String</span>) <span class="ot">→</span> <span class="dt">IO</span> ()
-pauseT (t,p) <span class="fu">=</span> <span class="kw">do</span>
-  trackYaml <span class="ot">←</span> openTrack p
-  <span class="kw">case</span> trackYaml <span class="kw">of</span>
-    <span class="dt">Nothing</span>    <span class="ot">→</span> exitFailure
-    <span class="dt">Just</span> yaml  <span class="ot">→</span> <span class="kw">do</span>
-      pauseDate <span class="ot">←</span> getCurrentTime
-      <span class="kw">let</span> startDate <span class="fu">=</span> read <span class="fu">$</span> start<span class="ot"> yaml ::</span> <span class="dt">UTCTime</span>
-          currentTracked <span class="fu">=</span> fromMaybe <span class="st">&quot;0&quot;</span> (tracked yaml)
-          currentTime <span class="fu">=</span> read<span class="ot"> currentTracked ::</span> <span class="dt">Int</span>
-      difft <span class="ot">←</span> diffTime startDate
-      <span class="kw">let</span> diff <span class="fu">=</span> fromEnum<span class="ot"> difft ::</span> <span class="dt">Int</span>
-          total <span class="fu">=</span> show <span class="fu">$</span> diff <span class="fu">+</span> currentTime
-          pauseString <span class="fu">=</span> show pauseDate
-          trackStart  <span class="fu">=</span>
-            yaml { pause <span class="fu">=</span> <span class="dt">Just</span> pauseString
-                 , tracked <span class="fu">=</span> <span class="dt">Just</span> total
-                 }
-      putStrLn <span class="fu">$</span> t <span class="fu">++</span> <span class="st">&quot; paused at &quot;</span> <span class="fu">++</span> pauseString
-      yEncode p trackStart</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb5-1" title="1"><span class="ot">pauseT ::</span> (<span class="dt">String</span>, <span class="dt">String</span>) <span class="ot">→</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb5-2" title="2">pauseT (t,p) <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb5-3" title="3">  trackYaml <span class="ot">←</span> openTrack p</a>
+<a class="sourceLine" id="cb5-4" title="4">  <span class="kw">case</span> trackYaml <span class="kw">of</span></a>
+<a class="sourceLine" id="cb5-5" title="5">    <span class="dt">Nothing</span>    <span class="ot">→</span> exitFailure</a>
+<a class="sourceLine" id="cb5-6" title="6">    <span class="dt">Just</span> yaml  <span class="ot">→</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb5-7" title="7">      pauseDate <span class="ot">←</span> getCurrentTime</a>
+<a class="sourceLine" id="cb5-8" title="8">      <span class="kw">let</span> startDate <span class="fu">=</span> <span class="fu">read</span> <span class="fu">$</span> start<span class="ot"> yaml ::</span> <span class="dt">UTCTime</span></a>
+<a class="sourceLine" id="cb5-9" title="9">          currentTracked <span class="fu">=</span> fromMaybe <span class="st">&quot;0&quot;</span> (tracked yaml)</a>
+<a class="sourceLine" id="cb5-10" title="10">          currentTime <span class="fu">=</span> <span class="fu">read</span><span class="ot"> currentTracked ::</span> <span class="dt">Int</span></a>
+<a class="sourceLine" id="cb5-11" title="11">      difft <span class="ot">←</span> diffTime startDate</a>
+<a class="sourceLine" id="cb5-12" title="12">      <span class="kw">let</span> diff <span class="fu">=</span> <span class="fu">fromEnum</span><span class="ot"> difft ::</span> <span class="dt">Int</span></a>
+<a class="sourceLine" id="cb5-13" title="13">          total <span class="fu">=</span> <span class="fu">show</span> <span class="fu">$</span> diff <span class="fu">+</span> currentTime</a>
+<a class="sourceLine" id="cb5-14" title="14">          pauseString <span class="fu">=</span> <span class="fu">show</span> pauseDate</a>
+<a class="sourceLine" id="cb5-15" title="15">          trackStart  <span class="fu">=</span></a>
+<a class="sourceLine" id="cb5-16" title="16">            yaml { pause <span class="fu">=</span> <span class="dt">Just</span> pauseString</a>
+<a class="sourceLine" id="cb5-17" title="17">                 , tracked <span class="fu">=</span> <span class="dt">Just</span> total</a>
+<a class="sourceLine" id="cb5-18" title="18">                 }</a>
+<a class="sourceLine" id="cb5-19" title="19">      <span class="fu">putStrLn</span> <span class="fu">$</span> t <span class="fu">++</span> <span class="st">&quot; paused at &quot;</span> <span class="fu">++</span> pauseString</a>
+<a class="sourceLine" id="cb5-20" title="20">      yEncode p trackStart</a></code></pre></div>
 <p>When you resume it simply changes start time</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">resumeT ::</span> (<span class="dt">String</span>, <span class="dt">String</span>) <span class="ot">→</span> <span class="dt">IO</span> ()
-resumeT (t,p) <span class="fu">=</span> <span class="kw">do</span>
-  trackYaml <span class="ot">←</span> openTrack p
-  <span class="kw">case</span> trackYaml <span class="kw">of</span>
-    <span class="dt">Nothing</span>    <span class="ot">→</span> exitFailure
-    <span class="dt">Just</span> yaml  <span class="ot">→</span> <span class="kw">do</span>
-      resumeDate <span class="ot">←</span> getCurrentTime
-      <span class="kw">let</span> resumeString <span class="fu">=</span> show resumeDate
-          trackStart <span class="fu">=</span>
-            yaml { pause <span class="fu">=</span> <span class="dt">Nothing</span>
-                 , start <span class="fu">=</span> resumeString
-                 }
-      putStrLn <span class="fu">$</span> t <span class="fu">++</span> <span class="st">&quot; resumed at &quot;</span> <span class="fu">++</span> resumeString
-      yEncode p trackStart</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb6-1" title="1"><span class="ot">resumeT ::</span> (<span class="dt">String</span>, <span class="dt">String</span>) <span class="ot">→</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb6-2" title="2">resumeT (t,p) <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb6-3" title="3">  trackYaml <span class="ot">←</span> openTrack p</a>
+<a class="sourceLine" id="cb6-4" title="4">  <span class="kw">case</span> trackYaml <span class="kw">of</span></a>
+<a class="sourceLine" id="cb6-5" title="5">    <span class="dt">Nothing</span>    <span class="ot">→</span> exitFailure</a>
+<a class="sourceLine" id="cb6-6" title="6">    <span class="dt">Just</span> yaml  <span class="ot">→</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb6-7" title="7">      resumeDate <span class="ot">←</span> getCurrentTime</a>
+<a class="sourceLine" id="cb6-8" title="8">      <span class="kw">let</span> resumeString <span class="fu">=</span> <span class="fu">show</span> resumeDate</a>
+<a class="sourceLine" id="cb6-9" title="9">          trackStart <span class="fu">=</span></a>
+<a class="sourceLine" id="cb6-10" title="10">            yaml { pause <span class="fu">=</span> <span class="dt">Nothing</span></a>
+<a class="sourceLine" id="cb6-11" title="11">                 , start <span class="fu">=</span> resumeString</a>
+<a class="sourceLine" id="cb6-12" title="12">                 }</a>
+<a class="sourceLine" id="cb6-13" title="13">      <span class="fu">putStrLn</span> <span class="fu">$</span> t <span class="fu">++</span> <span class="st">&quot; resumed at &quot;</span> <span class="fu">++</span> resumeString</a>
+<a class="sourceLine" id="cb6-14" title="14">      yEncode p trackStart</a></code></pre></div>
 <p>When you finish you calculated tracked time sum with diff from current to start time</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">getTotalTracked ::</span> <span class="dt">Track</span> <span class="ot">→</span> <span class="dt">IO</span> <span class="dt">NominalDiffTime</span>
-getTotalTracked cfg <span class="fu">=</span> <span class="kw">do</span>
-  difft <span class="ot">←</span> <span class="kw">case</span> pause cfg <span class="kw">of</span>
-      <span class="dt">Just</span> _  <span class="ot">→</span> return <span class="dv">0</span>
-      <span class="dt">Nothing</span> <span class="ot">→</span> diffTime c1
-  <span class="kw">let</span> diffInPicos  <span class="fu">=</span> fromEnum difft
-      totalTracked <span class="fu">=</span>
-        toEnum (diffInPicos <span class="fu">+</span> trackedTime)<span class="ot"> ::</span> <span class="dt">NominalDiffTime</span>
-  return totalTracked
- <span class="kw">where</span><span class="ot"> startDate ::</span> <span class="dt">String</span>
-       startDate <span class="fu">=</span> start cfg
-<span class="ot">       trackedTime ::</span> <span class="dt">Int</span>
-       trackedTime <span class="fu">=</span>
-         <span class="kw">case</span> tracked cfg <span class="kw">of</span>
-           <span class="dt">Just</span> t  <span class="ot">→</span> read<span class="ot"> t ::</span> <span class="dt">Int</span>
-           <span class="dt">Nothing</span> <span class="ot">→</span> <span class="dv">0</span>
-<span class="ot">       c1 ::</span> <span class="dt">UTCTime</span>
-       c1 <span class="fu">=</span> read<span class="ot"> startDate ::</span> <span class="dt">UTCTime</span>
-
-<span class="ot">finishT ::</span> <span class="dt">Bool</span> <span class="ot">→</span> (<span class="dt">String</span>, <span class="dt">String</span>) <span class="ot">→</span> <span class="dt">IO</span> ()
-finishT remove (t,p) <span class="fu">=</span> <span class="kw">do</span>
-  trackYaml <span class="ot">←</span> openTrack p
-  <span class="kw">case</span> trackYaml <span class="kw">of</span>
-    <span class="dt">Nothing</span>    <span class="ot">→</span> exitFailure
-    <span class="dt">Just</span> yaml  <span class="ot">→</span> <span class="kw">do</span>
-      totalTracked <span class="ot">←</span> getTotalTracked yaml
-      putStr <span class="fu">$</span> <span class="st">&quot;* &quot;</span> <span class="fu">++</span> t <span class="fu">++</span> <span class="st">&quot; : &quot;</span>
-      putStrLn <span class="fu">$</span> humanReadableTimeDiff totalTracked
-      when remove <span class="fu">$</span> removeFile p</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb7-1" title="1"><span class="ot">getTotalTracked ::</span> <span class="dt">Track</span> <span class="ot">→</span> <span class="dt">IO</span> <span class="dt">NominalDiffTime</span></a>
+<a class="sourceLine" id="cb7-2" title="2">getTotalTracked cfg <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb7-3" title="3">  difft <span class="ot">←</span> <span class="kw">case</span> pause cfg <span class="kw">of</span></a>
+<a class="sourceLine" id="cb7-4" title="4">      <span class="dt">Just</span> _  <span class="ot">→</span> <span class="fu">return</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb7-5" title="5">      <span class="dt">Nothing</span> <span class="ot">→</span> diffTime c1</a>
+<a class="sourceLine" id="cb7-6" title="6">  <span class="kw">let</span> diffInPicos  <span class="fu">=</span> <span class="fu">fromEnum</span> difft</a>
+<a class="sourceLine" id="cb7-7" title="7">      totalTracked <span class="fu">=</span></a>
+<a class="sourceLine" id="cb7-8" title="8">        <span class="fu">toEnum</span> (diffInPicos <span class="fu">+</span> trackedTime)<span class="ot"> ::</span> <span class="dt">NominalDiffTime</span></a>
+<a class="sourceLine" id="cb7-9" title="9">  <span class="fu">return</span> totalTracked</a>
+<a class="sourceLine" id="cb7-10" title="10"> <span class="kw">where</span><span class="ot"> startDate ::</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb7-11" title="11">       startDate <span class="fu">=</span> start cfg</a>
+<a class="sourceLine" id="cb7-12" title="12"><span class="ot">       trackedTime ::</span> <span class="dt">Int</span></a>
+<a class="sourceLine" id="cb7-13" title="13">       trackedTime <span class="fu">=</span></a>
+<a class="sourceLine" id="cb7-14" title="14">         <span class="kw">case</span> tracked cfg <span class="kw">of</span></a>
+<a class="sourceLine" id="cb7-15" title="15">           <span class="dt">Just</span> t  <span class="ot">→</span> <span class="fu">read</span><span class="ot"> t ::</span> <span class="dt">Int</span></a>
+<a class="sourceLine" id="cb7-16" title="16">           <span class="dt">Nothing</span> <span class="ot">→</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb7-17" title="17"><span class="ot">       c1 ::</span> <span class="dt">UTCTime</span></a>
+<a class="sourceLine" id="cb7-18" title="18">       c1 <span class="fu">=</span> <span class="fu">read</span><span class="ot"> startDate ::</span> <span class="dt">UTCTime</span></a>
+<a class="sourceLine" id="cb7-19" title="19"></a>
+<a class="sourceLine" id="cb7-20" title="20"><span class="ot">finishT ::</span> <span class="dt">Bool</span> <span class="ot">→</span> (<span class="dt">String</span>, <span class="dt">String</span>) <span class="ot">→</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb7-21" title="21">finishT remove (t,p) <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb7-22" title="22">  trackYaml <span class="ot">←</span> openTrack p</a>
+<a class="sourceLine" id="cb7-23" title="23">  <span class="kw">case</span> trackYaml <span class="kw">of</span></a>
+<a class="sourceLine" id="cb7-24" title="24">    <span class="dt">Nothing</span>    <span class="ot">→</span> exitFailure</a>
+<a class="sourceLine" id="cb7-25" title="25">    <span class="dt">Just</span> yaml  <span class="ot">→</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb7-26" title="26">      totalTracked <span class="ot">←</span> getTotalTracked yaml</a>
+<a class="sourceLine" id="cb7-27" title="27">      <span class="fu">putStr</span> <span class="fu">$</span> <span class="st">&quot;* &quot;</span> <span class="fu">++</span> t <span class="fu">++</span> <span class="st">&quot; : &quot;</span></a>
+<a class="sourceLine" id="cb7-28" title="28">      <span class="fu">putStrLn</span> <span class="fu">$</span> humanReadableTimeDiff totalTracked</a>
+<a class="sourceLine" id="cb7-29" title="29">      when remove <span class="fu">$</span> removeFile p</a></code></pre></div>
 <p>also you can iterate all tracks and pause / resume /finish all</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">iterateTasks ::</span> ((<span class="dt">String</span>, <span class="dt">String</span>) <span class="ot">→</span> <span class="dt">IO</span> ()) <span class="ot">→</span> <span class="dt">IO</span> ()
-iterateTasks action <span class="fu">=</span> <span class="kw">do</span>
-  workDir <span class="ot">←</span> getWorkDir
-  content <span class="ot">←</span> getDirectoryContents workDir
-  <span class="kw">let</span> tasks <span class="fu">=</span> filter (isPrefixOf <span class="st">&quot;task-&quot;</span>) content
-      abslt <span class="fu">=</span> map (\t <span class="ot">→</span> (t, workDir <span class="fu">&lt;/&gt;</span> t)) tasks
-  forM_ abslt action
-  
-<span class="ot">pauseTask ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> ()
-pauseTask id <span class="fu">=</span> pauseT <span class="fu">=&lt;&lt;</span> getTrack id
-
-<span class="ot">resumeTask ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> ()
-resumeTask id <span class="fu">=</span> resumeT <span class="fu">=&lt;&lt;</span> getTrack id
-
-<span class="ot">finishTask ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> ()
-finishTask id <span class="fu">=</span> finishT <span class="dt">True</span> <span class="fu">=&lt;&lt;</span> getTrack id
-
-<span class="ot">list ::</span> <span class="dt">IO</span> ()
-list <span class="fu">=</span> iterateTasks (finishT <span class="dt">False</span>)
-
-<span class="ot">pauseAll ::</span> <span class="dt">IO</span> ()
-pauseAll <span class="fu">=</span> iterateTasks pauseT
-
-<span class="ot">resumeAll ::</span> <span class="dt">IO</span> ()
-resumeAll <span class="fu">=</span> iterateTasks resumeT
-
-<span class="ot">finishAll ::</span> <span class="dt">IO</span> ()
-finishAll <span class="fu">=</span> iterateTasks (finishT <span class="dt">True</span>)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb8-1" title="1"><span class="ot">iterateTasks ::</span> ((<span class="dt">String</span>, <span class="dt">String</span>) <span class="ot">→</span> <span class="dt">IO</span> ()) <span class="ot">→</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb8-2" title="2">iterateTasks action <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb8-3" title="3">  workDir <span class="ot">←</span> getWorkDir</a>
+<a class="sourceLine" id="cb8-4" title="4">  content <span class="ot">←</span> getDirectoryContents workDir</a>
+<a class="sourceLine" id="cb8-5" title="5">  <span class="kw">let</span> tasks <span class="fu">=</span> <span class="fu">filter</span> (isPrefixOf <span class="st">&quot;task-&quot;</span>) content</a>
+<a class="sourceLine" id="cb8-6" title="6">      abslt <span class="fu">=</span> <span class="fu">map</span> (\t <span class="ot">→</span> (t, workDir <span class="fu">&lt;/&gt;</span> t)) tasks</a>
+<a class="sourceLine" id="cb8-7" title="7">  forM_ abslt action</a>
+<a class="sourceLine" id="cb8-8" title="8">  </a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="ot">pauseTask ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb8-10" title="10">pauseTask <span class="fu">id</span> <span class="fu">=</span> pauseT <span class="fu">=&lt;&lt;</span> getTrack <span class="fu">id</span></a>
+<a class="sourceLine" id="cb8-11" title="11"></a>
+<a class="sourceLine" id="cb8-12" title="12"><span class="ot">resumeTask ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb8-13" title="13">resumeTask <span class="fu">id</span> <span class="fu">=</span> resumeT <span class="fu">=&lt;&lt;</span> getTrack <span class="fu">id</span></a>
+<a class="sourceLine" id="cb8-14" title="14"></a>
+<a class="sourceLine" id="cb8-15" title="15"><span class="ot">finishTask ::</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb8-16" title="16">finishTask <span class="fu">id</span> <span class="fu">=</span> finishT <span class="dt">True</span> <span class="fu">=&lt;&lt;</span> getTrack <span class="fu">id</span></a>
+<a class="sourceLine" id="cb8-17" title="17"></a>
+<a class="sourceLine" id="cb8-18" title="18"><span class="ot">list ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb8-19" title="19">list <span class="fu">=</span> iterateTasks (finishT <span class="dt">False</span>)</a>
+<a class="sourceLine" id="cb8-20" title="20"></a>
+<a class="sourceLine" id="cb8-21" title="21"><span class="ot">pauseAll ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb8-22" title="22">pauseAll <span class="fu">=</span> iterateTasks pauseT</a>
+<a class="sourceLine" id="cb8-23" title="23"></a>
+<a class="sourceLine" id="cb8-24" title="24"><span class="ot">resumeAll ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb8-25" title="25">resumeAll <span class="fu">=</span> iterateTasks resumeT</a>
+<a class="sourceLine" id="cb8-26" title="26"></a>
+<a class="sourceLine" id="cb8-27" title="27"><span class="ot">finishAll ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb8-28" title="28">finishAll <span class="fu">=</span> iterateTasks (finishT <span class="dt">True</span>)</a></code></pre></div>
 <p>functions startTrack / openTrack are simply manipulations with yaml</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">condM ::</span> <span class="dt">Monad</span> m <span class="ot">⇒</span> [(m <span class="dt">Bool</span>, m a)] <span class="ot">→</span> m a
-condM ((test,action) <span class="fu">:</span> rest) <span class="fu">=</span>
-  test <span class="fu">&gt;&gt;=</span> \t <span class="ot">→</span> <span class="kw">if</span> t <span class="kw">then</span> action
-                     <span class="kw">else</span> condM rest
-
-getWorkDir <span class="ot">∷</span> <span class="dt">IO</span> FilePath
-getWorkDir <span class="fu">=</span>
-  <span class="kw">if</span> <span class="fu">|</span> os ∈ [<span class="st">&quot;win32&quot;</span>, <span class="st">&quot;mingw32&quot;</span>, <span class="st">&quot;cygwin32&quot;</span>] <span class="ot">→</span>
-        (takeDirectory <span class="fu">&lt;$&gt;</span> getExecutablePath)
-     <span class="fu">|</span> otherwise <span class="ot">→</span> getHomeDirectory
-
-getTrack <span class="ot">∷</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> (<span class="dt">String</span>, FilePath)
-getTrack id <span class="fu">=</span> getWorkDir <span class="fu">&gt;&gt;=</span> \w <span class="ot">→</span>
-                return (τ, w <span class="fu">&lt;/&gt;</span> τ)
- <span class="kw">where</span> τ<span class="ot"> ::</span> <span class="dt">String</span>
-       τ <span class="fu">=</span> <span class="st">&quot;task-&quot;</span> <span class="fu">++</span> show id
-
-startTrack <span class="ot">∷</span> <span class="dt">String</span> <span class="ot">→</span> <span class="dt">IO</span> <span class="dt">Track</span>
-startTrack trackFile <span class="fu">=</span>
-  condM [ (doesFileExist trackFile, yDecode trackFile <span class="ot">∷</span> <span class="dt">IO</span> <span class="dt">Track</span>)
-        , ( return <span class="dt">True</span>
-          , return <span class="dt">Track</span> { tracked <span class="fu">=</span> <span class="dt">Nothing</span>
-                         , start <span class="fu">=</span> <span class="st">&quot;0&quot;</span>
-                         , pause <span class="fu">=</span> <span class="dt">Nothing</span>
-                         })]
-
-openTrack <span class="ot">∷</span> <span class="dt">String</span> <span class="ot">→</span> <span class="dt">IO</span> (<span class="dt">Maybe</span> <span class="dt">Track</span>)
-openTrack trackFile <span class="fu">=</span>
-  condM [ (doesFileExist trackFile
-         , <span class="dt">Just</span> <span class="fu">&lt;$&gt;</span> (yDecode trackFile <span class="ot">∷</span> <span class="dt">IO</span> <span class="dt">Track</span>))
-         , ( return <span class="dt">True</span>
-           , return <span class="dt">Nothing</span>)]</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb9-1" title="1"><span class="ot">condM ::</span> <span class="dt">Monad</span> m <span class="ot">⇒</span> [(m <span class="dt">Bool</span>, m a)] <span class="ot">→</span> m a</a>
+<a class="sourceLine" id="cb9-2" title="2">condM ((test,action) <span class="fu">:</span> rest) <span class="fu">=</span></a>
+<a class="sourceLine" id="cb9-3" title="3">  test <span class="fu">&gt;&gt;=</span> \t <span class="ot">→</span> <span class="kw">if</span> t <span class="kw">then</span> action</a>
+<a class="sourceLine" id="cb9-4" title="4">                     <span class="kw">else</span> condM rest</a>
+<a class="sourceLine" id="cb9-5" title="5"></a>
+<a class="sourceLine" id="cb9-6" title="6">getWorkDir <span class="ot">∷</span> <span class="dt">IO</span> <span class="dt">FilePath</span></a>
+<a class="sourceLine" id="cb9-7" title="7">getWorkDir <span class="fu">=</span></a>
+<a class="sourceLine" id="cb9-8" title="8">  <span class="kw">if</span> <span class="fu">|</span> os ∈ [<span class="st">&quot;win32&quot;</span>, <span class="st">&quot;mingw32&quot;</span>, <span class="st">&quot;cygwin32&quot;</span>] <span class="ot">→</span></a>
+<a class="sourceLine" id="cb9-9" title="9">        (takeDirectory <span class="fu">&lt;$&gt;</span> getExecutablePath)</a>
+<a class="sourceLine" id="cb9-10" title="10">     <span class="fu">|</span> <span class="fu">otherwise</span> <span class="ot">→</span> getHomeDirectory</a>
+<a class="sourceLine" id="cb9-11" title="11"></a>
+<a class="sourceLine" id="cb9-12" title="12">getTrack <span class="ot">∷</span> <span class="dt">Int</span> <span class="ot">→</span> <span class="dt">IO</span> (<span class="dt">String</span>, <span class="dt">FilePath</span>)</a>
+<a class="sourceLine" id="cb9-13" title="13">getTrack <span class="fu">id</span> <span class="fu">=</span> getWorkDir <span class="fu">&gt;&gt;=</span> \w <span class="ot">→</span></a>
+<a class="sourceLine" id="cb9-14" title="14">                <span class="fu">return</span> (τ, w <span class="fu">&lt;/&gt;</span> τ)</a>
+<a class="sourceLine" id="cb9-15" title="15"> <span class="kw">where</span> τ<span class="ot"> ::</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb9-16" title="16">       τ <span class="fu">=</span> <span class="st">&quot;task-&quot;</span> <span class="fu">++</span> <span class="fu">show</span> <span class="fu">id</span></a>
+<a class="sourceLine" id="cb9-17" title="17"></a>
+<a class="sourceLine" id="cb9-18" title="18">startTrack <span class="ot">∷</span> <span class="dt">String</span> <span class="ot">→</span> <span class="dt">IO</span> <span class="dt">Track</span></a>
+<a class="sourceLine" id="cb9-19" title="19">startTrack trackFile <span class="fu">=</span></a>
+<a class="sourceLine" id="cb9-20" title="20">  condM [ (doesFileExist trackFile, yDecode trackFile <span class="ot">∷</span> <span class="dt">IO</span> <span class="dt">Track</span>)</a>
+<a class="sourceLine" id="cb9-21" title="21">        , ( <span class="fu">return</span> <span class="dt">True</span></a>
+<a class="sourceLine" id="cb9-22" title="22">          , <span class="fu">return</span> <span class="dt">Track</span> { tracked <span class="fu">=</span> <span class="dt">Nothing</span></a>
+<a class="sourceLine" id="cb9-23" title="23">                         , start <span class="fu">=</span> <span class="st">&quot;0&quot;</span></a>
+<a class="sourceLine" id="cb9-24" title="24">                         , pause <span class="fu">=</span> <span class="dt">Nothing</span></a>
+<a class="sourceLine" id="cb9-25" title="25">                         })]</a>
+<a class="sourceLine" id="cb9-26" title="26"></a>
+<a class="sourceLine" id="cb9-27" title="27">openTrack <span class="ot">∷</span> <span class="dt">String</span> <span class="ot">→</span> <span class="dt">IO</span> (<span class="dt">Maybe</span> <span class="dt">Track</span>)</a>
+<a class="sourceLine" id="cb9-28" title="28">openTrack trackFile <span class="fu">=</span></a>
+<a class="sourceLine" id="cb9-29" title="29">  condM [ (doesFileExist trackFile</a>
+<a class="sourceLine" id="cb9-30" title="30">         , <span class="dt">Just</span> <span class="fu">&lt;$&gt;</span> (yDecode trackFile <span class="ot">∷</span> <span class="dt">IO</span> <span class="dt">Track</span>))</a>
+<a class="sourceLine" id="cb9-31" title="31">         , ( <span class="fu">return</span> <span class="dt">True</span></a>
+<a class="sourceLine" id="cb9-32" title="32">           , <span class="fu">return</span> <span class="dt">Nothing</span>)]</a></code></pre></div>
 <h2 id="yet-another-sync-util-sharingan">Yet another sync util (Sharingan)</h2>
 <p>Simply folder worker performing various synchronization actions &amp;&amp; custom actions from yml configs just alike travis and I don’t know sane method of doing it for now, alternative. Maybe simple script can do it but it’s not handy to write such script each time.</p>
 <p>Honestly I’m really lazy to rewrite current implementation of this tool :D</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">synchronize     <span class="co">-- actual synchronization function</span>
-  <span class="ot">∷</span> <span class="dt">CommonOpts</span>  <span class="co">-- common options</span>
-  <span class="ot">→</span> <span class="dt">SyncOpts</span>    <span class="co">-- synchronization options</span>
-  <span class="ot">→</span> <span class="dt">IO</span>()
-synchronize _o so <span class="fu">=</span> <span class="co">-- ( ◜ ①‿‿① )◜</span>
-  withDefaultsConfig <span class="fu">$</span> \defx <span class="ot">→</span>
-   withConfig <span class="fu">$</span> \ymlx <span class="ot">→</span> despair <span class="fu">$</span> <span class="kw">do</span>
-    jsdat <span class="ot">←</span> yDecode ymlx <span class="ot">∷</span> <span class="dt">IO</span> [<span class="dt">RepositoryWrapper</span>]
-    jfdat <span class="ot">←</span> yDecode defx <span class="ot">∷</span> <span class="dt">IO</span> <span class="dt">DefaultsWrapper</span>
-    myenv <span class="ot">←</span> getEnv
-    <span class="kw">let</span> dfdat <span class="fu">=</span> _getDefaults jfdat
-        rsdat <span class="fu">=</span> map _getRepository jsdat
-<span class="ot">#if ( defined(mingw32_HOST_OS) || defined(__MINGW32__) )</span>
-    when (syncFull so ∨ (fromMaybe <span class="dt">False</span> (full dfdat))) <span class="fu">$</span> <span class="kw">do</span>
-      when (fromMaybe <span class="dt">True</span> (updateCabal dfdat)) cabalUpdate
-      when (fromMaybe <span class="dt">False</span> (updateStack dfdat)) stackUpdate
-<span class="ot">#endif</span>
-    forM_ rsdat <span class="fu">$</span> sync myenv dfdat <span class="kw">where</span>
-<span class="ot">  sync ::</span> <span class="dt">MyEnv</span>       <span class="co">-- environment</span>
-        <span class="ot">→</span> <span class="dt">Defaults</span>    <span class="co">-- default options</span>
-        <span class="ot">→</span> <span class="dt">Repository</span>  <span class="co">-- repository (iterating)</span>
-        <span class="ot">→</span> <span class="dt">IO</span> ()
-  sync myEnv dfdata repo <span class="fu">=</span>
-    <span class="kw">let</span> loc <span class="fu">=</span> location repo
-        isenabled <span class="fu">=</span> fromMaybe <span class="dt">True</span> (enabled repo)
-        frs <span class="fu">=</span> syncForce so
-        ntr <span class="fu">=</span> syncInteractive so
-        nps <span class="fu">=</span> syncNoPush so
-    <span class="kw">in</span> when (<span class="kw">case</span> syncFilter so <span class="kw">of</span>
-                    <span class="dt">Nothing</span>  <span class="ot">→</span> <span class="kw">case</span> syncGroups so <span class="kw">of</span>
-                                    [] <span class="ot">→</span> isenabled
-                                    gx  <span class="ot">→</span> <span class="kw">case</span> syncGroup repo <span class="kw">of</span>
-                                                <span class="dt">Just</span> gg <span class="ot">→</span> isenabled ∧ (gg ∈ gx)
-                                                <span class="dt">Nothing</span> <span class="ot">→</span> <span class="dt">False</span>
-                    <span class="dt">Just</span> snc <span class="ot">→</span> isInfixOf <span class="fu">&lt;|</span> map toLower snc
-                                         <span class="fu">&lt;|</span> map toLower loc)
-      <span class="fu">$</span> <span class="kw">let</span> ups <span class="fu">=</span> splitOn <span class="st">&quot; &quot;</span> <span class="fu">$</span> upstream repo
-            snc <span class="fu">=</span> sharingan (syncInteractive so) adm
-            cln <span class="fu">=</span> fromMaybe <span class="dt">False</span> (clean repo)
-            adm <span class="fu">=</span> fromMaybe <span class="dt">False</span> (root repo)
-            noq <span class="fu">=</span> not <span class="fu">$</span> fromMaybe <span class="dt">False</span> (quick dfdata)
-            tsk <span class="fu">=</span> task repo
-            vcx <span class="fu">=</span> vcs repo
-            u b <span class="fu">=</span> <span class="kw">do</span>
-              printf <span class="st">&quot; - %s : %s\n&quot;</span> loc b
-              <span class="kw">if</span> nps ∧ tsk <span class="fu">/=</span> <span class="st">&quot;pull&quot;</span>
-                <span class="kw">then</span> return (<span class="dt">True</span>, <span class="dt">True</span>)
-                <span class="kw">else</span> amaterasu tsk loc b ups (syncUnsafe so)
-                        frs cln adm (hash repo) myEnv vcx
-            eye (_, r) <span class="fu">=</span> when ((r ∨ frs) ∧ not (syncQuick so) ∧ noq)
-              <span class="fu">$</span> <span class="kw">do</span> <span class="kw">let</span> shx <span class="fu">=</span> loc <span class="fu">&lt;/&gt;</span> <span class="st">&quot;.sharingan.yml&quot;</span>
-                       ps  <span class="fu">=</span> postRebuild repo
-                   doesFileExist shx ≫<span class="fu">=</span> sharingan
-                        ntr adm shx loc
-                   when (isJust ps) <span class="fu">$</span> forM_ (fromJust ps) <span class="fu">$</span> \psc <span class="ot">→</span>
-                      <span class="kw">let</span> pshx <span class="fu">=</span> psc <span class="fu">&lt;/&gt;</span> <span class="st">&quot;.sharingan.yml&quot;</span>
-                      <span class="kw">in</span> doesFileExist pshx≫<span class="fu">=</span> snc pshx psc
-        <span class="kw">in</span> <span class="kw">do</span> forM_ (tails (branches repo))
-               <span class="fu">$</span> \<span class="kw">case</span> [x] <span class="ot">→</span> u x ≫<span class="fu">=</span> eye <span class="co">-- Tail</span>
-                       x<span class="fu">:</span>_ <span class="ot">→</span> u x ≫<span class="fu">=</span> (\_ <span class="ot">→</span> return ())
-                       []  <span class="ot">→</span> return ()
-              putStrLn ⊲ replicate <span class="dv">80</span> <span class="ch">'_'</span></code></pre></div><div id="postfooter"></div><script src="../js/playpause.js"></script><script src="../bootstrap/three.js"></script><script src="../js/bubbles.js"></script></div><div id="social"><ul><li><a href="http://github.com/Heather" title="Github" target="_blank"><span class="mega-octicon octicon-octoface"></span></a></li><li><a href="http://twitter.com/Cynede" title="Twitter" target="_blank"><span class="mega-octicon octicon-star"></span></a></li><li><a href="mailto:heather@live.ru" title="mail" target="_blank"><span class="mega-octicon octicon-mail-read"></span></a></li><li><a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank"><span class="mega-octicon octicon-broadcast"></span></a></li><li><a href="http://stackoverflow.com/users/238232/heather" title="Stackoverflow" target="_blank"><span class="mega-octicon octicon-squirrel"></span></a></li><li><a href="../atom.xml" title="RSS" target="_blank"><span class="mega-octicon octicon-rss"></span></a></li></ul></div><div id="footer"></div></body></html>
+<div class="sourceCode" id="cb10"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb10-1" title="1">synchronize     <span class="co">-- actual synchronization function</span></a>
+<a class="sourceLine" id="cb10-2" title="2">  <span class="ot">∷</span> <span class="dt">CommonOpts</span>  <span class="co">-- common options</span></a>
+<a class="sourceLine" id="cb10-3" title="3">  <span class="ot">→</span> <span class="dt">SyncOpts</span>    <span class="co">-- synchronization options</span></a>
+<a class="sourceLine" id="cb10-4" title="4">  <span class="ot">→</span> <span class="dt">IO</span>()</a>
+<a class="sourceLine" id="cb10-5" title="5">synchronize _o so <span class="fu">=</span> <span class="co">-- ( ◜ ①‿‿① )◜</span></a>
+<a class="sourceLine" id="cb10-6" title="6">  withDefaultsConfig <span class="fu">$</span> \defx <span class="ot">→</span></a>
+<a class="sourceLine" id="cb10-7" title="7">   withConfig <span class="fu">$</span> \ymlx <span class="ot">→</span> despair <span class="fu">$</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb10-8" title="8">    jsdat <span class="ot">←</span> yDecode ymlx <span class="ot">∷</span> <span class="dt">IO</span> [<span class="dt">RepositoryWrapper</span>]</a>
+<a class="sourceLine" id="cb10-9" title="9">    jfdat <span class="ot">←</span> yDecode defx <span class="ot">∷</span> <span class="dt">IO</span> <span class="dt">DefaultsWrapper</span></a>
+<a class="sourceLine" id="cb10-10" title="10">    myenv <span class="ot">←</span> getEnv</a>
+<a class="sourceLine" id="cb10-11" title="11">    <span class="kw">let</span> dfdat <span class="fu">=</span> _getDefaults jfdat</a>
+<a class="sourceLine" id="cb10-12" title="12">        rsdat <span class="fu">=</span> <span class="fu">map</span> _getRepository jsdat</a>
+<a class="sourceLine" id="cb10-13" title="13"><span class="ot">#if ( defined(mingw32_HOST_OS) || defined(__MINGW32__) )</span></a>
+<a class="sourceLine" id="cb10-14" title="14">    when (syncFull so ∨ (fromMaybe <span class="dt">False</span> (full dfdat))) <span class="fu">$</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb10-15" title="15">      when (fromMaybe <span class="dt">True</span> (updateCabal dfdat)) cabalUpdate</a>
+<a class="sourceLine" id="cb10-16" title="16">      when (fromMaybe <span class="dt">False</span> (updateStack dfdat)) stackUpdate</a>
+<a class="sourceLine" id="cb10-17" title="17"><span class="ot">#endif</span></a>
+<a class="sourceLine" id="cb10-18" title="18">    forM_ rsdat <span class="fu">$</span> sync myenv dfdat <span class="kw">where</span></a>
+<a class="sourceLine" id="cb10-19" title="19"><span class="ot">  sync ::</span> <span class="dt">MyEnv</span>       <span class="co">-- environment</span></a>
+<a class="sourceLine" id="cb10-20" title="20">        <span class="ot">→</span> <span class="dt">Defaults</span>    <span class="co">-- default options</span></a>
+<a class="sourceLine" id="cb10-21" title="21">        <span class="ot">→</span> <span class="dt">Repository</span>  <span class="co">-- repository (iterating)</span></a>
+<a class="sourceLine" id="cb10-22" title="22">        <span class="ot">→</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb10-23" title="23">  sync myEnv dfdata repo <span class="fu">=</span></a>
+<a class="sourceLine" id="cb10-24" title="24">    <span class="kw">let</span> loc <span class="fu">=</span> location repo</a>
+<a class="sourceLine" id="cb10-25" title="25">        isenabled <span class="fu">=</span> fromMaybe <span class="dt">True</span> (enabled repo)</a>
+<a class="sourceLine" id="cb10-26" title="26">        frs <span class="fu">=</span> syncForce so</a>
+<a class="sourceLine" id="cb10-27" title="27">        ntr <span class="fu">=</span> syncInteractive so</a>
+<a class="sourceLine" id="cb10-28" title="28">        nps <span class="fu">=</span> syncNoPush so</a>
+<a class="sourceLine" id="cb10-29" title="29">    <span class="kw">in</span> when (<span class="kw">case</span> syncFilter so <span class="kw">of</span></a>
+<a class="sourceLine" id="cb10-30" title="30">                    <span class="dt">Nothing</span>  <span class="ot">→</span> <span class="kw">case</span> syncGroups so <span class="kw">of</span></a>
+<a class="sourceLine" id="cb10-31" title="31">                                    [] <span class="ot">→</span> isenabled</a>
+<a class="sourceLine" id="cb10-32" title="32">                                    gx  <span class="ot">→</span> <span class="kw">case</span> syncGroup repo <span class="kw">of</span></a>
+<a class="sourceLine" id="cb10-33" title="33">                                                <span class="dt">Just</span> gg <span class="ot">→</span> isenabled ∧ (gg ∈ gx)</a>
+<a class="sourceLine" id="cb10-34" title="34">                                                <span class="dt">Nothing</span> <span class="ot">→</span> <span class="dt">False</span></a>
+<a class="sourceLine" id="cb10-35" title="35">                    <span class="dt">Just</span> snc <span class="ot">→</span> isInfixOf <span class="fu">&lt;|</span> <span class="fu">map</span> <span class="fu">toLower</span> snc</a>
+<a class="sourceLine" id="cb10-36" title="36">                                         <span class="fu">&lt;|</span> <span class="fu">map</span> <span class="fu">toLower</span> loc)</a>
+<a class="sourceLine" id="cb10-37" title="37">      <span class="fu">$</span> <span class="kw">let</span> ups <span class="fu">=</span> splitOn <span class="st">&quot; &quot;</span> <span class="fu">$</span> upstream repo</a>
+<a class="sourceLine" id="cb10-38" title="38">            snc <span class="fu">=</span> sharingan (syncInteractive so) adm</a>
+<a class="sourceLine" id="cb10-39" title="39">            cln <span class="fu">=</span> fromMaybe <span class="dt">False</span> (clean repo)</a>
+<a class="sourceLine" id="cb10-40" title="40">            adm <span class="fu">=</span> fromMaybe <span class="dt">False</span> (root repo)</a>
+<a class="sourceLine" id="cb10-41" title="41">            noq <span class="fu">=</span> <span class="fu">not</span> <span class="fu">$</span> fromMaybe <span class="dt">False</span> (quick dfdata)</a>
+<a class="sourceLine" id="cb10-42" title="42">            tsk <span class="fu">=</span> task repo</a>
+<a class="sourceLine" id="cb10-43" title="43">            vcx <span class="fu">=</span> vcs repo</a>
+<a class="sourceLine" id="cb10-44" title="44">            u b <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb10-45" title="45">              printf <span class="st">&quot; - %s : %s\n&quot;</span> loc b</a>
+<a class="sourceLine" id="cb10-46" title="46">              <span class="kw">if</span> nps ∧ tsk <span class="fu">/=</span> <span class="st">&quot;pull&quot;</span></a>
+<a class="sourceLine" id="cb10-47" title="47">                <span class="kw">then</span> <span class="fu">return</span> (<span class="dt">True</span>, <span class="dt">True</span>)</a>
+<a class="sourceLine" id="cb10-48" title="48">                <span class="kw">else</span> amaterasu tsk loc b ups (syncUnsafe so)</a>
+<a class="sourceLine" id="cb10-49" title="49">                        frs cln adm (hash repo) myEnv vcx</a>
+<a class="sourceLine" id="cb10-50" title="50">            eye (_, r) <span class="fu">=</span> when ((r ∨ frs) ∧ <span class="fu">not</span> (syncQuick so) ∧ noq)</a>
+<a class="sourceLine" id="cb10-51" title="51">              <span class="fu">$</span> <span class="kw">do</span> <span class="kw">let</span> shx <span class="fu">=</span> loc <span class="fu">&lt;/&gt;</span> <span class="st">&quot;.sharingan.yml&quot;</span></a>
+<a class="sourceLine" id="cb10-52" title="52">                       ps  <span class="fu">=</span> postRebuild repo</a>
+<a class="sourceLine" id="cb10-53" title="53">                   doesFileExist shx ≫<span class="fu">=</span> sharingan</a>
+<a class="sourceLine" id="cb10-54" title="54">                        ntr adm shx loc</a>
+<a class="sourceLine" id="cb10-55" title="55">                   when (isJust ps) <span class="fu">$</span> forM_ (fromJust ps) <span class="fu">$</span> \psc <span class="ot">→</span></a>
+<a class="sourceLine" id="cb10-56" title="56">                      <span class="kw">let</span> pshx <span class="fu">=</span> psc <span class="fu">&lt;/&gt;</span> <span class="st">&quot;.sharingan.yml&quot;</span></a>
+<a class="sourceLine" id="cb10-57" title="57">                      <span class="kw">in</span> doesFileExist pshx≫<span class="fu">=</span> snc pshx psc</a>
+<a class="sourceLine" id="cb10-58" title="58">        <span class="kw">in</span> <span class="kw">do</span> forM_ (tails (branches repo))</a>
+<a class="sourceLine" id="cb10-59" title="59">               <span class="fu">$</span> \<span class="kw">case</span> [x] <span class="ot">→</span> u x ≫<span class="fu">=</span> eye <span class="co">-- Tail</span></a>
+<a class="sourceLine" id="cb10-60" title="60">                       x<span class="fu">:</span>_ <span class="ot">→</span> u x ≫<span class="fu">=</span> (\_ <span class="ot">→</span> <span class="fu">return</span> ())</a>
+<a class="sourceLine" id="cb10-61" title="61">                       []  <span class="ot">→</span> <span class="fu">return</span> ()</a>
+<a class="sourceLine" id="cb10-62" title="62">              <span class="fu">putStrLn</span> ⊲ <span class="fu">replicate</span> <span class="dv">80</span> <span class="ch">'_'</span></a></code></pre></div><div id="postfooter"></div><script src="../js/playpause.js"></script><script src="../bootstrap/three.js"></script><script src="../js/bubbles.js"></script></div><div id="social"><ul><li><a href="http://github.com/Heather" title="Github" target="_blank"><span class="mega-octicon octicon-octoface"></span></a></li><li><a href="http://twitter.com/Cynede" title="Twitter" target="_blank"><span class="mega-octicon octicon-star"></span></a></li><li><a href="mailto:heather@live.ru" title="mail" target="_blank"><span class="mega-octicon octicon-mail-read"></span></a></li><li><a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank"><span class="mega-octicon octicon-broadcast"></span></a></li><li><a href="http://stackoverflow.com/users/238232/heather" title="Stackoverflow" target="_blank"><span class="mega-octicon octicon-squirrel"></span></a></li><li><a href="../atom.xml" title="RSS" target="_blank"><span class="mega-octicon octicon-rss"></span></a></li></ul></div><div id="footer"></div></body></html>

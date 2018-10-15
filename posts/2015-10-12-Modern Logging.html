@@ -1,80 +1,80 @@
 <?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE html><html ng-app><head><meta charset="utf-8"><meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"><meta content="Heather" name="description"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="../atom.xml" title="Heather" type="application/atom+xml" rel="alternate"><link href="../favicon.ico" type="image/ico" rel="shortcut icon"><script src="../bootstrap/jquery-2.1.1.min.js"></script><link href="../bootstrap/bootstrap.min.css" rel="stylesheet"><link href="../bootstrap/bootstrap-theme.min.css" rel="stylesheet"><script src="../bootstrap/bootstrap.min.js"></script><script src="../bootstrap/angular.min.js"></script><link href="../css/hasklig.css" media="all" type="text/css" rel="stylesheet"><link href="../css/octicons.css" media="all" type="text/css" rel="stylesheet"><link href="../css/syntax.css" media="all" type="text/css" rel="stylesheet"><link href="../css/default.css" media="all" type="text/css" rel="stylesheet"><title>Heather - Modern logging with C++ and Elasticsearch</title><script src="../js/auto.js"></script></head><body><div class="band"></div><div id="header"><div id="logo"><a href="../" id="abbr"></a><script>e = document.getElementById("abbr");setTimeout(r, 0);</script></div></div><div id="content"><h1>Modern logging with C++ and Elasticsearch</h1><audio autoplay loop id="audio"><source src="../images/Bween.mp3" type="audio/mp3"></audio><div id="controls"><img height="20px" width="20px" src="../images/RedPause.png" id="playpause"></div><div class="info">Posted on 12 October 2015</div><h1 id="elasticsearch">Elasticsearch</h1>
 <p><a href="https://www.elastic.co/">Elasticsearch</a> is modern search engine. It’s opensource and used by ebay, stackoverflow, etc… I’ve used their 2.x branch because 3.x (master) version has incompatibility issues with their Visualization portal (Kibana) And there is logging there is very simple but with good plugins architecture logging service <a href="https://www.elastic.co/products/logstash">Logstash</a> which has out-from-box integration with Elasticsearch. Very simple Logstash config status may look like this:</p>
-<div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="er">input</span> <span class="fu">{</span>
-    <span class="er">tcp</span> <span class="er">{</span>
-        <span class="er">port</span> <span class="er">=&gt;</span> <span class="er">666</span>
-    <span class="fu">}</span>
-<span class="er">}</span>
-<span class="er">output</span> <span class="fu">{</span>
-    <span class="er">elasticsearch</span> <span class="er">{</span>
-        <span class="er">protocol</span> <span class="er">=&gt;</span> <span class="dt">&quot;http&quot;</span>
-    <span class="fu">}</span>
-<span class="er">}</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode json"><code class="sourceCode json"><a class="sourceLine" id="cb1-1" title="1"><span class="er">input</span> <span class="fu">{</span></a>
+<a class="sourceLine" id="cb1-2" title="2">    <span class="er">tcp</span> <span class="er">{</span></a>
+<a class="sourceLine" id="cb1-3" title="3">        <span class="er">port</span> <span class="er">=&gt;</span> <span class="er">666</span></a>
+<a class="sourceLine" id="cb1-4" title="4">    <span class="fu">}</span></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="er">}</span></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="er">output</span> <span class="fu">{</span></a>
+<a class="sourceLine" id="cb1-7" title="7">    <span class="er">elasticsearch</span> <span class="er">{</span></a>
+<a class="sourceLine" id="cb1-8" title="8">        <span class="er">protocol</span> <span class="er">=&gt;</span> <span class="dt">&quot;http&quot;</span></a>
+<a class="sourceLine" id="cb1-9" title="9">    <span class="fu">}</span></a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="er">}</span></a></code></pre></div>
 <p><a href="https://www.elastic.co/products/kibana">Kibana</a> setup is either pretty easy and needs no additional configuration</p>
 <h1 id="logging">Logging</h1>
 <p>I’m using global logging I will have access from any part of my application, but it’s optional. Sure, with boost.</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ex">BOOST_</span>LOG_INLINE_GLOBAL_LOGGER_DEFAULT(x_logger,
-    <span class="ex">boost::</span>log<span class="ex">::</span>sources<span class="ex">::</span>severity_logger&lt; <span class="ex">boost::</span>log<span class="ex">::</span>trivial<span class="ex">::</span>severity_level &gt;)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb2-1" title="1"><span class="ex">BOOST_</span>LOG_INLINE_GLOBAL_LOGGER_DEFAULT(x_logger,</a>
+<a class="sourceLine" id="cb2-2" title="2">    <span class="ex">boost::</span>log<span class="ex">::</span>sources<span class="ex">::</span>severity_logger&lt; <span class="ex">boost::</span>log<span class="ex">::</span>trivial<span class="ex">::</span>severity_level &gt;)</a></code></pre></div>
 <p>So I need to log into tcp server with six-six-six port. Well but as interface allows me to do it I will also make local logs Remote server is very good when we need to make some data work there but if we will have no connection having logs locally will be helpful.</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">/// define helper types for log sinks</span>
-<span class="kw">typedef</span> <span class="ex">boost::</span>log<span class="ex">::</span>sinks<span class="ex">::</span>asynchronous_sink&lt; <span class="ex">boost::</span>log<span class="ex">::</span>sinks<span class="ex">::</span>text_file_backend &gt; file_sink;
-<span class="kw">typedef</span> <span class="ex">boost::</span>log<span class="ex">::</span>sinks<span class="ex">::</span>asynchronous_sink&lt; <span class="ex">boost::</span>log<span class="ex">::</span>sinks<span class="ex">::</span>text_ostream_backend &gt; tcp_sink;
-
-<span class="co">/// initialize and start loggers</span>
-<span class="dt">void</span> init() {
-    <span class="co">/// get global logger</span>
-    src::severity_logger&lt; <span class="ex">boost::</span>log<span class="ex">::</span>trivial<span class="ex">::</span>severity_level &gt; lg = x_logger::get();
-    
-    <span class="co">/// init sinks</span>
-    <span class="ex">boost::</span>shared_ptr&lt; file_sink &gt; sink1(<span class="kw">new</span> file_sink(
-        keywords::file_name = <span class="st">&quot;</span><span class="sc">%Y%</span><span class="st">m</span><span class="sc">%d</span><span class="st">_</span><span class="sc">%H%</span><span class="st">M</span><span class="sc">%S_%</span><span class="st">5N.xml&quot;</span>,
-        keywords::rotation_size = <span class="dv">16384</span>
-        ));
-    <span class="ex">boost::</span>shared_ptr&lt; tcp_sink &gt; sink2(<span class="kw">new</span> tcp_sink(backend));
-
-    <span class="co">/// init tcp stream</span>
-    <span class="ex">boost::</span>shared_ptr&lt; sinks::text_ostream_backend &gt; backend =
-        <span class="ex">boost::</span>make_shared&lt; sinks::text_ostream_backend &gt;();
-    <span class="ex">boost::</span>shared_ptr&lt; <span class="ex">boost::</span>asio<span class="ex">::</span>ip<span class="ex">::</span>tcp<span class="ex">::</span>iostream &gt; stream =
-        <span class="ex">boost::</span>make_shared&lt; <span class="ex">boost::</span>asio<span class="ex">::</span>ip<span class="ex">::</span>tcp<span class="ex">::</span>iostream &gt;();
-    stream-&gt;<span class="fu">connect</span>(<span class="st">&quot;127.0.0.1&quot;</span>, <span class="st">&quot;666&quot;</span>);
-    backend-&gt;add_stream(stream);
-    backend-&gt;auto_flush(<span class="kw">true</span>);
-    
-    <span class="co">/// set xml format for file logger</span>
-    sink-&gt;locked_backend()-&gt;set_file_collector(sinks::file::make_collector(
-        keywords::target = path,                        <span class="co">/*&lt; the target directory &gt;*/</span>
-        keywords::max_size = <span class="dv">64</span> * <span class="dv">1024</span> * <span class="dv">1024</span>,          <span class="co">/*&lt; maximum total size of the stored files, in bytes &gt;*/</span>
-        keywords::min_free_space = <span class="dv">100</span> * <span class="dv">1024</span> * <span class="dv">1024</span>    <span class="co">/*&lt; minimum free space on the drive, in bytes &gt;*/</span>
-    ));
-    sink-&gt;set_formatter (
-        expr::format(<span class="st">&quot;</span><span class="sc">\t</span><span class="st">&lt;record id=</span><span class="sc">\&quot;%1%\&quot;</span><span class="st"> timestamp=</span><span class="sc">\&quot;%2%\&quot;</span><span class="st">&gt;</span><span class="sc">%3%</span><span class="st">&lt;/record&gt;&quot;</span>)
-        % expr::attr&lt; <span class="dt">unsigned</span> <span class="dt">int</span> &gt;(<span class="st">&quot;RecordID&quot;</span>)
-        % expr::attr&lt; <span class="ex">boost::</span>posix_time<span class="ex">::</span>ptime &gt;(<span class="st">&quot;TimeStamp&quot;</span>)
-        % expr::xml_decor[expr::stream &lt;&lt; expr::smessage]
-    );
-    <span class="kw">auto</span> write_header = [](sinks::text_file_backend::<span class="dt">stream_type</span>&amp; file) {
-        file &lt;&lt; <span class="st">&quot;&lt;?xml version=</span><span class="sc">\&quot;</span><span class="st">1.0</span><span class="sc">\&quot;</span><span class="st">?&gt;</span><span class="sc">\n</span><span class="st">&lt;log&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;
-    };
-    <span class="kw">auto</span> write_footer = [](sinks::text_file_backend::<span class="dt">stream_type</span>&amp; file) {
-        file &lt;&lt; <span class="st">&quot;&lt;/log&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;
-    };
-    <span class="co">/// Set header and footer writing functors</span>
-    sink-&gt;locked_backend()-&gt;set_open_handler(write_header);
-    sink-&gt;locked_backend()-&gt;set_close_handler(write_footer);
-    <span class="co">/// Add the sink to the core</span>
-    logging::core::get()-&gt;add_sink(sink);
-    logging::core::get()-&gt;add_sink(sink2);
-    logging::core::get()-&gt;add_global_attribute(<span class="st">&quot;TimeStamp&quot;</span>, attrs::local_clock());
-    logging::core::get()-&gt;add_global_attribute(<span class="st">&quot;RecordID&quot;</span>, attrs::counter&lt; <span class="dt">unsigned</span> <span class="dt">int</span> &gt;());
-    logging::add_common_attributes();
-
-    <span class="ex">BOOST_</span>LOG_SEV(lg, <span class="ex">boost::</span>log<span class="ex">::</span>trivial<span class="ex">::</span>trace) &lt;&lt; <span class="st">&quot;Loggers initialization complete&quot;</span>;
-}</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb3-1" title="1"><span class="co">/// define helper types for log sinks</span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="kw">typedef</span> <span class="ex">boost::</span>log<span class="ex">::</span>sinks<span class="ex">::</span>asynchronous_sink&lt; <span class="ex">boost::</span>log<span class="ex">::</span>sinks<span class="ex">::</span>text_file_backend &gt; file_sink;</a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="kw">typedef</span> <span class="ex">boost::</span>log<span class="ex">::</span>sinks<span class="ex">::</span>asynchronous_sink&lt; <span class="ex">boost::</span>log<span class="ex">::</span>sinks<span class="ex">::</span>text_ostream_backend &gt; tcp_sink;</a>
+<a class="sourceLine" id="cb3-4" title="4"></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="co">/// initialize and start loggers</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="dt">void</span> init() {</a>
+<a class="sourceLine" id="cb3-7" title="7">    <span class="co">/// get global logger</span></a>
+<a class="sourceLine" id="cb3-8" title="8">    src::severity_logger&lt; <span class="ex">boost::</span>log<span class="ex">::</span>trivial<span class="ex">::</span>severity_level &gt; lg = x_logger::get();</a>
+<a class="sourceLine" id="cb3-9" title="9">    </a>
+<a class="sourceLine" id="cb3-10" title="10">    <span class="co">/// init sinks</span></a>
+<a class="sourceLine" id="cb3-11" title="11">    <span class="ex">boost::</span>shared_ptr&lt; file_sink &gt; sink1(<span class="kw">new</span> file_sink(</a>
+<a class="sourceLine" id="cb3-12" title="12">        keywords::file_name = <span class="st">&quot;%Y%m</span><span class="sc">%d</span><span class="st">_%H%M%S_%5N.xml&quot;</span>,</a>
+<a class="sourceLine" id="cb3-13" title="13">        keywords::rotation_size = <span class="dv">16384</span></a>
+<a class="sourceLine" id="cb3-14" title="14">        ));</a>
+<a class="sourceLine" id="cb3-15" title="15">    <span class="ex">boost::</span>shared_ptr&lt; tcp_sink &gt; sink2(<span class="kw">new</span> tcp_sink(backend));</a>
+<a class="sourceLine" id="cb3-16" title="16"></a>
+<a class="sourceLine" id="cb3-17" title="17">    <span class="co">/// init tcp stream</span></a>
+<a class="sourceLine" id="cb3-18" title="18">    <span class="ex">boost::</span>shared_ptr&lt; sinks::text_ostream_backend &gt; backend =</a>
+<a class="sourceLine" id="cb3-19" title="19">        <span class="ex">boost::</span>make_shared&lt; sinks::text_ostream_backend &gt;();</a>
+<a class="sourceLine" id="cb3-20" title="20">    <span class="ex">boost::</span>shared_ptr&lt; <span class="ex">boost::</span>asio<span class="ex">::</span>ip<span class="ex">::</span>tcp<span class="ex">::</span>iostream &gt; stream =</a>
+<a class="sourceLine" id="cb3-21" title="21">        <span class="ex">boost::</span>make_shared&lt; <span class="ex">boost::</span>asio<span class="ex">::</span>ip<span class="ex">::</span>tcp<span class="ex">::</span>iostream &gt;();</a>
+<a class="sourceLine" id="cb3-22" title="22">    stream-&gt;<span class="fu">connect</span>(<span class="st">&quot;127.0.0.1&quot;</span>, <span class="st">&quot;666&quot;</span>);</a>
+<a class="sourceLine" id="cb3-23" title="23">    backend-&gt;add_stream(stream);</a>
+<a class="sourceLine" id="cb3-24" title="24">    backend-&gt;auto_flush(<span class="kw">true</span>);</a>
+<a class="sourceLine" id="cb3-25" title="25">    </a>
+<a class="sourceLine" id="cb3-26" title="26">    <span class="co">/// set xml format for file logger</span></a>
+<a class="sourceLine" id="cb3-27" title="27">    sink-&gt;locked_backend()-&gt;set_file_collector(sinks::file::make_collector(</a>
+<a class="sourceLine" id="cb3-28" title="28">        keywords::target = path,                        <span class="co">/*&lt; the target directory &gt;*/</span></a>
+<a class="sourceLine" id="cb3-29" title="29">        keywords::max_size = <span class="dv">64</span> * <span class="dv">1024</span> * <span class="dv">1024</span>,          <span class="co">/*&lt; maximum total size of the stored files, in bytes &gt;*/</span></a>
+<a class="sourceLine" id="cb3-30" title="30">        keywords::min_free_space = <span class="dv">100</span> * <span class="dv">1024</span> * <span class="dv">1024</span>    <span class="co">/*&lt; minimum free space on the drive, in bytes &gt;*/</span></a>
+<a class="sourceLine" id="cb3-31" title="31">    ));</a>
+<a class="sourceLine" id="cb3-32" title="32">    sink-&gt;set_formatter (</a>
+<a class="sourceLine" id="cb3-33" title="33">        expr::format(<span class="st">&quot;</span><span class="sc">\t</span><span class="st">&lt;record id=</span><span class="sc">\&quot;</span><span class="st">%1%</span><span class="sc">\&quot;</span><span class="st"> timestamp=</span><span class="sc">\&quot;</span><span class="st">%2%</span><span class="sc">\&quot;</span><span class="st">&gt;%3%&lt;/record&gt;&quot;</span>)</a>
+<a class="sourceLine" id="cb3-34" title="34">        % expr::attr&lt; <span class="dt">unsigned</span> <span class="dt">int</span> &gt;(<span class="st">&quot;RecordID&quot;</span>)</a>
+<a class="sourceLine" id="cb3-35" title="35">        % expr::attr&lt; <span class="ex">boost::</span>posix_time<span class="ex">::</span>ptime &gt;(<span class="st">&quot;TimeStamp&quot;</span>)</a>
+<a class="sourceLine" id="cb3-36" title="36">        % expr::xml_decor[expr::stream &lt;&lt; expr::smessage]</a>
+<a class="sourceLine" id="cb3-37" title="37">    );</a>
+<a class="sourceLine" id="cb3-38" title="38">    <span class="kw">auto</span> write_header = [](sinks::text_file_backend::<span class="dt">stream_type</span>&amp; file) {</a>
+<a class="sourceLine" id="cb3-39" title="39">        file &lt;&lt; <span class="st">&quot;&lt;?xml version=</span><span class="sc">\&quot;</span><span class="st">1.0</span><span class="sc">\&quot;</span><span class="st">?&gt;</span><span class="sc">\n</span><span class="st">&lt;log&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
+<a class="sourceLine" id="cb3-40" title="40">    };</a>
+<a class="sourceLine" id="cb3-41" title="41">    <span class="kw">auto</span> write_footer = [](sinks::text_file_backend::<span class="dt">stream_type</span>&amp; file) {</a>
+<a class="sourceLine" id="cb3-42" title="42">        file &lt;&lt; <span class="st">&quot;&lt;/log&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
+<a class="sourceLine" id="cb3-43" title="43">    };</a>
+<a class="sourceLine" id="cb3-44" title="44">    <span class="co">/// Set header and footer writing functors</span></a>
+<a class="sourceLine" id="cb3-45" title="45">    sink-&gt;locked_backend()-&gt;set_open_handler(write_header);</a>
+<a class="sourceLine" id="cb3-46" title="46">    sink-&gt;locked_backend()-&gt;set_close_handler(write_footer);</a>
+<a class="sourceLine" id="cb3-47" title="47">    <span class="co">/// Add the sink to the core</span></a>
+<a class="sourceLine" id="cb3-48" title="48">    logging::core::get()-&gt;add_sink(sink);</a>
+<a class="sourceLine" id="cb3-49" title="49">    logging::core::get()-&gt;add_sink(sink2);</a>
+<a class="sourceLine" id="cb3-50" title="50">    logging::core::get()-&gt;add_global_attribute(<span class="st">&quot;TimeStamp&quot;</span>, attrs::local_clock());</a>
+<a class="sourceLine" id="cb3-51" title="51">    logging::core::get()-&gt;add_global_attribute(<span class="st">&quot;RecordID&quot;</span>, attrs::counter&lt; <span class="dt">unsigned</span> <span class="dt">int</span> &gt;());</a>
+<a class="sourceLine" id="cb3-52" title="52">    logging::add_common_attributes();</a>
+<a class="sourceLine" id="cb3-53" title="53"></a>
+<a class="sourceLine" id="cb3-54" title="54">    <span class="ex">BOOST_</span>LOG_SEV(lg, <span class="ex">boost::</span>log<span class="ex">::</span>trivial<span class="ex">::</span>trace) &lt;&lt; <span class="st">&quot;Loggers initialization complete&quot;</span>;</a>
+<a class="sourceLine" id="cb3-55" title="55">}</a></code></pre></div>
 <p>To simplify calling <code>BOOST_LOG_SEV</code> from any part application there could be macros alike</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#define X_INFO BOOST_LOG_STREAM_SEV(x_logger::get(), boost::log::trivial::info)</span>
-<span class="pp">#define X_ERROR BOOST_LOG_STREAM_SEV(x_logger::get(), boost::log::trivial::error)</span>
-...</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb4-1" title="1"><span class="pp">#define X_INFO </span><span class="ex">BOOST_</span>LOG_STREAM_SEV(x_logger::get(),<span class="pp"> </span><span class="ex">boost::</span>log<span class="ex">::</span>trivial<span class="ex">::</span>info)</a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="pp">#define X_ERROR </span><span class="ex">BOOST_</span>LOG_STREAM_SEV(x_logger::get(),<span class="pp"> </span><span class="ex">boost::</span>log<span class="ex">::</span>trivial<span class="ex">::</span>error)</a>
+<a class="sourceLine" id="cb4-3" title="3">...</a></code></pre></div>
 <p>It will log either into Elasticsearch and into some path creating xmls for each application run</p>
 <h1 id="p.s.">P.S.</h1>
 <p>Additional thanks to Chris Allen for <a href="https://github.com/bitemyapp/bloodhound">bloodhound</a> for making it easy to have Haskell clients to those logs :P</p><div id="postfooter"></div><script src="../js/playpause.js"></script><script src="../bootstrap/three.js"></script><script src="../js/bubbles.js"></script></div><div id="social"><ul><li><a href="http://github.com/Heather" title="Github" target="_blank"><span class="mega-octicon octicon-octoface"></span></a></li><li><a href="http://twitter.com/Cynede" title="Twitter" target="_blank"><span class="mega-octicon octicon-star"></span></a></li><li><a href="mailto:heather@live.ru" title="mail" target="_blank"><span class="mega-octicon octicon-mail-read"></span></a></li><li><a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank"><span class="mega-octicon octicon-broadcast"></span></a></li><li><a href="http://stackoverflow.com/users/238232/heather" title="Stackoverflow" target="_blank"><span class="mega-octicon octicon-squirrel"></span></a></li><li><a href="../atom.xml" title="RSS" target="_blank"><span class="mega-octicon octicon-rss"></span></a></li></ul></div><div id="footer"></div></body></html>

@@ -17,252 +17,252 @@ Type checking .\Control\Eternal\Operators.idr
 Type checking .\Control\Eternal.idr
 Installing Control\Eternal.ibc to ....\cabal\idris-</code></pre>
 <p>Yaml is <a href="https://github.com/Heather/Idris.Yaml">Idris.Yaml</a> library for parsing config files and it already works, thanks to <a href="https://github.com/ziman/lightyear">lightyear</a> and JSON example there <br /> But there are still being a lot of things to do to make it sane, thanks to</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">YamlValue</span> <span class="fu">=</span> <span class="dt">YamlString</span> <span class="dt">String</span>
-               <span class="fu">|</span> <span class="dt">YamlNumber</span> <span class="dt">Float</span>
-               <span class="fu">|</span> <span class="dt">YamlBool</span> <span class="dt">Bool</span>
-               <span class="fu">|</span> <span class="dt">YamlNull</span>
-               <span class="fu">|</span> <span class="dt">YamlObject</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)
-               <span class="fu">|</span> <span class="dt">YamlArray</span> (<span class="dt">List</span> <span class="dt">YamlValue</span>) <span class="co">-- TODO: YamlObject</span>
-
-<span class="kw">instance</span> <span class="dt">Show</span> <span class="dt">YamlValue</span> <span class="kw">where</span>
-  show (<span class="dt">YamlString</span> s)   <span class="fu">=</span> show s
-  show (<span class="dt">YamlNumber</span> x)   <span class="fu">=</span> show x
-  show (<span class="dt">YamlBool</span> <span class="dt">True</span> ) <span class="fu">=</span> <span class="st">&quot;true&quot;</span>
-  show (<span class="dt">YamlBool</span> <span class="dt">False</span>) <span class="fu">=</span> <span class="st">&quot;false&quot;</span>
-  show  <span class="dt">YamlNull</span>        <span class="fu">=</span> <span class="st">&quot;null&quot;</span>
-  show (<span class="dt">YamlObject</span> xs)  <span class="fu">=</span>
-      <span class="st">&quot;{&quot;</span> <span class="fu">++</span> intercalate <span class="st">&quot;, &quot;</span> (map fmtItem <span class="fu">$</span> SortedMap.toList xs) <span class="fu">++</span> <span class="st">&quot;}&quot;</span>
-    <span class="kw">where</span>
-      intercalate <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
-      intercalate sep [] <span class="fu">=</span> <span class="st">&quot;&quot;</span>
-      intercalate sep [x] <span class="fu">=</span> x
-      intercalate sep (<span class="ot">x ::</span> xs) <span class="fu">=</span> x <span class="fu">++</span> sep <span class="fu">++</span> intercalate sep xs
-
-      fmtItem (k, v) <span class="fu">=</span> k <span class="fu">++</span> <span class="st">&quot;: &quot;</span> <span class="fu">++</span> show v
-  show (<span class="dt">YamlArray</span>  xs)  <span class="fu">=</span> show xs
-
-hex <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Int</span>
-hex <span class="fu">=</span> <span class="kw">do</span>
-  c <span class="ot">&lt;-</span> map (ord <span class="fu">.</span> toUpper) <span class="fu">$</span> satisfy isHexDigit
-  pure <span class="fu">$</span> <span class="kw">if</span> c <span class="fu">&gt;=</span> ord <span class="ch">'0'</span> <span class="fu">&amp;&amp;</span> c <span class="fu">&lt;=</span> ord <span class="ch">'9'</span> <span class="kw">then</span> c <span class="fu">-</span> ord <span class="ch">'0'</span>
-                                         <span class="kw">else</span> <span class="dv">10</span> <span class="fu">+</span> c <span class="fu">-</span> ord <span class="ch">'A'</span>
-
-hexQuad <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Int</span>
-hexQuad <span class="fu">=</span> <span class="kw">do</span>
-  a <span class="ot">&lt;-</span> hex
-  b <span class="ot">&lt;-</span> hex
-  c <span class="ot">&lt;-</span> hex
-  d <span class="ot">&lt;-</span> hex
-  pure <span class="fu">$</span> a <span class="fu">*</span> <span class="dv">4096</span> <span class="fu">+</span> b <span class="fu">*</span> <span class="dv">256</span> <span class="fu">+</span> c <span class="fu">*</span> <span class="dv">16</span> <span class="fu">+</span> d
-
-specialChar <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Char</span>
-specialChar <span class="fu">=</span> <span class="kw">do</span>
-  c <span class="ot">&lt;-</span> satisfy (const <span class="dt">True</span>)
-  <span class="kw">case</span> c <span class="kw">of</span>
-    <span class="ch">'&quot;'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'&quot;'</span>
-    <span class="ch">'\\'</span> <span class="ot">=&gt;</span> pure <span class="ch">'\\'</span>
-    <span class="ch">'/'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'/'</span>
-    <span class="ch">'b'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'\b'</span>
-    <span class="ch">'f'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'\f'</span>
-    <span class="ch">'n'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'\n'</span>
-    <span class="ch">'r'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'\r'</span>
-    <span class="ch">'t'</span>  <span class="ot">=&gt;</span> pure <span class="ch">'\t'</span>
-    <span class="ch">'u'</span>  <span class="ot">=&gt;</span> map chr hexQuad
-    _    <span class="ot">=&gt;</span> satisfy (const <span class="dt">False</span>) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;expected special char&quot;</span>
-
-yamlString' <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">List</span> <span class="dt">Char</span>)
-yamlString' <span class="fu">=</span> (char <span class="ch">'&quot;'</span> <span class="fu">$!&gt;</span> pure <span class="dt">Prelude.List.Nil</span>) <span class="fu">&lt;|&gt;</span> <span class="kw">do</span>
-  c <span class="ot">&lt;-</span> satisfy (<span class="fu">/=</span> <span class="ch">'&quot;'</span>)
-  <span class="kw">if</span> (c <span class="fu">==</span> <span class="ch">'\\'</span>) <span class="kw">then</span> map (<span class="ot">::</span>) specialChar <span class="fu">&lt;$&gt;</span> yamlString'
-                 <span class="kw">else</span> map (<span class="ot">c ::</span>) yamlString'
-
-yamlString <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">String</span>
-yamlString <span class="fu">=</span> char <span class="ch">'&quot;'</span> <span class="fu">$&gt;</span> map pack yamlString' <span class="fu">&lt;?&gt;</span> <span class="st">&quot;Yaml string&quot;</span>
-
-<span class="co">-- inspired by Haskell's Data.Scientific module</span>
-record <span class="dt">Scientific</span> <span class="fu">:</span> <span class="dt">Type</span> <span class="kw">where</span>
-  <span class="dt">MkScientific</span> <span class="fu">:</span> (coefficient <span class="fu">:</span> <span class="dt">Integer</span>) <span class="ot">-&gt;</span>
-                 (exponent <span class="fu">:</span> <span class="dt">Integer</span>) <span class="ot">-&gt;</span> <span class="dt">Scientific</span>
-
-scientificToFloat <span class="fu">:</span> <span class="dt">Scientific</span> <span class="ot">-&gt;</span> <span class="dt">Float</span>
-scientificToFloat (<span class="dt">MkScientific</span> c e) <span class="fu">=</span> fromInteger c <span class="fu">*</span> exp
-  <span class="kw">where</span> exp <span class="fu">=</span> <span class="kw">if</span> e <span class="fu">&lt;</span> <span class="dv">0</span> <span class="kw">then</span> <span class="dv">1</span> <span class="fu">/</span> pow <span class="dv">10</span> (fromIntegerNat (<span class="fu">-</span> e))
-                       <span class="kw">else</span> pow <span class="dv">10</span> (fromIntegerNat e)
-
-parseScientific <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Scientific</span>
-parseScientific <span class="fu">=</span> <span class="kw">do</span> sign <span class="ot">&lt;-</span> maybe <span class="dv">1</span> (const (<span class="fu">-</span><span class="dv">1</span>)) <span class="ot">`map`</span> opt (char <span class="ch">'-'</span>)
-                     digits <span class="ot">&lt;-</span> some digit
-                     hasComma <span class="ot">&lt;-</span> isJust <span class="ot">`map`</span> opt (char <span class="ch">'.'</span>)
-                     decimals <span class="ot">&lt;-</span> <span class="kw">if</span> hasComma <span class="kw">then</span> some digit <span class="kw">else</span> pure <span class="dt">Prelude.List.Nil</span>
-                     hasExponent <span class="ot">&lt;-</span> isJust <span class="ot">`map`</span> opt (char <span class="ch">'e'</span>)
-                     exponent <span class="ot">&lt;-</span> <span class="kw">if</span> hasExponent <span class="kw">then</span> integer <span class="kw">else</span> pure <span class="dv">0</span>
-                     pure <span class="fu">$</span> <span class="dt">MkScientific</span> (sign <span class="fu">*</span> fromDigits (digits <span class="fu">++</span> decimals))
-                                         (exponent <span class="fu">-</span> cast (length decimals))
-  <span class="kw">where</span> fromDigits <span class="fu">:</span> <span class="dt">List</span> (<span class="dt">Fin</span> <span class="dv">10</span>) <span class="ot">-&gt;</span> <span class="dt">Integer</span>
-        fromDigits <span class="fu">=</span> foldl (\a, b <span class="ot">=&gt;</span> <span class="dv">10</span> <span class="fu">*</span> a <span class="fu">+</span> cast b) <span class="dv">0</span>
-
-yamlNumber <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Float</span>
-yamlNumber <span class="fu">=</span> map scientificToFloat parseScientific
-
-yamlBool <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Bool</span>
-yamlBool  <span class="fu">=</span>  (char <span class="ch">'t'</span> <span class="fu">&gt;!</span> string <span class="st">&quot;rue&quot;</span>  <span class="fu">$&gt;</span> return <span class="dt">True</span>)
-         <span class="fu">&lt;|&gt;</span> (char <span class="ch">'f'</span> <span class="fu">&gt;!</span> string <span class="st">&quot;alse&quot;</span> <span class="fu">$&gt;</span> return <span class="dt">False</span>) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;Yaml Bool&quot;</span>
-
-yamlNull <span class="fu">:</span> <span class="dt">Parser</span> ()
-yamlNull <span class="fu">=</span> (char <span class="ch">'n'</span> <span class="fu">&gt;!</span> string <span class="st">&quot;ull&quot;</span> <span class="fu">&gt;!</span> return ()) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;Yaml Null&quot;</span>
-
-
-parseWord' <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">List</span> <span class="dt">Char</span>)
-parseWord' <span class="fu">=</span> (char <span class="ch">' '</span> <span class="fu">$!&gt;</span> pure <span class="dt">Prelude.List.Nil</span>) <span class="fu">&lt;|&gt;</span> <span class="kw">do</span>
-  c <span class="ot">&lt;-</span> satisfy (<span class="fu">/=</span> <span class="ch">' '</span>); map (<span class="ot">c ::</span>) parseWord'
-
-<span class="fu">|||</span> <span class="dt">A</span> parser that skips whitespace without jumping over lines
-yamlSpace <span class="fu">:</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> <span class="dt">ParserT</span> m <span class="dt">String</span> ()
-yamlSpace <span class="fu">=</span> skip (many <span class="fu">$</span> satisfy (\c <span class="ot">=&gt;</span> c <span class="fu">/=</span> <span class="ch">'\n'</span> <span class="fu">&amp;&amp;</span> isSpace c)) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;yamlSpace&quot;</span>
-
-mutual
-  yamlArray <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">List</span> <span class="dt">YamlValue</span>)
-  yamlArray <span class="fu">=</span> char <span class="ch">'-'</span> <span class="fu">$!&gt;</span> (yamlArrayValue <span class="ot">`sepBy`</span> (char <span class="ch">'-'</span>))
-
-  keyValuePair <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">String</span>, <span class="dt">YamlValue</span>)
-  keyValuePair <span class="fu">=</span> <span class="kw">do</span>
-    key <span class="ot">&lt;-</span> space <span class="fu">$&gt;</span> map pack parseWord' <span class="fu">&lt;$</span> space
-    char <span class="ch">':'</span>
-    value <span class="ot">&lt;-</span> yamlValue
-    pure (key, value)
-
-  yamlObject <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)
-  yamlObject <span class="fu">=</span> map fromList <span class="fu">$</span> keyValuePair <span class="ot">`sepBy`</span> (char <span class="ch">'\n'</span>)
-
-  yamlObjectA <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)
-  yamlObjectA <span class="fu">=</span> map fromList <span class="fu">$</span> keyValuePair <span class="ot">`sepBy`</span> (char <span class="ch">'\n'</span>)
-
-  yamlValue' <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span>
-  yamlValue' <span class="fu">=</span>  (map <span class="dt">YamlString</span> yamlString)
-            <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlNumber</span> yamlNumber)
-            <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlBool</span>   yamlBool)
-            <span class="fu">&lt;|&gt;</span> (pure <span class="dt">YamlNull</span> <span class="fu">&lt;$</span> yamlNull)
-            <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlArray</span>  yamlArray
-            <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlObject</span> yamlObject
-            
-  yamlValueA' <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span>
-  yamlValueA' <span class="fu">=</span>  (map <span class="dt">YamlString</span> yamlString)
-             <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlNumber</span> yamlNumber)
-             <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlBool</span>   yamlBool)
-             <span class="fu">&lt;|&gt;</span> (pure <span class="dt">YamlNull</span> <span class="fu">&lt;$</span> yamlNull)
-             <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlArray</span>  yamlArray
-             <span class="fu">&lt;|&gt;|</span> map <span class="dt">YamlObject</span> yamlObjectA
-
-  yamlArrayValue <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span>
-  yamlArrayValue <span class="fu">=</span> space <span class="fu">$&gt;</span> yamlValueA' <span class="fu">&lt;$</span> space
-
-  yamlValue <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span>
-  yamlValue <span class="fu">=</span> yamlSpace <span class="fu">$&gt;</span> yamlValue' <span class="fu">&lt;$</span> yamlSpace
-
-yamlToplevelValue <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span>
-yamlToplevelValue <span class="fu">=</span> (map <span class="dt">YamlArray</span> yamlArray) <span class="fu">&lt;|&gt;</span> (map <span class="dt">YamlObject</span> yamlObject)</code></pre></div>
-<p>Github repository: <a href="https://github.com/Heather/Synthia" class="uri">https://github.com/Heather/Synthia</a> <br /> Code in current state:</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">ls <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">String</span>
-ls path <span class="fu">=</span> readProcess' (<span class="st">&quot;ls &quot;</span> <span class="fu">++</span> path) <span class="dt">False</span> 
-
-<span class="co">{- ETERNAL EFFECT WILL DO LS and stuff in EternalIO -}</span>
-<span class="kw">data</span> <span class="dt">Eternal</span> <span class="fu">:</span> <span class="dt">Effect</span> <span class="kw">where</span>
-     <span class="dt">LS</span> <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { () } <span class="dt">Eternal</span> <span class="dt">String</span>
-<span class="kw">instance</span> <span class="dt">Handler</span> <span class="dt">Eternal</span> <span class="dt">IO</span> <span class="kw">where</span>
-    handle () (<span class="dt">LS</span> s) k <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> ls s; k x ()
-<span class="kw">instance</span> <span class="dt">Handler</span> <span class="dt">Eternal</span> (<span class="dt">IOExcept</span> a) <span class="kw">where</span>
-    handle () (<span class="dt">LS</span> s) k <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> ioe_lift <span class="fu">$</span> ls s; k x ()
-
-<span class="dt">ETERNAL</span> <span class="fu">:</span> <span class="dt">EFFECT</span>
-<span class="dt">ETERNAL</span> <span class="fu">=</span> <span class="dt">MkEff</span> () <span class="dt">Eternal</span>
-
-els <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> <span class="dt">String</span>
-els s <span class="fu">=</span> call <span class="fu">$</span> <span class="dt">LS</span> s
-
-<span class="dt">EternalIO</span> <span class="fu">:</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span>
-<span class="dt">EternalIO</span> st t <span class="fu">=</span> { [<span class="dt">FILE_IO</span> st, <span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> t 
-
-<span class="co">{- WE NEED ETERNAL POWER! -}</span>
-readFile <span class="fu">:</span> <span class="dt">EternalIO</span> (<span class="dt">OpenFile</span> <span class="dt">Read</span>) (<span class="dt">List</span> <span class="dt">String</span>)
-readFile <span class="fu">=</span> readAcc [] <span class="kw">where</span>
-  readAcc <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">EternalIO</span> (<span class="dt">OpenFile</span> <span class="dt">Read</span>) (<span class="dt">List</span> <span class="dt">String</span>)
-  readAcc acc <span class="fu">=</span> <span class="kw">if</span> (not <span class="fu">!</span>eof) <span class="kw">then</span> readAcc <span class="fu">$</span> <span class="fu">!</span><span class="ot">readLine ::</span> acc
-                              <span class="kw">else</span> return  <span class="fu">$</span> reverse acc
-
-<span class="co">{- IT'S NOT JUST SYSTEM CALL, IT'S POWERFUL THING!-}</span>
-sys <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
-sys ss <span class="fu">=</span> <span class="kw">do</span> system ss
-            return ()
-
-finalInstall <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
-finalInstall repoDir synss flist <span class="fu">=</span>
-    <span class="kw">case</span> (synss <span class="fu">#</span> <span class="dv">0</span>) <span class="kw">of</span>
-        <span class="dt">Just</span> syn <span class="ot">=&gt;</span> <span class="kw">do</span> <span class="co">{- PROCESS PACKAGE INSTALLATION -}</span>
-            <span class="kw">let</span> truesyn <span class="fu">=</span> repoDir <span class="fu">++</span> syn
-            sys <span class="fu">$</span> <span class="st">&quot;pushd &quot;</span> <span class="fu">++</span> repoDir <span class="fu">++</span> <span class="st">&quot; &amp; Synthia --install &quot;</span> <span class="fu">++</span> truesyn
-            
-            <span class="co">{- Finishing installation -}</span>
-            <span class="kw">let</span> makeF <span class="fu">=</span> filter (<span class="fu">==</span> <span class="st">&quot;Makefile&quot;</span>) flist
-            <span class="kw">case</span> (makeF <span class="fu">#</span> <span class="dv">0</span>) <span class="kw">of</span>
-                <span class="dt">Just</span> _ <span class="ot">=&gt;</span> sys <span class="fu">$</span> <span class="st">&quot;pushd &quot;</span> <span class="fu">++</span> repoDir <span class="fu">++</span> <span class="st">&quot; &amp; make &amp; make install&quot;</span>
-                _ <span class="ot">=&gt;</span> <span class="kw">let</span> pkg <span class="fu">=</span> filter (\x <span class="ot">=&gt;</span> isSuffixOf <span class="fu">&lt;|</span> unpack <span class="st">&quot;.ipkg&quot;</span>
-                                                        <span class="fu">&lt;|</span> unpack (trim x)) flist
-                     <span class="kw">in</span> <span class="kw">case</span> (pkg <span class="fu">#</span> <span class="dv">0</span>) <span class="kw">of</span>
-                         <span class="dt">Just</span> pkg <span class="ot">=&gt;</span> sys <span class="fu">$</span> <span class="st">&quot;pushd &quot;</span> <span class="fu">++</span> repoDir <span class="fu">++</span> <span class="st">&quot; &amp; idris --install &quot;</span> <span class="fu">++</span> pkg
-                         _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;No ipkg in this repository&quot;</span>
-        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;No synthia in this repository&quot;</span>
-
-install <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
-install [] [] <span class="fu">=</span> putStrLn <span class="st">&quot;try Synthia install GitHubUser/Repo&quot;</span>
-install [] xs <span class="fu">=</span> <span class="kw">let</span> <span class="dt">Just</span> mypkg <span class="fu">=</span> xs <span class="fu">#</span> <span class="dv">0</span>
-                <span class="kw">in</span> sys <span class="fu">$</span> <span class="st">&quot;idris --install &quot;</span> <span class="fu">++</span> mypkg
-install xs _ <span class="fu">=</span> <span class="kw">do</span>
-    <span class="kw">let</span> dir <span class="fu">=</span> <span class="st">&quot;C:\\Idris\\&quot;</span>
-    <span class="kw">let</span> <span class="dt">Just</span> repo <span class="fu">=</span> xs <span class="fu">#</span> <span class="dv">0</span>
-    <span class="kw">case</span> (splitOn <span class="ch">'/'</span> (unpack repo)) <span class="fu">#</span> <span class="dv">1</span> <span class="kw">of</span>
-        <span class="dt">Just</span> repx <span class="ot">=&gt;</span> <span class="kw">do</span> <span class="kw">let</span> reps <span class="fu">=</span> pack repx
-                        sys <span class="fu">$</span> <span class="st">&quot;mkdir &quot;</span> <span class="fu">++</span> dir
-                        <span class="kw">let</span> repoDir <span class="fu">=</span> dir <span class="fu">++</span> reps <span class="fu">++</span> <span class="st">&quot;\\&quot;</span>
-                        sys <span class="fu">$</span> <span class="st">&quot;git clone git@github.com:&quot;</span> <span class="fu">++</span> repo <span class="fu">++</span> <span class="st">&quot;.git &quot;</span> <span class="fu">++</span> repoDir
-                        <span class="kw">let</span> flist <span class="fu">=</span> splitOn <span class="ch">'\n'</span> <span class="fu">!</span>(els repoDir)
-                        <span class="co">{- PROCESS DEP CHECK! .syn SYNTHIA FILES -}</span>
-                        <span class="kw">let</span> synss <span class="fu">=</span> filter (\x <span class="ot">=&gt;</span> isSuffixOf <span class="fu">&lt;|</span> unpack <span class="st">&quot;.syn&quot;</span>
-                                                             <span class="fu">&lt;|</span> unpack (trim x)) flist
-                        finalInstall repoDir synss flist
-
-        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;try Synthia install GitHubUser/Repo&quot;</span> 
-<span class="co">{- SYMPLY RUN IDRIS WITH ARGUMENTS -}</span>
-goC <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
-goC pkg args cc <span class="fu">=</span>
-    <span class="kw">case</span> (pkg <span class="fu">#</span> <span class="dv">0</span>) <span class="kw">of</span>
-        <span class="dt">Just</span> mypkg <span class="ot">=&gt;</span> sys <span class="fu">$</span> cc <span class="fu">++</span> concat <span class="fu">&lt;&lt;|</span> drop <span class="dv">2</span> args
-                               <span class="fu">++</span> <span class="st">&quot; &quot;</span>
-                               <span class="fu">++</span> mypkg
-        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;No ipkg in this repository&quot;</span> 
-
-procs <span class="fu">:</span> (<span class="dt">List</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> (<span class="dt">List</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> <span class="dt">Bool</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()
-procs args file p <span class="fu">=</span>
-    <span class="kw">let</span> config <span class="fu">=</span> concat file <span class="co">{- READ OWN CONFIG FILE -}</span>
-    <span class="kw">in</span> <span class="kw">case</span> parse yamlToplevelValue config <span class="kw">of</span>
-       <span class="dt">Left</span> err <span class="ot">=&gt;</span> putStrLn <span class="fu">$</span> <span class="st">&quot;error: &quot;</span> <span class="fu">++</span> err
-       <span class="dt">Right</span> v  <span class="ot">=&gt;</span>
-        <span class="kw">if</span> p <span class="kw">then</span> putStrLn <span class="fu">$</span> show v <span class="co">-- TODO: Install finally deps</span>
-             <span class="kw">else</span> <span class="kw">let</span> pkg <span class="fu">=</span> filter (\x <span class="ot">=&gt;</span> isSuffixOf <span class="fu">&lt;|</span> unpack <span class="st">&quot;.ipkg&quot;</span>
-                                                     <span class="fu">&lt;|</span> unpack (trim x))
-                              <span class="fu">$</span> splitOn <span class="ch">'\n'</span> <span class="fu">!</span>(els <span class="st">&quot;.&quot;</span>)
-                  <span class="kw">in</span> <span class="kw">case</span> (args <span class="fu">#</span> <span class="dv">1</span>) <span class="kw">of</span>
-                        <span class="dt">Just</span> cmd <span class="ot">=&gt;</span> <span class="kw">case</span> cmd <span class="kw">of</span>
-                                       <span class="st">&quot;--help&quot;</span>     <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;try Synthia install GitHubUser/Repo&quot;</span>
-                                       <span class="st">&quot;--version&quot;</span>  <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;0.0.2&quot;</span>
-                                       
-                                       <span class="st">&quot;build&quot;</span>      <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --build &quot;</span>
-                                       <span class="st">&quot;clean&quot;</span>      <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --clean &quot;</span>
-                                       <span class="st">&quot;mkdoc&quot;</span>      <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --mkdoc &quot;</span>
-                                       <span class="st">&quot;checkpkg&quot;</span>   <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --checkpkg &quot;</span>
-                                       <span class="st">&quot;testpkg&quot;</span>    <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --testpkg &quot;</span>
-                                       
-                                       <span class="st">&quot;install&quot;</span>    <span class="ot">=&gt;</span> install (drop <span class="dv">2</span> args) pkg
-                                       <span class="st">&quot;list&quot;</span>       <span class="ot">=&gt;</span> sys <span class="st">&quot;ls -d1 C:\\Idris/*/&quot;</span>
-                                       
-                                       _            <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;What?&quot;</span>
-                        _ <span class="ot">=&gt;</span> putStrLn <span class="st">&quot;What?&quot;</span></code></pre></div><div id="postfooter"></div><script src="../js/playpause.js"></script><script src="../bootstrap/three.js"></script><script src="../js/bubbles.js"></script></div><div id="social"><ul><li><a href="http://github.com/Heather" title="Github" target="_blank"><span class="mega-octicon octicon-octoface"></span></a></li><li><a href="http://twitter.com/Cynede" title="Twitter" target="_blank"><span class="mega-octicon octicon-star"></span></a></li><li><a href="mailto:heather@live.ru" title="mail" target="_blank"><span class="mega-octicon octicon-mail-read"></span></a></li><li><a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank"><span class="mega-octicon octicon-broadcast"></span></a></li><li><a href="http://stackoverflow.com/users/238232/heather" title="Stackoverflow" target="_blank"><span class="mega-octicon octicon-squirrel"></span></a></li><li><a href="../atom.xml" title="RSS" target="_blank"><span class="mega-octicon octicon-rss"></span></a></li></ul></div><div id="footer"></div></body></html>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">data</span> <span class="dt">YamlValue</span> <span class="fu">=</span> <span class="dt">YamlString</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb2-2" title="2">               <span class="fu">|</span> <span class="dt">YamlNumber</span> <span class="dt">Float</span></a>
+<a class="sourceLine" id="cb2-3" title="3">               <span class="fu">|</span> <span class="dt">YamlBool</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb2-4" title="4">               <span class="fu">|</span> <span class="dt">YamlNull</span></a>
+<a class="sourceLine" id="cb2-5" title="5">               <span class="fu">|</span> <span class="dt">YamlObject</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)</a>
+<a class="sourceLine" id="cb2-6" title="6">               <span class="fu">|</span> <span class="dt">YamlArray</span> (<span class="dt">List</span> <span class="dt">YamlValue</span>) <span class="co">-- TODO: YamlObject</span></a>
+<a class="sourceLine" id="cb2-7" title="7"></a>
+<a class="sourceLine" id="cb2-8" title="8"><span class="kw">instance</span> <span class="dt">Show</span> <span class="dt">YamlValue</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb2-9" title="9">  <span class="fu">show</span> (<span class="dt">YamlString</span> s)   <span class="fu">=</span> <span class="fu">show</span> s</a>
+<a class="sourceLine" id="cb2-10" title="10">  <span class="fu">show</span> (<span class="dt">YamlNumber</span> x)   <span class="fu">=</span> <span class="fu">show</span> x</a>
+<a class="sourceLine" id="cb2-11" title="11">  <span class="fu">show</span> (<span class="dt">YamlBool</span> <span class="dt">True</span> ) <span class="fu">=</span> <span class="st">&quot;true&quot;</span></a>
+<a class="sourceLine" id="cb2-12" title="12">  <span class="fu">show</span> (<span class="dt">YamlBool</span> <span class="dt">False</span>) <span class="fu">=</span> <span class="st">&quot;false&quot;</span></a>
+<a class="sourceLine" id="cb2-13" title="13">  <span class="fu">show</span>  <span class="dt">YamlNull</span>        <span class="fu">=</span> <span class="st">&quot;null&quot;</span></a>
+<a class="sourceLine" id="cb2-14" title="14">  <span class="fu">show</span> (<span class="dt">YamlObject</span> xs)  <span class="fu">=</span></a>
+<a class="sourceLine" id="cb2-15" title="15">      <span class="st">&quot;{&quot;</span> <span class="fu">++</span> intercalate <span class="st">&quot;, &quot;</span> (<span class="fu">map</span> fmtItem <span class="fu">$</span> SortedMap.toList xs) <span class="fu">++</span> <span class="st">&quot;}&quot;</span></a>
+<a class="sourceLine" id="cb2-16" title="16">    <span class="kw">where</span></a>
+<a class="sourceLine" id="cb2-17" title="17">      intercalate <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb2-18" title="18">      intercalate sep [] <span class="fu">=</span> <span class="st">&quot;&quot;</span></a>
+<a class="sourceLine" id="cb2-19" title="19">      intercalate sep [x] <span class="fu">=</span> x</a>
+<a class="sourceLine" id="cb2-20" title="20">      intercalate sep (<span class="ot">x ::</span> xs) <span class="fu">=</span> x <span class="fu">++</span> sep <span class="fu">++</span> intercalate sep xs</a>
+<a class="sourceLine" id="cb2-21" title="21"></a>
+<a class="sourceLine" id="cb2-22" title="22">      fmtItem (k, v) <span class="fu">=</span> k <span class="fu">++</span> <span class="st">&quot;: &quot;</span> <span class="fu">++</span> <span class="fu">show</span> v</a>
+<a class="sourceLine" id="cb2-23" title="23">  <span class="fu">show</span> (<span class="dt">YamlArray</span>  xs)  <span class="fu">=</span> <span class="fu">show</span> xs</a>
+<a class="sourceLine" id="cb2-24" title="24"></a>
+<a class="sourceLine" id="cb2-25" title="25">hex <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Int</span></a>
+<a class="sourceLine" id="cb2-26" title="26">hex <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb2-27" title="27">  c <span class="ot">&lt;-</span> <span class="fu">map</span> (<span class="fu">ord</span> <span class="fu">.</span> <span class="fu">toUpper</span>) <span class="fu">$</span> satisfy <span class="fu">isHexDigit</span></a>
+<a class="sourceLine" id="cb2-28" title="28">  <span class="fu">pure</span> <span class="fu">$</span> <span class="kw">if</span> c <span class="fu">&gt;=</span> <span class="fu">ord</span> <span class="ch">'0'</span> <span class="fu">&amp;&amp;</span> c <span class="fu">&lt;=</span> <span class="fu">ord</span> <span class="ch">'9'</span> <span class="kw">then</span> c <span class="fu">-</span> <span class="fu">ord</span> <span class="ch">'0'</span></a>
+<a class="sourceLine" id="cb2-29" title="29">                                         <span class="kw">else</span> <span class="dv">10</span> <span class="fu">+</span> c <span class="fu">-</span> <span class="fu">ord</span> <span class="ch">'A'</span></a>
+<a class="sourceLine" id="cb2-30" title="30"></a>
+<a class="sourceLine" id="cb2-31" title="31">hexQuad <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Int</span></a>
+<a class="sourceLine" id="cb2-32" title="32">hexQuad <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb2-33" title="33">  a <span class="ot">&lt;-</span> hex</a>
+<a class="sourceLine" id="cb2-34" title="34">  b <span class="ot">&lt;-</span> hex</a>
+<a class="sourceLine" id="cb2-35" title="35">  c <span class="ot">&lt;-</span> hex</a>
+<a class="sourceLine" id="cb2-36" title="36">  d <span class="ot">&lt;-</span> hex</a>
+<a class="sourceLine" id="cb2-37" title="37">  <span class="fu">pure</span> <span class="fu">$</span> a <span class="fu">*</span> <span class="dv">4096</span> <span class="fu">+</span> b <span class="fu">*</span> <span class="dv">256</span> <span class="fu">+</span> c <span class="fu">*</span> <span class="dv">16</span> <span class="fu">+</span> d</a>
+<a class="sourceLine" id="cb2-38" title="38"></a>
+<a class="sourceLine" id="cb2-39" title="39">specialChar <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Char</span></a>
+<a class="sourceLine" id="cb2-40" title="40">specialChar <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb2-41" title="41">  c <span class="ot">&lt;-</span> satisfy (<span class="fu">const</span> <span class="dt">True</span>)</a>
+<a class="sourceLine" id="cb2-42" title="42">  <span class="kw">case</span> c <span class="kw">of</span></a>
+<a class="sourceLine" id="cb2-43" title="43">    <span class="ch">'&quot;'</span>  <span class="ot">=&gt;</span> <span class="fu">pure</span> <span class="ch">'&quot;'</span></a>
+<a class="sourceLine" id="cb2-44" title="44">    <span class="ch">'\\'</span> <span class="ot">=&gt;</span> <span class="fu">pure</span> <span class="ch">'\\'</span></a>
+<a class="sourceLine" id="cb2-45" title="45">    <span class="ch">'/'</span>  <span class="ot">=&gt;</span> <span class="fu">pure</span> <span class="ch">'/'</span></a>
+<a class="sourceLine" id="cb2-46" title="46">    <span class="ch">'b'</span>  <span class="ot">=&gt;</span> <span class="fu">pure</span> <span class="ch">'\b'</span></a>
+<a class="sourceLine" id="cb2-47" title="47">    <span class="ch">'f'</span>  <span class="ot">=&gt;</span> <span class="fu">pure</span> <span class="ch">'\f'</span></a>
+<a class="sourceLine" id="cb2-48" title="48">    <span class="ch">'n'</span>  <span class="ot">=&gt;</span> <span class="fu">pure</span> <span class="ch">'\n'</span></a>
+<a class="sourceLine" id="cb2-49" title="49">    <span class="ch">'r'</span>  <span class="ot">=&gt;</span> <span class="fu">pure</span> <span class="ch">'\r'</span></a>
+<a class="sourceLine" id="cb2-50" title="50">    <span class="ch">'t'</span>  <span class="ot">=&gt;</span> <span class="fu">pure</span> <span class="ch">'\t'</span></a>
+<a class="sourceLine" id="cb2-51" title="51">    <span class="ch">'u'</span>  <span class="ot">=&gt;</span> <span class="fu">map</span> <span class="fu">chr</span> hexQuad</a>
+<a class="sourceLine" id="cb2-52" title="52">    _    <span class="ot">=&gt;</span> satisfy (<span class="fu">const</span> <span class="dt">False</span>) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;expected special char&quot;</span></a>
+<a class="sourceLine" id="cb2-53" title="53"></a>
+<a class="sourceLine" id="cb2-54" title="54">yamlString' <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">List</span> <span class="dt">Char</span>)</a>
+<a class="sourceLine" id="cb2-55" title="55">yamlString' <span class="fu">=</span> (char <span class="ch">'&quot;'</span> <span class="fu">$!&gt;</span> <span class="fu">pure</span> <span class="dt">Prelude.List.Nil</span>) <span class="fu">&lt;|&gt;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb2-56" title="56">  c <span class="ot">&lt;-</span> satisfy (<span class="fu">/=</span> <span class="ch">'&quot;'</span>)</a>
+<a class="sourceLine" id="cb2-57" title="57">  <span class="kw">if</span> (c <span class="fu">==</span> <span class="ch">'\\'</span>) <span class="kw">then</span> <span class="fu">map</span> (<span class="ot">::</span>) specialChar <span class="fu">&lt;$&gt;</span> yamlString'</a>
+<a class="sourceLine" id="cb2-58" title="58">                 <span class="kw">else</span> <span class="fu">map</span> (<span class="ot">c ::</span>) yamlString'</a>
+<a class="sourceLine" id="cb2-59" title="59"></a>
+<a class="sourceLine" id="cb2-60" title="60">yamlString <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb2-61" title="61">yamlString <span class="fu">=</span> char <span class="ch">'&quot;'</span> <span class="fu">$&gt;</span> <span class="fu">map</span> <span class="fu">pack</span> yamlString' <span class="fu">&lt;?&gt;</span> <span class="st">&quot;Yaml string&quot;</span></a>
+<a class="sourceLine" id="cb2-62" title="62"></a>
+<a class="sourceLine" id="cb2-63" title="63"><span class="co">-- inspired by Haskell's Data.Scientific module</span></a>
+<a class="sourceLine" id="cb2-64" title="64">record <span class="dt">Scientific</span> <span class="fu">:</span> <span class="dt">Type</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb2-65" title="65">  <span class="dt">MkScientific</span> <span class="fu">:</span> (coefficient <span class="fu">:</span> <span class="dt">Integer</span>) <span class="ot">-&gt;</span></a>
+<a class="sourceLine" id="cb2-66" title="66">                 (<span class="fu">exponent</span> <span class="fu">:</span> <span class="dt">Integer</span>) <span class="ot">-&gt;</span> <span class="dt">Scientific</span></a>
+<a class="sourceLine" id="cb2-67" title="67"></a>
+<a class="sourceLine" id="cb2-68" title="68">scientificToFloat <span class="fu">:</span> <span class="dt">Scientific</span> <span class="ot">-&gt;</span> <span class="dt">Float</span></a>
+<a class="sourceLine" id="cb2-69" title="69">scientificToFloat (<span class="dt">MkScientific</span> c e) <span class="fu">=</span> <span class="fu">fromInteger</span> c <span class="fu">*</span> <span class="fu">exp</span></a>
+<a class="sourceLine" id="cb2-70" title="70">  <span class="kw">where</span> <span class="fu">exp</span> <span class="fu">=</span> <span class="kw">if</span> e <span class="fu">&lt;</span> <span class="dv">0</span> <span class="kw">then</span> <span class="dv">1</span> <span class="fu">/</span> pow <span class="dv">10</span> (fromIntegerNat (<span class="fu">-</span> e))</a>
+<a class="sourceLine" id="cb2-71" title="71">                       <span class="kw">else</span> pow <span class="dv">10</span> (fromIntegerNat e)</a>
+<a class="sourceLine" id="cb2-72" title="72"></a>
+<a class="sourceLine" id="cb2-73" title="73">parseScientific <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Scientific</span></a>
+<a class="sourceLine" id="cb2-74" title="74">parseScientific <span class="fu">=</span> <span class="kw">do</span> sign <span class="ot">&lt;-</span> <span class="fu">maybe</span> <span class="dv">1</span> (<span class="fu">const</span> (<span class="fu">-</span><span class="dv">1</span>)) <span class="ot">`map`</span> opt (char <span class="ch">'-'</span>)</a>
+<a class="sourceLine" id="cb2-75" title="75">                     digits <span class="ot">&lt;-</span> some digit</a>
+<a class="sourceLine" id="cb2-76" title="76">                     hasComma <span class="ot">&lt;-</span> isJust <span class="ot">`map`</span> opt (char <span class="ch">'.'</span>)</a>
+<a class="sourceLine" id="cb2-77" title="77">                     decimals <span class="ot">&lt;-</span> <span class="kw">if</span> hasComma <span class="kw">then</span> some digit <span class="kw">else</span> <span class="fu">pure</span> <span class="dt">Prelude.List.Nil</span></a>
+<a class="sourceLine" id="cb2-78" title="78">                     hasExponent <span class="ot">&lt;-</span> isJust <span class="ot">`map`</span> opt (char <span class="ch">'e'</span>)</a>
+<a class="sourceLine" id="cb2-79" title="79">                     <span class="fu">exponent</span> <span class="ot">&lt;-</span> <span class="kw">if</span> hasExponent <span class="kw">then</span> integer <span class="kw">else</span> <span class="fu">pure</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb2-80" title="80">                     <span class="fu">pure</span> <span class="fu">$</span> <span class="dt">MkScientific</span> (sign <span class="fu">*</span> fromDigits (digits <span class="fu">++</span> decimals))</a>
+<a class="sourceLine" id="cb2-81" title="81">                                         (<span class="fu">exponent</span> <span class="fu">-</span> cast (<span class="fu">length</span> decimals))</a>
+<a class="sourceLine" id="cb2-82" title="82">  <span class="kw">where</span> fromDigits <span class="fu">:</span> <span class="dt">List</span> (<span class="dt">Fin</span> <span class="dv">10</span>) <span class="ot">-&gt;</span> <span class="dt">Integer</span></a>
+<a class="sourceLine" id="cb2-83" title="83">        fromDigits <span class="fu">=</span> <span class="fu">foldl</span> (\a, b <span class="ot">=&gt;</span> <span class="dv">10</span> <span class="fu">*</span> a <span class="fu">+</span> cast b) <span class="dv">0</span></a>
+<a class="sourceLine" id="cb2-84" title="84"></a>
+<a class="sourceLine" id="cb2-85" title="85">yamlNumber <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Float</span></a>
+<a class="sourceLine" id="cb2-86" title="86">yamlNumber <span class="fu">=</span> <span class="fu">map</span> scientificToFloat parseScientific</a>
+<a class="sourceLine" id="cb2-87" title="87"></a>
+<a class="sourceLine" id="cb2-88" title="88">yamlBool <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb2-89" title="89">yamlBool  <span class="fu">=</span>  (char <span class="ch">'t'</span> <span class="fu">&gt;!</span> string <span class="st">&quot;rue&quot;</span>  <span class="fu">$&gt;</span> <span class="fu">return</span> <span class="dt">True</span>)</a>
+<a class="sourceLine" id="cb2-90" title="90">         <span class="fu">&lt;|&gt;</span> (char <span class="ch">'f'</span> <span class="fu">&gt;!</span> string <span class="st">&quot;alse&quot;</span> <span class="fu">$&gt;</span> <span class="fu">return</span> <span class="dt">False</span>) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;Yaml Bool&quot;</span></a>
+<a class="sourceLine" id="cb2-91" title="91"></a>
+<a class="sourceLine" id="cb2-92" title="92">yamlNull <span class="fu">:</span> <span class="dt">Parser</span> ()</a>
+<a class="sourceLine" id="cb2-93" title="93">yamlNull <span class="fu">=</span> (char <span class="ch">'n'</span> <span class="fu">&gt;!</span> string <span class="st">&quot;ull&quot;</span> <span class="fu">&gt;!</span> <span class="fu">return</span> ()) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;Yaml Null&quot;</span></a>
+<a class="sourceLine" id="cb2-94" title="94"></a>
+<a class="sourceLine" id="cb2-95" title="95"></a>
+<a class="sourceLine" id="cb2-96" title="96">parseWord' <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">List</span> <span class="dt">Char</span>)</a>
+<a class="sourceLine" id="cb2-97" title="97">parseWord' <span class="fu">=</span> (char <span class="ch">' '</span> <span class="fu">$!&gt;</span> <span class="fu">pure</span> <span class="dt">Prelude.List.Nil</span>) <span class="fu">&lt;|&gt;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb2-98" title="98">  c <span class="ot">&lt;-</span> satisfy (<span class="fu">/=</span> <span class="ch">' '</span>); <span class="fu">map</span> (<span class="ot">c ::</span>) parseWord'</a>
+<a class="sourceLine" id="cb2-99" title="99"></a>
+<a class="sourceLine" id="cb2-100" title="100"><span class="fu">|||</span> <span class="dt">A</span> parser that skips whitespace without jumping over <span class="fu">lines</span></a>
+<a class="sourceLine" id="cb2-101" title="101">yamlSpace <span class="fu">:</span> <span class="dt">Monad</span> m <span class="ot">=&gt;</span> <span class="dt">ParserT</span> m <span class="dt">String</span> ()</a>
+<a class="sourceLine" id="cb2-102" title="102">yamlSpace <span class="fu">=</span> skip (many <span class="fu">$</span> satisfy (\c <span class="ot">=&gt;</span> c <span class="fu">/=</span> <span class="ch">'\n'</span> <span class="fu">&amp;&amp;</span> <span class="fu">isSpace</span> c)) <span class="fu">&lt;?&gt;</span> <span class="st">&quot;yamlSpace&quot;</span></a>
+<a class="sourceLine" id="cb2-103" title="103"></a>
+<a class="sourceLine" id="cb2-104" title="104">mutual</a>
+<a class="sourceLine" id="cb2-105" title="105">  yamlArray <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">List</span> <span class="dt">YamlValue</span>)</a>
+<a class="sourceLine" id="cb2-106" title="106">  yamlArray <span class="fu">=</span> char <span class="ch">'-'</span> <span class="fu">$!&gt;</span> (yamlArrayValue <span class="ot">`sepBy`</span> (char <span class="ch">'-'</span>))</a>
+<a class="sourceLine" id="cb2-107" title="107"></a>
+<a class="sourceLine" id="cb2-108" title="108">  keyValuePair <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">String</span>, <span class="dt">YamlValue</span>)</a>
+<a class="sourceLine" id="cb2-109" title="109">  keyValuePair <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb2-110" title="110">    key <span class="ot">&lt;-</span> space <span class="fu">$&gt;</span> <span class="fu">map</span> <span class="fu">pack</span> parseWord' <span class="fu">&lt;$</span> space</a>
+<a class="sourceLine" id="cb2-111" title="111">    char <span class="ch">':'</span></a>
+<a class="sourceLine" id="cb2-112" title="112">    value <span class="ot">&lt;-</span> yamlValue</a>
+<a class="sourceLine" id="cb2-113" title="113">    <span class="fu">pure</span> (key, value)</a>
+<a class="sourceLine" id="cb2-114" title="114"></a>
+<a class="sourceLine" id="cb2-115" title="115">  yamlObject <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)</a>
+<a class="sourceLine" id="cb2-116" title="116">  yamlObject <span class="fu">=</span> <span class="fu">map</span> fromList <span class="fu">$</span> keyValuePair <span class="ot">`sepBy`</span> (char <span class="ch">'\n'</span>)</a>
+<a class="sourceLine" id="cb2-117" title="117"></a>
+<a class="sourceLine" id="cb2-118" title="118">  yamlObjectA <span class="fu">:</span> <span class="dt">Parser</span> (<span class="dt">SortedMap</span> <span class="dt">String</span> <span class="dt">YamlValue</span>)</a>
+<a class="sourceLine" id="cb2-119" title="119">  yamlObjectA <span class="fu">=</span> <span class="fu">map</span> fromList <span class="fu">$</span> keyValuePair <span class="ot">`sepBy`</span> (char <span class="ch">'\n'</span>)</a>
+<a class="sourceLine" id="cb2-120" title="120"></a>
+<a class="sourceLine" id="cb2-121" title="121">  yamlValue' <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span></a>
+<a class="sourceLine" id="cb2-122" title="122">  yamlValue' <span class="fu">=</span>  (<span class="fu">map</span> <span class="dt">YamlString</span> yamlString)</a>
+<a class="sourceLine" id="cb2-123" title="123">            <span class="fu">&lt;|&gt;</span> (<span class="fu">map</span> <span class="dt">YamlNumber</span> yamlNumber)</a>
+<a class="sourceLine" id="cb2-124" title="124">            <span class="fu">&lt;|&gt;</span> (<span class="fu">map</span> <span class="dt">YamlBool</span>   yamlBool)</a>
+<a class="sourceLine" id="cb2-125" title="125">            <span class="fu">&lt;|&gt;</span> (<span class="fu">pure</span> <span class="dt">YamlNull</span> <span class="fu">&lt;$</span> yamlNull)</a>
+<a class="sourceLine" id="cb2-126" title="126">            <span class="fu">&lt;|&gt;|</span> <span class="fu">map</span> <span class="dt">YamlArray</span>  yamlArray</a>
+<a class="sourceLine" id="cb2-127" title="127">            <span class="fu">&lt;|&gt;|</span> <span class="fu">map</span> <span class="dt">YamlObject</span> yamlObject</a>
+<a class="sourceLine" id="cb2-128" title="128">            </a>
+<a class="sourceLine" id="cb2-129" title="129">  yamlValueA' <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span></a>
+<a class="sourceLine" id="cb2-130" title="130">  yamlValueA' <span class="fu">=</span>  (<span class="fu">map</span> <span class="dt">YamlString</span> yamlString)</a>
+<a class="sourceLine" id="cb2-131" title="131">             <span class="fu">&lt;|&gt;</span> (<span class="fu">map</span> <span class="dt">YamlNumber</span> yamlNumber)</a>
+<a class="sourceLine" id="cb2-132" title="132">             <span class="fu">&lt;|&gt;</span> (<span class="fu">map</span> <span class="dt">YamlBool</span>   yamlBool)</a>
+<a class="sourceLine" id="cb2-133" title="133">             <span class="fu">&lt;|&gt;</span> (<span class="fu">pure</span> <span class="dt">YamlNull</span> <span class="fu">&lt;$</span> yamlNull)</a>
+<a class="sourceLine" id="cb2-134" title="134">             <span class="fu">&lt;|&gt;|</span> <span class="fu">map</span> <span class="dt">YamlArray</span>  yamlArray</a>
+<a class="sourceLine" id="cb2-135" title="135">             <span class="fu">&lt;|&gt;|</span> <span class="fu">map</span> <span class="dt">YamlObject</span> yamlObjectA</a>
+<a class="sourceLine" id="cb2-136" title="136"></a>
+<a class="sourceLine" id="cb2-137" title="137">  yamlArrayValue <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span></a>
+<a class="sourceLine" id="cb2-138" title="138">  yamlArrayValue <span class="fu">=</span> space <span class="fu">$&gt;</span> yamlValueA' <span class="fu">&lt;$</span> space</a>
+<a class="sourceLine" id="cb2-139" title="139"></a>
+<a class="sourceLine" id="cb2-140" title="140">  yamlValue <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span></a>
+<a class="sourceLine" id="cb2-141" title="141">  yamlValue <span class="fu">=</span> yamlSpace <span class="fu">$&gt;</span> yamlValue' <span class="fu">&lt;$</span> yamlSpace</a>
+<a class="sourceLine" id="cb2-142" title="142"></a>
+<a class="sourceLine" id="cb2-143" title="143">yamlToplevelValue <span class="fu">:</span> <span class="dt">Parser</span> <span class="dt">YamlValue</span></a>
+<a class="sourceLine" id="cb2-144" title="144">yamlToplevelValue <span class="fu">=</span> (<span class="fu">map</span> <span class="dt">YamlArray</span> yamlArray) <span class="fu">&lt;|&gt;</span> (<span class="fu">map</span> <span class="dt">YamlObject</span> yamlObject)</a></code></pre></div>
+<p>Github repository: <a href="https://github.com/Heather/Synthia">https://github.com/Heather/Synthia</a> <br /> Code in current state:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb3-1" title="1">ls <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb3-2" title="2">ls path <span class="fu">=</span> readProcess' (<span class="st">&quot;ls &quot;</span> <span class="fu">++</span> path) <span class="dt">False</span> </a>
+<a class="sourceLine" id="cb3-3" title="3"></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="co">{- ETERNAL EFFECT WILL DO LS and stuff in EternalIO -}</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="kw">data</span> <span class="dt">Eternal</span> <span class="fu">:</span> <span class="dt">Effect</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb3-6" title="6">     <span class="dt">LS</span> <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { () } <span class="dt">Eternal</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="kw">instance</span> <span class="dt">Handler</span> <span class="dt">Eternal</span> <span class="dt">IO</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb3-8" title="8">    handle () (<span class="dt">LS</span> s) k <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> ls s; k x ()</a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="kw">instance</span> <span class="dt">Handler</span> <span class="dt">Eternal</span> (<span class="dt">IOExcept</span> a) <span class="kw">where</span></a>
+<a class="sourceLine" id="cb3-10" title="10">    handle () (<span class="dt">LS</span> s) k <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> ioe_lift <span class="fu">$</span> ls s; k x ()</a>
+<a class="sourceLine" id="cb3-11" title="11"></a>
+<a class="sourceLine" id="cb3-12" title="12"><span class="dt">ETERNAL</span> <span class="fu">:</span> <span class="dt">EFFECT</span></a>
+<a class="sourceLine" id="cb3-13" title="13"><span class="dt">ETERNAL</span> <span class="fu">=</span> <span class="dt">MkEff</span> () <span class="dt">Eternal</span></a>
+<a class="sourceLine" id="cb3-14" title="14"></a>
+<a class="sourceLine" id="cb3-15" title="15">els <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> <span class="dt">String</span></a>
+<a class="sourceLine" id="cb3-16" title="16">els s <span class="fu">=</span> call <span class="fu">$</span> <span class="dt">LS</span> s</a>
+<a class="sourceLine" id="cb3-17" title="17"></a>
+<a class="sourceLine" id="cb3-18" title="18"><span class="dt">EternalIO</span> <span class="fu">:</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span></a>
+<a class="sourceLine" id="cb3-19" title="19"><span class="dt">EternalIO</span> st t <span class="fu">=</span> { [<span class="dt">FILE_IO</span> st, <span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> t </a>
+<a class="sourceLine" id="cb3-20" title="20"></a>
+<a class="sourceLine" id="cb3-21" title="21"><span class="co">{- WE NEED ETERNAL POWER! -}</span></a>
+<a class="sourceLine" id="cb3-22" title="22"><span class="fu">readFile</span> <span class="fu">:</span> <span class="dt">EternalIO</span> (<span class="dt">OpenFile</span> <span class="dt">Read</span>) (<span class="dt">List</span> <span class="dt">String</span>)</a>
+<a class="sourceLine" id="cb3-23" title="23"><span class="fu">readFile</span> <span class="fu">=</span> readAcc [] <span class="kw">where</span></a>
+<a class="sourceLine" id="cb3-24" title="24">  readAcc <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">EternalIO</span> (<span class="dt">OpenFile</span> <span class="dt">Read</span>) (<span class="dt">List</span> <span class="dt">String</span>)</a>
+<a class="sourceLine" id="cb3-25" title="25">  readAcc acc <span class="fu">=</span> <span class="kw">if</span> (<span class="fu">not</span> <span class="fu">!</span>eof) <span class="kw">then</span> readAcc <span class="fu">$</span> <span class="fu">!</span><span class="ot">readLine ::</span> acc</a>
+<a class="sourceLine" id="cb3-26" title="26">                              <span class="kw">else</span> <span class="fu">return</span>  <span class="fu">$</span> <span class="fu">reverse</span> acc</a>
+<a class="sourceLine" id="cb3-27" title="27"></a>
+<a class="sourceLine" id="cb3-28" title="28"><span class="co">{- IT'S NOT JUST SYSTEM CALL, IT'S POWERFUL THING!-}</span></a>
+<a class="sourceLine" id="cb3-29" title="29">sys <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb3-30" title="30">sys ss <span class="fu">=</span> <span class="kw">do</span> system ss</a>
+<a class="sourceLine" id="cb3-31" title="31">            <span class="fu">return</span> ()</a>
+<a class="sourceLine" id="cb3-32" title="32"></a>
+<a class="sourceLine" id="cb3-33" title="33">finalInstall <span class="fu">:</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb3-34" title="34">finalInstall repoDir synss flist <span class="fu">=</span></a>
+<a class="sourceLine" id="cb3-35" title="35">    <span class="kw">case</span> (synss <span class="fu">#</span> <span class="dv">0</span>) <span class="kw">of</span></a>
+<a class="sourceLine" id="cb3-36" title="36">        <span class="dt">Just</span> syn <span class="ot">=&gt;</span> <span class="kw">do</span> <span class="co">{- PROCESS PACKAGE INSTALLATION -}</span></a>
+<a class="sourceLine" id="cb3-37" title="37">            <span class="kw">let</span> truesyn <span class="fu">=</span> repoDir <span class="fu">++</span> syn</a>
+<a class="sourceLine" id="cb3-38" title="38">            sys <span class="fu">$</span> <span class="st">&quot;pushd &quot;</span> <span class="fu">++</span> repoDir <span class="fu">++</span> <span class="st">&quot; &amp; Synthia --install &quot;</span> <span class="fu">++</span> truesyn</a>
+<a class="sourceLine" id="cb3-39" title="39">            </a>
+<a class="sourceLine" id="cb3-40" title="40">            <span class="co">{- Finishing installation -}</span></a>
+<a class="sourceLine" id="cb3-41" title="41">            <span class="kw">let</span> makeF <span class="fu">=</span> <span class="fu">filter</span> (<span class="fu">==</span> <span class="st">&quot;Makefile&quot;</span>) flist</a>
+<a class="sourceLine" id="cb3-42" title="42">            <span class="kw">case</span> (makeF <span class="fu">#</span> <span class="dv">0</span>) <span class="kw">of</span></a>
+<a class="sourceLine" id="cb3-43" title="43">                <span class="dt">Just</span> _ <span class="ot">=&gt;</span> sys <span class="fu">$</span> <span class="st">&quot;pushd &quot;</span> <span class="fu">++</span> repoDir <span class="fu">++</span> <span class="st">&quot; &amp; make &amp; make install&quot;</span></a>
+<a class="sourceLine" id="cb3-44" title="44">                _ <span class="ot">=&gt;</span> <span class="kw">let</span> pkg <span class="fu">=</span> <span class="fu">filter</span> (\x <span class="ot">=&gt;</span> isSuffixOf <span class="fu">&lt;|</span> unpack <span class="st">&quot;.ipkg&quot;</span></a>
+<a class="sourceLine" id="cb3-45" title="45">                                                        <span class="fu">&lt;|</span> unpack (trim x)) flist</a>
+<a class="sourceLine" id="cb3-46" title="46">                     <span class="kw">in</span> <span class="kw">case</span> (pkg <span class="fu">#</span> <span class="dv">0</span>) <span class="kw">of</span></a>
+<a class="sourceLine" id="cb3-47" title="47">                         <span class="dt">Just</span> pkg <span class="ot">=&gt;</span> sys <span class="fu">$</span> <span class="st">&quot;pushd &quot;</span> <span class="fu">++</span> repoDir <span class="fu">++</span> <span class="st">&quot; &amp; idris --install &quot;</span> <span class="fu">++</span> pkg</a>
+<a class="sourceLine" id="cb3-48" title="48">                         _ <span class="ot">=&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;No ipkg in this repository&quot;</span></a>
+<a class="sourceLine" id="cb3-49" title="49">        _ <span class="ot">=&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;No synthia in this repository&quot;</span></a>
+<a class="sourceLine" id="cb3-50" title="50"></a>
+<a class="sourceLine" id="cb3-51" title="51">install <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb3-52" title="52">install [] [] <span class="fu">=</span> <span class="fu">putStrLn</span> <span class="st">&quot;try Synthia install GitHubUser/Repo&quot;</span></a>
+<a class="sourceLine" id="cb3-53" title="53">install [] xs <span class="fu">=</span> <span class="kw">let</span> <span class="dt">Just</span> mypkg <span class="fu">=</span> xs <span class="fu">#</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb3-54" title="54">                <span class="kw">in</span> sys <span class="fu">$</span> <span class="st">&quot;idris --install &quot;</span> <span class="fu">++</span> mypkg</a>
+<a class="sourceLine" id="cb3-55" title="55">install xs _ <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb3-56" title="56">    <span class="kw">let</span> dir <span class="fu">=</span> <span class="st">&quot;C:\\Idris\\&quot;</span></a>
+<a class="sourceLine" id="cb3-57" title="57">    <span class="kw">let</span> <span class="dt">Just</span> repo <span class="fu">=</span> xs <span class="fu">#</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb3-58" title="58">    <span class="kw">case</span> (splitOn <span class="ch">'/'</span> (unpack repo)) <span class="fu">#</span> <span class="dv">1</span> <span class="kw">of</span></a>
+<a class="sourceLine" id="cb3-59" title="59">        <span class="dt">Just</span> repx <span class="ot">=&gt;</span> <span class="kw">do</span> <span class="kw">let</span> reps <span class="fu">=</span> <span class="fu">pack</span> repx</a>
+<a class="sourceLine" id="cb3-60" title="60">                        sys <span class="fu">$</span> <span class="st">&quot;mkdir &quot;</span> <span class="fu">++</span> dir</a>
+<a class="sourceLine" id="cb3-61" title="61">                        <span class="kw">let</span> repoDir <span class="fu">=</span> dir <span class="fu">++</span> reps <span class="fu">++</span> <span class="st">&quot;\\&quot;</span></a>
+<a class="sourceLine" id="cb3-62" title="62">                        sys <span class="fu">$</span> <span class="st">&quot;git clone git@github.com:&quot;</span> <span class="fu">++</span> repo <span class="fu">++</span> <span class="st">&quot;.git &quot;</span> <span class="fu">++</span> repoDir</a>
+<a class="sourceLine" id="cb3-63" title="63">                        <span class="kw">let</span> flist <span class="fu">=</span> splitOn <span class="ch">'\n'</span> <span class="fu">!</span>(els repoDir)</a>
+<a class="sourceLine" id="cb3-64" title="64">                        <span class="co">{- PROCESS DEP CHECK! .syn SYNTHIA FILES -}</span></a>
+<a class="sourceLine" id="cb3-65" title="65">                        <span class="kw">let</span> synss <span class="fu">=</span> <span class="fu">filter</span> (\x <span class="ot">=&gt;</span> isSuffixOf <span class="fu">&lt;|</span> unpack <span class="st">&quot;.syn&quot;</span></a>
+<a class="sourceLine" id="cb3-66" title="66">                                                             <span class="fu">&lt;|</span> unpack (trim x)) flist</a>
+<a class="sourceLine" id="cb3-67" title="67">                        finalInstall repoDir synss flist</a>
+<a class="sourceLine" id="cb3-68" title="68"></a>
+<a class="sourceLine" id="cb3-69" title="69">        _ <span class="ot">=&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;try Synthia install GitHubUser/Repo&quot;</span> </a>
+<a class="sourceLine" id="cb3-70" title="70"><span class="co">{- SYMPLY RUN IDRIS WITH ARGUMENTS -}</span></a>
+<a class="sourceLine" id="cb3-71" title="71">goC <span class="fu">:</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">List</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">String</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb3-72" title="72">goC pkg args cc <span class="fu">=</span></a>
+<a class="sourceLine" id="cb3-73" title="73">    <span class="kw">case</span> (pkg <span class="fu">#</span> <span class="dv">0</span>) <span class="kw">of</span></a>
+<a class="sourceLine" id="cb3-74" title="74">        <span class="dt">Just</span> mypkg <span class="ot">=&gt;</span> sys <span class="fu">$</span> cc <span class="fu">++</span> <span class="fu">concat</span> <span class="fu">&lt;&lt;|</span> <span class="fu">drop</span> <span class="dv">2</span> args</a>
+<a class="sourceLine" id="cb3-75" title="75">                               <span class="fu">++</span> <span class="st">&quot; &quot;</span></a>
+<a class="sourceLine" id="cb3-76" title="76">                               <span class="fu">++</span> mypkg</a>
+<a class="sourceLine" id="cb3-77" title="77">        _ <span class="ot">=&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;No ipkg in this repository&quot;</span> </a>
+<a class="sourceLine" id="cb3-78" title="78"></a>
+<a class="sourceLine" id="cb3-79" title="79">procs <span class="fu">:</span> (<span class="dt">List</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> (<span class="dt">List</span> <span class="dt">String</span>) <span class="ot">-&gt;</span> <span class="dt">Bool</span> <span class="ot">-&gt;</span> { [<span class="dt">STDIO</span>, <span class="dt">SYSTEM</span>, <span class="dt">ETERNAL</span>] } <span class="dt">Eff</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb3-80" title="80">procs args file p <span class="fu">=</span></a>
+<a class="sourceLine" id="cb3-81" title="81">    <span class="kw">let</span> config <span class="fu">=</span> <span class="fu">concat</span> file <span class="co">{- READ OWN CONFIG FILE -}</span></a>
+<a class="sourceLine" id="cb3-82" title="82">    <span class="kw">in</span> <span class="kw">case</span> parse yamlToplevelValue config <span class="kw">of</span></a>
+<a class="sourceLine" id="cb3-83" title="83">       <span class="dt">Left</span> err <span class="ot">=&gt;</span> <span class="fu">putStrLn</span> <span class="fu">$</span> <span class="st">&quot;error: &quot;</span> <span class="fu">++</span> err</a>
+<a class="sourceLine" id="cb3-84" title="84">       <span class="dt">Right</span> v  <span class="ot">=&gt;</span></a>
+<a class="sourceLine" id="cb3-85" title="85">        <span class="kw">if</span> p <span class="kw">then</span> <span class="fu">putStrLn</span> <span class="fu">$</span> <span class="fu">show</span> v <span class="co">-- TODO: Install finally deps</span></a>
+<a class="sourceLine" id="cb3-86" title="86">             <span class="kw">else</span> <span class="kw">let</span> pkg <span class="fu">=</span> <span class="fu">filter</span> (\x <span class="ot">=&gt;</span> isSuffixOf <span class="fu">&lt;|</span> unpack <span class="st">&quot;.ipkg&quot;</span></a>
+<a class="sourceLine" id="cb3-87" title="87">                                                     <span class="fu">&lt;|</span> unpack (trim x))</a>
+<a class="sourceLine" id="cb3-88" title="88">                              <span class="fu">$</span> splitOn <span class="ch">'\n'</span> <span class="fu">!</span>(els <span class="st">&quot;.&quot;</span>)</a>
+<a class="sourceLine" id="cb3-89" title="89">                  <span class="kw">in</span> <span class="kw">case</span> (args <span class="fu">#</span> <span class="dv">1</span>) <span class="kw">of</span></a>
+<a class="sourceLine" id="cb3-90" title="90">                        <span class="dt">Just</span> cmd <span class="ot">=&gt;</span> <span class="kw">case</span> cmd <span class="kw">of</span></a>
+<a class="sourceLine" id="cb3-91" title="91">                                       <span class="st">&quot;--help&quot;</span>     <span class="ot">=&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;try Synthia install GitHubUser/Repo&quot;</span></a>
+<a class="sourceLine" id="cb3-92" title="92">                                       <span class="st">&quot;--version&quot;</span>  <span class="ot">=&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;0.0.2&quot;</span></a>
+<a class="sourceLine" id="cb3-93" title="93">                                       </a>
+<a class="sourceLine" id="cb3-94" title="94">                                       <span class="st">&quot;build&quot;</span>      <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --build &quot;</span></a>
+<a class="sourceLine" id="cb3-95" title="95">                                       <span class="st">&quot;clean&quot;</span>      <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --clean &quot;</span></a>
+<a class="sourceLine" id="cb3-96" title="96">                                       <span class="st">&quot;mkdoc&quot;</span>      <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --mkdoc &quot;</span></a>
+<a class="sourceLine" id="cb3-97" title="97">                                       <span class="st">&quot;checkpkg&quot;</span>   <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --checkpkg &quot;</span></a>
+<a class="sourceLine" id="cb3-98" title="98">                                       <span class="st">&quot;testpkg&quot;</span>    <span class="ot">=&gt;</span> goC pkg args <span class="st">&quot;idris --testpkg &quot;</span></a>
+<a class="sourceLine" id="cb3-99" title="99">                                       </a>
+<a class="sourceLine" id="cb3-100" title="100">                                       <span class="st">&quot;install&quot;</span>    <span class="ot">=&gt;</span> install (<span class="fu">drop</span> <span class="dv">2</span> args) pkg</a>
+<a class="sourceLine" id="cb3-101" title="101">                                       <span class="st">&quot;list&quot;</span>       <span class="ot">=&gt;</span> sys <span class="st">&quot;ls -d1 C:\\Idris/*/&quot;</span></a>
+<a class="sourceLine" id="cb3-102" title="102">                                       </a>
+<a class="sourceLine" id="cb3-103" title="103">                                       _            <span class="ot">=&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;What?&quot;</span></a>
+<a class="sourceLine" id="cb3-104" title="104">                        _ <span class="ot">=&gt;</span> <span class="fu">putStrLn</span> <span class="st">&quot;What?&quot;</span></a></code></pre></div><div id="postfooter"></div><script src="../js/playpause.js"></script><script src="../bootstrap/three.js"></script><script src="../js/bubbles.js"></script></div><div id="social"><ul><li><a href="http://github.com/Heather" title="Github" target="_blank"><span class="mega-octicon octicon-octoface"></span></a></li><li><a href="http://twitter.com/Cynede" title="Twitter" target="_blank"><span class="mega-octicon octicon-star"></span></a></li><li><a href="mailto:heather@live.ru" title="mail" target="_blank"><span class="mega-octicon octicon-mail-read"></span></a></li><li><a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank"><span class="mega-octicon octicon-broadcast"></span></a></li><li><a href="http://stackoverflow.com/users/238232/heather" title="Stackoverflow" target="_blank"><span class="mega-octicon octicon-squirrel"></span></a></li><li><a href="../atom.xml" title="RSS" target="_blank"><span class="mega-octicon octicon-rss"></span></a></li></ul></div><div id="footer"></div></body></html>

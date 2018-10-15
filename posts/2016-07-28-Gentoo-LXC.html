@@ -17,35 +17,35 @@ $ nmcli con add type ethernet con-name br-slave-2 ifname ens4 master TowerBridge
 $ nmcli con modify TowerBridge bridge.stp no</code></pre>
 <p>Anything LXC specific could be done via <a href="https://wiki.gentoo.org/wiki/LXC#Host_setup">Gentoo Wiki Tutorial</a></p>
 <p>Some basic container config with own network will look alike this:</p>
-<div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="er">lxc.network.type</span> <span class="er">=</span> <span class="er">veth</span>
-<span class="er">lxc.network.link</span> <span class="er">=</span> <span class="er">lxbridge</span>
-<span class="er">lxc.network.flags</span> <span class="er">=</span> <span class="er">up</span>
-<span class="er">lxc.network.ipv4</span> <span class="er">=</span> <span class="er">192.168.3.146/24</span>
-<span class="er">lxc.network.ipv4.gateway</span> <span class="er">=</span> <span class="er">192.168.3.254</span>
-
-<span class="er">lxc.group</span> <span class="er">=</span> <span class="er">onboot</span>
-<span class="er">lxc.start.auto</span> <span class="er">=</span> <span class="er">1</span>
-<span class="er">lxc.start.delay</span> <span class="er">=</span> <span class="er">5</span>
-
-<span class="er">lxc.rootfs</span> <span class="er">=</span> <span class="er">/srv/C</span>
-<span class="er">lxc.rootfs.backend</span> <span class="er">=</span> <span class="er">dir</span>
-<span class="er">###</span> <span class="er">lxc-gentoo</span> <span class="er">template</span> <span class="er">stuff</span> <span class="er">starts</span> <span class="er">here</span>
-<span class="er">#</span> <span class="er">sets</span> <span class="er">container</span> <span class="er">architecture</span>
-<span class="er">#</span> <span class="er">If</span> <span class="er">desired</span> <span class="er">architecture</span> <span class="er">!=</span> <span class="er">amd64</span> <span class="er">or</span> <span class="er">x86,</span> <span class="er">then</span> <span class="er">we</span> <span class="er">leave</span> <span class="er">it</span> <span class="er">unset</span> <span class="er">as</span>
-<span class="er">#</span> <span class="er">LXC</span> <span class="er">does</span> <span class="er">not</span> <span class="er">oficially</span> <span class="er">support</span> <span class="er">anything</span> <span class="er">other</span> <span class="er">than</span> <span class="er">x86</span> <span class="er">or</span> <span class="er">amd64.</span>
-<span class="er">lxc.arch</span> <span class="er">=</span> <span class="er">amd64</span>
-
-<span class="er">#</span> <span class="er">set</span> <span class="er">the</span> <span class="er">hostname</span>
-<span class="er">lxc.utsname</span> <span class="er">=</span> <span class="er">Cloyster</span>
-<span class="er">lxc.tty</span> <span class="er">=</span> <span class="er">1</span>
-
-<span class="er">#container</span> <span class="er">set</span> <span class="er">with</span> <span class="er">shared</span> <span class="er">portage</span>
-<span class="er">lxc.mount.entry=/usr/portage</span> <span class="er">usr/portage</span> <span class="er">none</span> <span class="er">ro,bind</span> <span class="er">0</span> <span class="er">0</span>
-<span class="er">lxc.mount.entry=/usr/portage/distfiles</span> <span class="er">usr/portage/distfiles</span> <span class="er">none</span> <span class="er">rw,bind</span> <span class="er">0</span> <span class="er">0</span>
-<span class="er">#If</span> <span class="er">you</span> <span class="er">use</span> <span class="er">eix,</span> <span class="er">you</span> <span class="er">should</span> <span class="er">uncomment</span> <span class="er">this</span>
-<span class="er">#lxc.mount.entry=/var/cache/eix</span> <span class="er">var/cache/eix</span> <span class="er">none</span> <span class="er">ro,bind</span> <span class="er">0</span> <span class="er">0</span>
-
-<span class="er">lxc.include</span> <span class="er">=</span> <span class="er">/usr/share/lxc/config/gentoo.common.conf</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode json"><code class="sourceCode json"><a class="sourceLine" id="cb2-1" title="1"><span class="er">lxc.network.type</span> <span class="er">=</span> <span class="er">veth</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="er">lxc.network.link</span> <span class="er">=</span> <span class="er">lxbridge</span></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="er">lxc.network.flags</span> <span class="er">=</span> <span class="er">up</span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="er">lxc.network.ipv4</span> <span class="er">=</span> <span class="er">192.168.3.146/24</span></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="er">lxc.network.ipv4.gateway</span> <span class="er">=</span> <span class="er">192.168.3.254</span></a>
+<a class="sourceLine" id="cb2-6" title="6"></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="er">lxc.group</span> <span class="er">=</span> <span class="er">onboot</span></a>
+<a class="sourceLine" id="cb2-8" title="8"><span class="er">lxc.start.auto</span> <span class="er">=</span> <span class="er">1</span></a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="er">lxc.start.delay</span> <span class="er">=</span> <span class="er">5</span></a>
+<a class="sourceLine" id="cb2-10" title="10"></a>
+<a class="sourceLine" id="cb2-11" title="11"><span class="er">lxc.rootfs</span> <span class="er">=</span> <span class="er">/srv/C</span></a>
+<a class="sourceLine" id="cb2-12" title="12"><span class="er">lxc.rootfs.backend</span> <span class="er">=</span> <span class="er">dir</span></a>
+<a class="sourceLine" id="cb2-13" title="13"><span class="er">###</span> <span class="er">lxc-gentoo</span> <span class="er">template</span> <span class="er">stuff</span> <span class="er">starts</span> <span class="er">here</span></a>
+<a class="sourceLine" id="cb2-14" title="14"><span class="er">#</span> <span class="er">sets</span> <span class="er">container</span> <span class="er">architecture</span></a>
+<a class="sourceLine" id="cb2-15" title="15"><span class="er">#</span> <span class="er">If</span> <span class="er">desired</span> <span class="er">architecture</span> <span class="er">!=</span> <span class="er">amd64</span> <span class="er">or</span> <span class="er">x86,</span> <span class="er">then</span> <span class="er">we</span> <span class="er">leave</span> <span class="er">it</span> <span class="er">unset</span> <span class="er">as</span></a>
+<a class="sourceLine" id="cb2-16" title="16"><span class="er">#</span> <span class="er">LXC</span> <span class="er">does</span> <span class="er">not</span> <span class="er">oficially</span> <span class="er">support</span> <span class="er">anything</span> <span class="er">other</span> <span class="er">than</span> <span class="er">x86</span> <span class="er">or</span> <span class="er">amd64.</span></a>
+<a class="sourceLine" id="cb2-17" title="17"><span class="er">lxc.arch</span> <span class="er">=</span> <span class="er">amd64</span></a>
+<a class="sourceLine" id="cb2-18" title="18"></a>
+<a class="sourceLine" id="cb2-19" title="19"><span class="er">#</span> <span class="er">set</span> <span class="er">the</span> <span class="er">hostname</span></a>
+<a class="sourceLine" id="cb2-20" title="20"><span class="er">lxc.utsname</span> <span class="er">=</span> <span class="er">Cloyster</span></a>
+<a class="sourceLine" id="cb2-21" title="21"><span class="er">lxc.tty</span> <span class="er">=</span> <span class="er">1</span></a>
+<a class="sourceLine" id="cb2-22" title="22"></a>
+<a class="sourceLine" id="cb2-23" title="23"><span class="er">#container</span> <span class="er">set</span> <span class="er">with</span> <span class="er">shared</span> <span class="er">portage</span></a>
+<a class="sourceLine" id="cb2-24" title="24"><span class="er">lxc.mount.entry=/usr/portage</span> <span class="er">usr/portage</span> <span class="er">none</span> <span class="er">ro,bind</span> <span class="er">0</span> <span class="er">0</span></a>
+<a class="sourceLine" id="cb2-25" title="25"><span class="er">lxc.mount.entry=/usr/portage/distfiles</span> <span class="er">usr/portage/distfiles</span> <span class="er">none</span> <span class="er">rw,bind</span> <span class="er">0</span> <span class="er">0</span></a>
+<a class="sourceLine" id="cb2-26" title="26"><span class="er">#If</span> <span class="er">you</span> <span class="er">use</span> <span class="er">eix,</span> <span class="er">you</span> <span class="er">should</span> <span class="er">uncomment</span> <span class="er">this</span></a>
+<a class="sourceLine" id="cb2-27" title="27"><span class="er">#lxc.mount.entry=/var/cache/eix</span> <span class="er">var/cache/eix</span> <span class="er">none</span> <span class="er">ro,bind</span> <span class="er">0</span> <span class="er">0</span></a>
+<a class="sourceLine" id="cb2-28" title="28"></a>
+<a class="sourceLine" id="cb2-29" title="29"><span class="er">lxc.include</span> <span class="er">=</span> <span class="er">/usr/share/lxc/config/gentoo.common.conf</span></a></code></pre></div>
 <p>working with containers using on-host lxc commands is pretty simple</p>
 <pre class="shell"><code>lxc-start -n C
 lxc-console -n C</code></pre>

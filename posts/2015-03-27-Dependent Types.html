@@ -16,39 +16,39 @@
 <p>I was asked to post my simple explanation so here is it…</p>
 <p>For example everybody knows about generics and why and where they are useful and we call it alike <code>foo&lt;Type&gt;()</code>, now imagine we have some function which does something and returns Type based on integer, for example 4 -&gt; Int, 2 -&gt; Short, 8 -&gt; Long, etc… So we can <code>foo&lt;bar(i)&gt;()</code> so in this case you will not create additional case type-binder… e.g. you still write that 4 will be Int but you don’t write that 4 will be foo<int> … that looks like small metaprogramming trick but when it’s all over the code it’s not bad, e.g. better readability and more available programming tactics for logics implementation, faster solution solving</p>
 <p>Let take a look to example on <a href="http://www.rust-lang.org">rust-lang.org</a></p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">let program = <span class="st">&quot;+ + * - /&quot;</span>;
-let mut accumulator = <span class="dv">0</span>;
-
-<span class="cf">for</span> token in program.chars() {
-    match token {
-        <span class="st">'+'</span> =&gt; accumulator += <span class="dv">1</span>,
-        <span class="st">'-'</span> =&gt; accumulator -= <span class="dv">1</span>,
-        <span class="st">'*'</span> =&gt; accumulator *= <span class="dv">2</span>,
-        <span class="st">'/'</span> =&gt; accumulator /= <span class="dv">2</span>,
-        _ =&gt; { <span class="co">/* ignore everything else */</span> }
-    }
-}</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb1-1" title="1">let program = <span class="st">&quot;+ + * - /&quot;</span>;</a>
+<a class="sourceLine" id="cb1-2" title="2">let mut accumulator = <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb1-3" title="3"></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="cf">for</span> token in program.chars() {</a>
+<a class="sourceLine" id="cb1-5" title="5">    match token {</a>
+<a class="sourceLine" id="cb1-6" title="6">        <span class="ch">'+'</span> =&gt; accumulator += <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-7" title="7">        <span class="ch">'-'</span> =&gt; accumulator -= <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-8" title="8">        <span class="ch">'*'</span> =&gt; accumulator *= <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb1-9" title="9">        <span class="ch">'/'</span> =&gt; accumulator /= <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb1-10" title="10">        _ =&gt; { <span class="co">/* ignore everything else */</span> }</a>
+<a class="sourceLine" id="cb1-11" title="11">    }</a>
+<a class="sourceLine" id="cb1-12" title="12">}</a></code></pre></div>
 <p>(note that line <code>'/' =&gt; accumulator /= 2</code> looks a bit different due my fonts there, it’s just <code>/</code> and <code>=</code> together…)</p>
 <p>Press <code>Run</code> on website</p>
 <p>Not sure if you guess or not but result is 1, because it’s integer…</p>
 <p>How we can handle it with Idris?</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">main <span class="fu">:</span> <span class="dt">IO</span> ()
-main <span class="fu">=</span> putStrLn <span class="fu">$</span> <span class="st">&quot;The program &quot;</span>
-                    ⧺ prog
-                    ⧺ <span class="st">&quot; calculates the value &quot;</span>
-                    ⧺ (show <span class="fu">$</span> acc (unpack prog) <span class="dv">0</span>)
- <span class="kw">where</span> aType <span class="fu">:</span> <span class="dt">Type</span>
-       aType <span class="fu">=</span> <span class="kw">if</span> (<span class="ch">'/'</span> ∈ (unpack prog))
-                    <span class="kw">then</span> <span class="dt">Float</span>
-                    <span class="kw">else</span> <span class="dt">Int</span>
-
-       acc <span class="fu">:</span> (<span class="dt">List</span> <span class="dt">Char</span>) <span class="ot">→</span> aType <span class="ot">→</span> aType
-       acc [] m <span class="fu">=</span> m
-       acc (<span class="ot">x::</span>xs) m <span class="fu">=</span> acc xs <span class="fu">$</span> <span class="kw">case</span> x <span class="kw">of</span>
-                                 <span class="ch">'+'</span> <span class="ot">=&gt;</span> m <span class="fu">+</span> <span class="dv">1</span>
-                                 <span class="ch">'-'</span> <span class="ot">=&gt;</span> m <span class="fu">-</span> <span class="dv">1</span>
-                                 <span class="ch">'*'</span> <span class="ot">=&gt;</span> m ⋅ <span class="dv">2</span>
-                                 <span class="ch">'/'</span> <span class="ot">=&gt;</span> m ÷ <span class="dv">2</span>
-                                 _   <span class="ot">=&gt;</span> m</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" title="1">main <span class="fu">:</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb2-2" title="2">main <span class="fu">=</span> <span class="fu">putStrLn</span> <span class="fu">$</span> <span class="st">&quot;The program &quot;</span></a>
+<a class="sourceLine" id="cb2-3" title="3">                    ⧺ prog</a>
+<a class="sourceLine" id="cb2-4" title="4">                    ⧺ <span class="st">&quot; calculates the value &quot;</span></a>
+<a class="sourceLine" id="cb2-5" title="5">                    ⧺ (<span class="fu">show</span> <span class="fu">$</span> acc (unpack prog) <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb2-6" title="6"> <span class="kw">where</span> aType <span class="fu">:</span> <span class="dt">Type</span></a>
+<a class="sourceLine" id="cb2-7" title="7">       aType <span class="fu">=</span> <span class="kw">if</span> (<span class="ch">'/'</span> ∈ (unpack prog))</a>
+<a class="sourceLine" id="cb2-8" title="8">                    <span class="kw">then</span> <span class="dt">Float</span></a>
+<a class="sourceLine" id="cb2-9" title="9">                    <span class="kw">else</span> <span class="dt">Int</span></a>
+<a class="sourceLine" id="cb2-10" title="10"></a>
+<a class="sourceLine" id="cb2-11" title="11">       acc <span class="fu">:</span> (<span class="dt">List</span> <span class="dt">Char</span>) <span class="ot">→</span> aType <span class="ot">→</span> aType</a>
+<a class="sourceLine" id="cb2-12" title="12">       acc [] m <span class="fu">=</span> m</a>
+<a class="sourceLine" id="cb2-13" title="13">       acc (<span class="ot">x::</span>xs) m <span class="fu">=</span> acc xs <span class="fu">$</span> <span class="kw">case</span> x <span class="kw">of</span></a>
+<a class="sourceLine" id="cb2-14" title="14">                                 <span class="ch">'+'</span> <span class="ot">=&gt;</span> m <span class="fu">+</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-15" title="15">                                 <span class="ch">'-'</span> <span class="ot">=&gt;</span> m <span class="fu">-</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-16" title="16">                                 <span class="ch">'*'</span> <span class="ot">=&gt;</span> m ⋅ <span class="dv">2</span></a>
+<a class="sourceLine" id="cb2-17" title="17">                                 <span class="ch">'/'</span> <span class="ot">=&gt;</span> m ÷ <span class="dv">2</span></a>
+<a class="sourceLine" id="cb2-18" title="18">                                 _   <span class="ot">=&gt;</span> m</a></code></pre></div>
 <pre class="shell"><code>The program + + * - / calculates the value 1.5</code></pre>
 <p>Discover the difference… But it’s small case. With thinking about types we can resolve a lot of common problems much faster. One of the great examples will be type providers in Idris <a href="https://github.com/david-christiansen/idris-type-providers">github</a> <a href="http://itu.dk/people/drc/pubs/dependent-type-providers.pdf">pdf</a> by David Christiansen</p><div id="postfooter"></div><script src="../js/playpause.js"></script><script src="../bootstrap/three.js"></script><script src="../js/bubbles.js"></script></div><div id="social"><ul><li><a href="http://github.com/Heather" title="Github" target="_blank"><span class="mega-octicon octicon-octoface"></span></a></li><li><a href="http://twitter.com/Cynede" title="Twitter" target="_blank"><span class="mega-octicon octicon-star"></span></a></li><li><a href="mailto:heather@live.ru" title="mail" target="_blank"><span class="mega-octicon octicon-mail-read"></span></a></li><li><a href="http://www.last.fm/user/Cynede" title="Last.fm" target="_blank"><span class="mega-octicon octicon-broadcast"></span></a></li><li><a href="http://stackoverflow.com/users/238232/heather" title="Stackoverflow" target="_blank"><span class="mega-octicon octicon-squirrel"></span></a></li><li><a href="../atom.xml" title="RSS" target="_blank"><span class="mega-octicon octicon-rss"></span></a></li></ul></div><div id="footer"></div></body></html>

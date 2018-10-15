@@ -49,7 +49,6 @@ theStylesheet = do
 
     div # ".mleft"  ? do float      floatLeft
                          minWidth   $ px 300
-                         backgroundColor $ rgba 200 200 200 100
                          borderRadius (px 5) (px 15) (px 5) (px 15)
                          outline dotted (px 6) $ rgba 50 50 50 100
                          outlineOffset $ px 3

@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE html><html ng-app><head><meta charset="utf-8"><meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"><meta content="Heather" name="description"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="../atom.xml" title="Heather" type="application/atom+xml" rel="alternate"><link href="../favicon.ico" type="image/ico" rel="shortcut icon"><script src="../bootstrap/jquery-2.1.1.min.js"></script><link href="../bootstrap/bootstrap.min.css" rel="stylesheet"><link href="../bootstrap/bootstrap-theme.min.css" rel="stylesheet"><script src="../bootstrap/bootstrap.min.js"></script><script src="../bootstrap/angular.min.js"></script><link href="../css/hasklig.css" media="all" type="text/css" rel="stylesheet"><link href="../css/octicons.css" media="all" type="text/css" rel="stylesheet"><link href="../css/syntax.css" media="all" type="text/css" rel="stylesheet"><link href="../css/default.css" media="all" type="text/css" rel="stylesheet"><title>Heather - Async Reactive Haskell</title><script src="../js/auto.js"></script></head><body><div class="band"></div><div id="header"><div id="logo"><a href="../" id="abbr"></a><script>e = document.getElementById("abbr");setTimeout(r, 0);</script></div></div><div id="content"><h1>Async Reactive Haskell</h1><audio autoplay loop id="audio"><source src="../images/Bween.mp3" type="audio/mp3"></audio><div id="controls"><img height="20px" width="20px" src="../images/RedPause.png" id="playpause"></div><div class="info">Posted on 19 August 2014</div><p>First: added dirty lifts to <a href="https://hackage.haskell.org/package/eternal-0.0.7/src/src/Control/Eternal/Syntax/Lift.hs">Hackage</a></p>
 <h2 id="io-reactive"><a href="https://github.com/andygill/io-reactive/pull/1">io-reactive</a></h2>
 <p>Tiny library for generating reactive objects</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Progress</span>
-    <span class="fu">=</span> <span class="dt">Progress</span> {<span class="ot"> pr_inc  ::</span> <span class="dt">IO</span> ()
-               ,<span class="ot"> pr_done ::</span> <span class="dt">IO</span> ()
-               }
-<span class="ot">mkProgress ::</span> <span class="dt">Handle</span>  <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">Progress</span>
-mkProgress h <span class="fu">=</span> reactiveObjectIO <span class="dv">0</span> <span class="fu">$</span> \ _pid req act done <span class="ot">-&gt;</span>
-  <span class="dt">Progress</span> { pr_inc <span class="fu">=</span> <span class="kw">do</span> hPutStr h <span class="st">&quot;.&quot;</span>
-                         hFlush h
-           , pr_done <span class="fu">=</span> <span class="kw">do</span> hPutStr h <span class="st">&quot;\nDone\n&quot;</span>
-                          hFlush h 
-                          done }</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">data</span> <span class="dt">Progress</span></a>
+<a class="sourceLine" id="cb1-2" title="2">    <span class="fu">=</span> <span class="dt">Progress</span> {<span class="ot"> pr_inc  ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb1-3" title="3">               ,<span class="ot"> pr_done ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb1-4" title="4">               }</a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="ot">mkProgress ::</span> <span class="dt">Handle</span>  <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">Progress</span></a>
+<a class="sourceLine" id="cb1-6" title="6">mkProgress h <span class="fu">=</span> reactiveObjectIO <span class="dv">0</span> <span class="fu">$</span> \ _pid req act done <span class="ot">-&gt;</span></a>
+<a class="sourceLine" id="cb1-7" title="7">  <span class="dt">Progress</span> { pr_inc <span class="fu">=</span> <span class="kw">do</span> hPutStr h <span class="st">&quot;.&quot;</span></a>
+<a class="sourceLine" id="cb1-8" title="8">                         hFlush h</a>
+<a class="sourceLine" id="cb1-9" title="9">           , pr_done <span class="fu">=</span> <span class="kw">do</span> hPutStr h <span class="st">&quot;\nDone\n&quot;</span></a>
+<a class="sourceLine" id="cb1-10" title="10">                          hFlush h </a>
+<a class="sourceLine" id="cb1-11" title="11">                          done }</a></code></pre></div>
 <h2 id="async">async</h2>
 <p>So now we can run some task and react in async on task progress, we even can use periodic pull to our async thread!</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">doProcess ::</span> <span class="dt">Progress</span> <span class="ot">-&gt;</span> <span class="dt">Async</span> () <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
-doProcess r prc <span class="fu">=</span> 
-    poll prc <span class="fu">&gt;&gt;=</span> \<span class="kw">case</span> <span class="dt">Nothing</span> <span class="ot">-&gt;</span> pr_inc r <span class="fu">&gt;&gt;</span> threadDelay <span class="dv">10000</span> <span class="fu">&gt;&gt;</span> doProcess r prc
-                       <span class="dt">Just</span> _e <span class="ot">-&gt;</span> <span class="kw">case</span> _e <span class="kw">of</span>
-                                   <span class="dt">Left</span> ex <span class="ot">-&gt;</span> putStrLn <span class="fu">$</span> <span class="st">&quot;Caught exception: &quot;</span> <span class="fu">++</span> show ex
-                                   <span class="dt">Right</span> _ <span class="ot">-&gt;</span> pr_done r
-
-<span class="ot">asyncReactive ::</span> <span class="dt">IO</span> () <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
-asyncReactive foo <span class="fu">=</span> liftM2_ doProcess (mkProgress stdout)
-                                     <span class="fu">$</span> async foo</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" title="1"><span class="ot">doProcess ::</span> <span class="dt">Progress</span> <span class="ot">-&gt;</span> <span class="dt">Async</span> () <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb2-2" title="2">doProcess r prc <span class="fu">=</span> </a>
+<a class="sourceLine" id="cb2-3" title="3">    poll prc <span class="fu">&gt;&gt;=</span> \<span class="kw">case</span> <span class="dt">Nothing</span> <span class="ot">-&gt;</span> pr_inc r <span class="fu">&gt;&gt;</span> threadDelay <span class="dv">10000</span> <span class="fu">&gt;&gt;</span> doProcess r prc</a>
+<a class="sourceLine" id="cb2-4" title="4">                       <span class="dt">Just</span> _e <span class="ot">-&gt;</span> <span class="kw">case</span> _e <span class="kw">of</span></a>
+<a class="sourceLine" id="cb2-5" title="5">                                   <span class="dt">Left</span> ex <span class="ot">-&gt;</span> <span class="fu">putStrLn</span> <span class="fu">$</span> <span class="st">&quot;Caught exception: &quot;</span> <span class="fu">++</span> <span class="fu">show</span> ex</a>
+<a class="sourceLine" id="cb2-6" title="6">                                   <span class="dt">Right</span> _ <span class="ot">-&gt;</span> pr_done r</a>
+<a class="sourceLine" id="cb2-7" title="7"></a>
+<a class="sourceLine" id="cb2-8" title="8"><span class="ot">asyncReactive ::</span> <span class="dt">IO</span> () <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb2-9" title="9">asyncReactive foo <span class="fu">=</span> liftM2_ doProcess (mkProgress stdout)</a>
+<a class="sourceLine" id="cb2-10" title="10">                                     <span class="fu">$</span> async foo</a></code></pre></div>
 <p>Looks cool but does it works and usage:</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">asyncReactive <span class="fu">$</span> sequence_ [ threadDelay <span class="dv">100000</span> <span class="fu">&gt;&gt;</span> print <span class="st">&quot;A&quot;</span> <span class="fu">|</span> n <span class="ot">&lt;-</span> [<span class="dv">1</span><span class="fu">..</span><span class="dv">50</span>] ]</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb3-1" title="1">asyncReactive <span class="fu">$</span> <span class="fu">sequence_</span> [ threadDelay <span class="dv">100000</span> <span class="fu">&gt;&gt;</span> <span class="fu">print</span> <span class="st">&quot;A&quot;</span> <span class="fu">|</span> n <span class="ot">&lt;-</span> [<span class="dv">1</span><span class="fu">..</span><span class="dv">50</span>] ]</a></code></pre></div>
 <p>that easy, result will be:</p>
 <pre class="shell"><code>..........&quot;A&quot;
 ..........&quot;A&quot;

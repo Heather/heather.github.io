@@ -1,173 +1,173 @@
 <?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE html><html ng-app><head><meta charset="utf-8"><meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"><meta content="Heather" name="description"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="../atom.xml" title="Heather" type="application/atom+xml" rel="alternate"><link href="../favicon.ico" type="image/ico" rel="shortcut icon"><script src="../bootstrap/jquery-2.1.1.min.js"></script><link href="../bootstrap/bootstrap.min.css" rel="stylesheet"><link href="../bootstrap/bootstrap-theme.min.css" rel="stylesheet"><script src="../bootstrap/bootstrap.min.js"></script><script src="../bootstrap/angular.min.js"></script><link href="../css/hasklig.css" media="all" type="text/css" rel="stylesheet"><link href="../css/octicons.css" media="all" type="text/css" rel="stylesheet"><link href="../css/syntax.css" media="all" type="text/css" rel="stylesheet"><link href="../css/default.css" media="all" type="text/css" rel="stylesheet"><title>Heather - Imperative bits of Haskell</title><script src="../js/auto.js"></script></head><body><div class="band"></div><div id="header"><div id="logo"><a href="../" id="abbr"></a><script>e = document.getElementById("abbr");setTimeout(r, 0);</script></div></div><div id="content"><h1>Imperative bits of Haskell</h1><audio autoplay loop id="audio"><source src="../images/Bween.mp3" type="audio/mp3"></audio><div id="controls"><img height="20px" width="20px" src="../images/RedPause.png" id="playpause"></div><div class="info">Posted on 20 October 2014</div><p>Haskell is purely functional. However sometimes people (and me also) need some imperative bits with various reasons: sometimes it could be performance, sometimes simpler design, etc… However even being purely functional Haskell is very good imperative language.</p>
 <h2 id="data.ioref">Data.IORef</h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">test1 ::</span> (<span class="dt">PlusPlus</span> a, <span class="dt">Show</span> a) <span class="ot">=&gt;</span> <span class="dt">IORef</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
-test1 a <span class="fu">=</span> <span class="kw">do</span> (a <span class="fu">++</span>); (a <span class="fu">++</span>); print a
-
-main <span class="fu">=</span> <span class="kw">do</span> 
-    test1 <span class="fu">=&lt;&lt;</span> int <span class="dv">1</span>
-    test1 <span class="fu">=&lt;&lt;</span> float <span class="fl">1.0</span>
-    x <span class="ot">&lt;-</span> int <span class="dv">1</span>
-    x <span class="fu">+=</span> <span class="dv">4</span>
-    x <span class="fu">-=</span> <span class="dv">2</span>
-    print x</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb1-1" title="1"><span class="ot">test1 ::</span> (<span class="dt">PlusPlus</span> a, <span class="dt">Show</span> a) <span class="ot">=&gt;</span> <span class="dt">IORef</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb1-2" title="2">test1 a <span class="fu">=</span> <span class="kw">do</span> (a <span class="fu">++</span>); (a <span class="fu">++</span>); <span class="fu">print</span> a</a>
+<a class="sourceLine" id="cb1-3" title="3"></a>
+<a class="sourceLine" id="cb1-4" title="4">main <span class="fu">=</span> <span class="kw">do</span> </a>
+<a class="sourceLine" id="cb1-5" title="5">    test1 <span class="fu">=&lt;&lt;</span> int <span class="dv">1</span></a>
+<a class="sourceLine" id="cb1-6" title="6">    test1 <span class="fu">=&lt;&lt;</span> float <span class="fl">1.0</span></a>
+<a class="sourceLine" id="cb1-7" title="7">    x <span class="ot">&lt;-</span> int <span class="dv">1</span></a>
+<a class="sourceLine" id="cb1-8" title="8">    x <span class="fu">+=</span> <span class="dv">4</span></a>
+<a class="sourceLine" id="cb1-9" title="9">    x <span class="fu">-=</span> <span class="dv">2</span></a>
+<a class="sourceLine" id="cb1-10" title="10">    <span class="fu">print</span> x</a></code></pre></div>
 <p>realization <a href="https://github.com/Heather/io-ref-tests/blob/master/src/Haskellplusplus.hs">source</a>:</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">int ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">IORef</span> <span class="dt">Int</span>)
-int x <span class="fu">=</span> newIORef x
-
-<span class="ot">float ::</span> <span class="dt">Float</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">IORef</span> <span class="dt">Float</span>)
-float x <span class="fu">=</span> newIORef x
-
-<span class="kw">class</span> <span class="dt">PlusPlus</span> a  <span class="kw">where</span>
-<span class="ot">   (++) ::</span> <span class="dt">IORef</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
-<span class="ot">   (+=) ::</span> <span class="dt">IORef</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
-<span class="ot">   (-=) ::</span> <span class="dt">IORef</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
-<span class="ot">   print ::</span> <span class="dt">IORef</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> ()
-
-<span class="kw">instance</span> <span class="dt">PlusPlus</span> <span class="dt">Int</span> <span class="kw">where</span>
-   (<span class="fu">++</span>) r <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;    writeIORef r <span class="fu">$</span> x <span class="fu">+</span> <span class="dv">1</span>
-   (<span class="fu">+=</span>) r v <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;  writeIORef r <span class="fu">$</span> x <span class="fu">+</span> v
-   (<span class="fu">-=</span>) r v <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;  writeIORef r <span class="fu">$</span> x <span class="fu">-</span> v
-   print r <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;    P.print <span class="fu">$</span> P.show x
-
-<span class="kw">instance</span> <span class="dt">PlusPlus</span> <span class="dt">Float</span> <span class="kw">where</span>
-   (<span class="fu">++</span>) r <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;    writeIORef r <span class="fu">$</span> x <span class="fu">+</span> <span class="fl">1.0</span>
-   (<span class="fu">+=</span>) r v <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;  writeIORef r <span class="fu">$</span> x <span class="fu">+</span> v
-   (<span class="fu">-=</span>) r v <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;  writeIORef r <span class="fu">$</span> x <span class="fu">-</span> v
-   print r <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;    P.print <span class="fu">$</span> P.show x</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" title="1"><span class="ot">int ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">IORef</span> <span class="dt">Int</span>)</a>
+<a class="sourceLine" id="cb2-2" title="2">int x <span class="fu">=</span> newIORef x</a>
+<a class="sourceLine" id="cb2-3" title="3"></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="ot">float ::</span> <span class="dt">Float</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> (<span class="dt">IORef</span> <span class="dt">Float</span>)</a>
+<a class="sourceLine" id="cb2-5" title="5">float x <span class="fu">=</span> newIORef x</a>
+<a class="sourceLine" id="cb2-6" title="6"></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="kw">class</span> <span class="dt">PlusPlus</span> a  <span class="kw">where</span></a>
+<a class="sourceLine" id="cb2-8" title="8"><span class="ot">   (++) ::</span> <span class="dt">IORef</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="ot">   (+=) ::</span> <span class="dt">IORef</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb2-10" title="10"><span class="ot">   (-=) ::</span> <span class="dt">IORef</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb2-11" title="11"><span class="ot">   print ::</span> <span class="dt">IORef</span> a <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb2-12" title="12"></a>
+<a class="sourceLine" id="cb2-13" title="13"><span class="kw">instance</span> <span class="dt">PlusPlus</span> <span class="dt">Int</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb2-14" title="14">   (<span class="fu">++</span>) r <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;    writeIORef r <span class="fu">$</span> x <span class="fu">+</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-15" title="15">   (<span class="fu">+=</span>) r v <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;  writeIORef r <span class="fu">$</span> x <span class="fu">+</span> v</a>
+<a class="sourceLine" id="cb2-16" title="16">   (<span class="fu">-=</span>) r v <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;  writeIORef r <span class="fu">$</span> x <span class="fu">-</span> v</a>
+<a class="sourceLine" id="cb2-17" title="17">   <span class="fu">print</span> r <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;    P.print <span class="fu">$</span> P.show x</a>
+<a class="sourceLine" id="cb2-18" title="18"></a>
+<a class="sourceLine" id="cb2-19" title="19"><span class="kw">instance</span> <span class="dt">PlusPlus</span> <span class="dt">Float</span> <span class="kw">where</span></a>
+<a class="sourceLine" id="cb2-20" title="20">   (<span class="fu">++</span>) r <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;    writeIORef r <span class="fu">$</span> x <span class="fu">+</span> <span class="fl">1.0</span></a>
+<a class="sourceLine" id="cb2-21" title="21">   (<span class="fu">+=</span>) r v <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;  writeIORef r <span class="fu">$</span> x <span class="fu">+</span> v</a>
+<a class="sourceLine" id="cb2-22" title="22">   (<span class="fu">-=</span>) r v <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;  writeIORef r <span class="fu">$</span> x <span class="fu">-</span> v</a>
+<a class="sourceLine" id="cb2-23" title="23">   <span class="fu">print</span> r <span class="fu">=</span> <span class="kw">do</span> x <span class="ot">&lt;-</span> readIORef r;    P.print <span class="fu">$</span> P.show x</a></code></pre></div>
 <p>However Haskell supports it out from the box! <br /> <a href="http://www.haskell.org/haskellwiki/Library/ArrayRef#Syntax_sugar_for_mutable_types">Syntax sugar for mutable types</a></p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">main <span class="fu">=</span> <span class="kw">do</span> <span class="co">-- syntax sugar used for reference:</span>
-          x <span class="ot">&lt;-</span> ref (<span class="dv">0</span><span class="ot">::</span><span class="dt">Int</span>)
-          x <span class="fu">+=</span> <span class="dv">1</span>
-          x <span class="fu">.=</span> (<span class="fu">*</span><span class="dv">2</span>)
-          a <span class="ot">&lt;-</span> val x
-          print a
- 
-          <span class="co">-- syntax sugar used for array:</span>
-          arr <span class="ot">&lt;-</span> newArray (<span class="dv">0</span>,<span class="dv">9</span>) <span class="dv">0</span><span class="ot"> ::</span> <span class="dt">IO</span> <span class="dt">Array</span> <span class="dt">Int</span> <span class="dt">Int</span>
-          (arr,<span class="dv">0</span>) <span class="fu">=:</span> <span class="dv">1</span>
-          b <span class="ot">&lt;-</span> val (arr,<span class="dv">0</span>)
-          print b</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb3-1" title="1">main <span class="fu">=</span> <span class="kw">do</span> <span class="co">-- syntax sugar used for reference:</span></a>
+<a class="sourceLine" id="cb3-2" title="2">          x <span class="ot">&lt;-</span> ref (<span class="dv">0</span><span class="ot">::</span><span class="dt">Int</span>)</a>
+<a class="sourceLine" id="cb3-3" title="3">          x <span class="fu">+=</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb3-4" title="4">          x <span class="fu">.=</span> (<span class="fu">*</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb3-5" title="5">          a <span class="ot">&lt;-</span> val x</a>
+<a class="sourceLine" id="cb3-6" title="6">          <span class="fu">print</span> a</a>
+<a class="sourceLine" id="cb3-7" title="7"> </a>
+<a class="sourceLine" id="cb3-8" title="8">          <span class="co">-- syntax sugar used for array:</span></a>
+<a class="sourceLine" id="cb3-9" title="9">          arr <span class="ot">&lt;-</span> newArray (<span class="dv">0</span>,<span class="dv">9</span>) <span class="dv">0</span><span class="ot"> ::</span> <span class="dt">IO</span> <span class="dt">Array</span> <span class="dt">Int</span> <span class="dt">Int</span></a>
+<a class="sourceLine" id="cb3-10" title="10">          (arr,<span class="dv">0</span>) <span class="fu">=:</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb3-11" title="11">          b <span class="ot">&lt;-</span> val (arr,<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb3-12" title="12">          <span class="fu">print</span> b</a></code></pre></div>
 <h2 id="better-example-with-c-operators">Better example with C operators:</h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">for' ( a <span class="fu">=:</span> <span class="dt">Lit</span> <span class="dv">1</span> , a <span class="fu">&lt;.</span> <span class="dt">Lit</span> <span class="dv">11</span> , a <span class="fu">+=:</span> <span class="dt">Lit</span> <span class="dv">1</span> ) <span class="fu">$</span> <span class="kw">do</span> {
-    b <span class="ot">&lt;-</span> new <span class="dv">0</span>;
-    b <span class="fu">=:</span> a;
-    defer' <span class="fu">$</span> <span class="kw">do</span> {
-       print' b;
-    };
-    n <span class="fu">*=:</span> a;
-    if' ( a <span class="fu">&lt;.</span> <span class="dt">Lit</span> <span class="dv">5</span>)
-        continue';
-    if' ( a <span class="fu">&gt;.</span> <span class="dt">Lit</span> <span class="dv">2</span>) 
-        break';
-    return' a;
-}</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb4-1" title="1">for' ( a <span class="fu">=:</span> <span class="dt">Lit</span> <span class="dv">1</span> , a <span class="fu">&lt;.</span> <span class="dt">Lit</span> <span class="dv">11</span> , a <span class="fu">+=:</span> <span class="dt">Lit</span> <span class="dv">1</span> ) <span class="fu">$</span> <span class="kw">do</span> {</a>
+<a class="sourceLine" id="cb4-2" title="2">    b <span class="ot">&lt;-</span> new <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb4-3" title="3">    b <span class="fu">=:</span> a;</a>
+<a class="sourceLine" id="cb4-4" title="4">    defer' <span class="fu">$</span> <span class="kw">do</span> {</a>
+<a class="sourceLine" id="cb4-5" title="5">       print' b;</a>
+<a class="sourceLine" id="cb4-6" title="6">    };</a>
+<a class="sourceLine" id="cb4-7" title="7">    n <span class="fu">*=:</span> a;</a>
+<a class="sourceLine" id="cb4-8" title="8">    if' ( a <span class="fu">&lt;.</span> <span class="dt">Lit</span> <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb4-9" title="9">        continue';</a>
+<a class="sourceLine" id="cb4-10" title="10">    if' ( a <span class="fu">&gt;.</span> <span class="dt">Lit</span> <span class="dv">2</span>) </a>
+<a class="sourceLine" id="cb4-11" title="11">        break';</a>
+<a class="sourceLine" id="cb4-12" title="12">    return' a;</a>
+<a class="sourceLine" id="cb4-13" title="13">}</a></code></pre></div>
 <p>realization <a href="https://github.com/mmirman/ImperativeHaskell/blob/master/Control/Monad/Imperative/Internals.hs">source</a>:</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="co">-- | @'for''(init, check, incr)@ acts like its imperative @for@ counterpart</span>
-<span class="ot">for' ::</span> (<span class="dt">CState</span> i, <span class="dt">HasValue</span> r (<span class="dt">V</span> b r) i, <span class="dt">HasValue</span> r valt <span class="dt">TyInLoop</span>) <span class="ot">=&gt;</span> (<span class="dt">MIO</span> i r irr1, <span class="dt">V</span> b r <span class="dt">Bool</span>, <span class="dt">MIO</span> i r irr2) <span class="ot">-&gt;</span> valt () <span class="ot">-&gt;</span> <span class="dt">MIO</span> i r ()
-for' (init, check, incr) body <span class="fu">=</span> init <span class="fu">&gt;&gt;</span> for_r
-    <span class="kw">where</span> for_r <span class="fu">=</span> <span class="kw">do</span>
-            do_comp <span class="ot">&lt;-</span> val check
-            when do_comp <span class="fu">$</span> callCC <span class="fu">$</span> \break_foo <span class="ot">-&gt;</span> <span class="kw">do</span>
-                           callCC <span class="fu">$</span> \continue_foo <span class="ot">-&gt;</span> <span class="dt">MIO</span> <span class="fu">$</span>
-                             wrapState (getMIO <span class="fu">$</span> val body) statefulRetCont <span class="fu">$</span> \inbod <span class="ot">-&gt;</span> 
-                                <span class="dt">InLoop</span> (toLoop <span class="fu">$</span> break_foo ()) (toLoop <span class="fu">$</span> continue_foo ()) (getReturn inbod)
-                           incr
-                           for_r</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb5-1" title="1"><span class="co">-- | @'for''(init, check, incr)@ acts like its imperative @for@ counterpart</span></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="ot">for' ::</span> (<span class="dt">CState</span> i, <span class="dt">HasValue</span> r (<span class="dt">V</span> b r) i, <span class="dt">HasValue</span> r valt <span class="dt">TyInLoop</span>) <span class="ot">=&gt;</span> (<span class="dt">MIO</span> i r irr1, <span class="dt">V</span> b r <span class="dt">Bool</span>, <span class="dt">MIO</span> i r irr2) <span class="ot">-&gt;</span> valt () <span class="ot">-&gt;</span> <span class="dt">MIO</span> i r ()</a>
+<a class="sourceLine" id="cb5-3" title="3">for' (<span class="fu">init</span>, check, incr) body <span class="fu">=</span> <span class="fu">init</span> <span class="fu">&gt;&gt;</span> for_r</a>
+<a class="sourceLine" id="cb5-4" title="4">    <span class="kw">where</span> for_r <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb5-5" title="5">            do_comp <span class="ot">&lt;-</span> val check</a>
+<a class="sourceLine" id="cb5-6" title="6">            when do_comp <span class="fu">$</span> callCC <span class="fu">$</span> \break_foo <span class="ot">-&gt;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb5-7" title="7">                           callCC <span class="fu">$</span> \continue_foo <span class="ot">-&gt;</span> <span class="dt">MIO</span> <span class="fu">$</span></a>
+<a class="sourceLine" id="cb5-8" title="8">                             wrapState (getMIO <span class="fu">$</span> val body) statefulRetCont <span class="fu">$</span> \inbod <span class="ot">-&gt;</span> </a>
+<a class="sourceLine" id="cb5-9" title="9">                                <span class="dt">InLoop</span> (toLoop <span class="fu">$</span> break_foo ()) (toLoop <span class="fu">$</span> continue_foo ()) (getReturn inbod)</a>
+<a class="sourceLine" id="cb5-10" title="10">                           incr</a>
+<a class="sourceLine" id="cb5-11" title="11">                           for_r</a></code></pre></div>
 <h2 id="stref-source">STRef <a href="http://en.wikibooks.org/wiki/Haskell/Mutable_objects">source</a></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">Control.Monad.ST</span>
-<span class="kw">import </span><span class="dt">Data.STRef</span>
-<span class="kw">import </span><span class="dt">Data.Map</span>(<span class="dt">Map</span>)
-<span class="kw">import qualified</span> <span class="dt">Data.Map</span> <span class="kw">as</span> <span class="dt">M</span>
-<span class="kw">import </span><span class="dt">Data.Monoid</span>(<span class="dt">Monoid</span>(..))
-
-<span class="ot">memo ::</span> (<span class="dt">Ord</span> a) <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> <span class="dt">ST</span> s (a <span class="ot">-&gt;</span> <span class="dt">ST</span> s b)
-memo f <span class="fu">=</span> <span class="kw">do</span> m <span class="ot">&lt;-</span> newMemo
-            return (withMemo m f)
-
-<span class="kw">newtype</span> <span class="dt">Memo</span> s a b <span class="fu">=</span> <span class="dt">Memo</span> (<span class="dt">STRef</span> s (<span class="dt">Map</span> a b))
-
-<span class="ot">newMemo ::</span> (<span class="dt">Ord</span> a) <span class="ot">=&gt;</span> <span class="dt">ST</span> s (<span class="dt">Memo</span> s a b)
-newMemo <span class="fu">=</span> <span class="dt">Memo</span> <span class="ot">`fmap`</span> newSTRef mempty
-
-<span class="ot">withMemo ::</span> (<span class="dt">Ord</span> a) <span class="ot">=&gt;</span> <span class="dt">Memo</span> s a b <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">ST</span> s b)
-withMemo (<span class="dt">Memo</span> r) f a <span class="fu">=</span> <span class="kw">do</span> m <span class="ot">&lt;-</span> readSTRef r
-                           <span class="kw">case</span> M.lookup a m <span class="kw">of</span>
-                             <span class="dt">Just</span> b <span class="ot">-&gt;</span> return b
-                             <span class="dt">Nothing</span> <span class="ot">-&gt;</span> <span class="kw">do</span> <span class="kw">let</span> b <span class="fu">=</span> f a
-                                           writeSTRef r (M.insert a b m)
-                                           return b</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">import</span> <span class="dt">Control.Monad.ST</span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw">import</span> <span class="dt">Data.STRef</span></a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="kw">import</span> <span class="dt">Data.Map</span>(<span class="dt">Map</span>)</a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="kw">import</span> <span class="kw">qualified</span> <span class="dt">Data.Map</span> <span class="kw">as</span> <span class="dt">M</span></a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="kw">import</span> <span class="dt">Data.Monoid</span>(<span class="dt">Monoid</span>(..))</a>
+<a class="sourceLine" id="cb6-6" title="6"></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="ot">memo ::</span> (<span class="dt">Ord</span> a) <span class="ot">=&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> <span class="dt">ST</span> s (a <span class="ot">-&gt;</span> <span class="dt">ST</span> s b)</a>
+<a class="sourceLine" id="cb6-8" title="8">memo f <span class="fu">=</span> <span class="kw">do</span> m <span class="ot">&lt;-</span> newMemo</a>
+<a class="sourceLine" id="cb6-9" title="9">            <span class="fu">return</span> (withMemo m f)</a>
+<a class="sourceLine" id="cb6-10" title="10"></a>
+<a class="sourceLine" id="cb6-11" title="11"><span class="kw">newtype</span> <span class="dt">Memo</span> s a b <span class="fu">=</span> <span class="dt">Memo</span> (<span class="dt">STRef</span> s (<span class="dt">Map</span> a b))</a>
+<a class="sourceLine" id="cb6-12" title="12"></a>
+<a class="sourceLine" id="cb6-13" title="13"><span class="ot">newMemo ::</span> (<span class="dt">Ord</span> a) <span class="ot">=&gt;</span> <span class="dt">ST</span> s (<span class="dt">Memo</span> s a b)</a>
+<a class="sourceLine" id="cb6-14" title="14">newMemo <span class="fu">=</span> <span class="dt">Memo</span> <span class="ot">`fmap`</span> newSTRef <span class="fu">mempty</span></a>
+<a class="sourceLine" id="cb6-15" title="15"></a>
+<a class="sourceLine" id="cb6-16" title="16"><span class="ot">withMemo ::</span> (<span class="dt">Ord</span> a) <span class="ot">=&gt;</span> <span class="dt">Memo</span> s a b <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> (a <span class="ot">-&gt;</span> <span class="dt">ST</span> s b)</a>
+<a class="sourceLine" id="cb6-17" title="17">withMemo (<span class="dt">Memo</span> r) f a <span class="fu">=</span> <span class="kw">do</span> m <span class="ot">&lt;-</span> readSTRef r</a>
+<a class="sourceLine" id="cb6-18" title="18">                           <span class="kw">case</span> M.lookup a m <span class="kw">of</span></a>
+<a class="sourceLine" id="cb6-19" title="19">                             <span class="dt">Just</span> b <span class="ot">-&gt;</span> <span class="fu">return</span> b</a>
+<a class="sourceLine" id="cb6-20" title="20">                             <span class="dt">Nothing</span> <span class="ot">-&gt;</span> <span class="kw">do</span> <span class="kw">let</span> b <span class="fu">=</span> f a</a>
+<a class="sourceLine" id="cb6-21" title="21">                                           writeSTRef r (M.insert a b m)</a>
+<a class="sourceLine" id="cb6-22" title="22">                                           <span class="fu">return</span> b</a></code></pre></div>
 <h2 id="data.vector.mutable-hackage">Data.Vector.Mutable <a href="http://hackage.haskell.org/package/vector-0.9.1/docs/Data-Vector-Mutable.html">hackage</a></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import qualified</span> <span class="dt">Data.Vector.Unboxed.Mutable</span> <span class="kw">as</span> <span class="dt">M</span>
-
-main <span class="fu">=</span> <span class="kw">do</span>
-    v <span class="ot">&lt;-</span> M.new <span class="dv">10</span>
-    M.write v <span class="dv">0</span> (<span class="dv">3</span><span class="ot"> ::</span> <span class="dt">Int</span>)
-    x <span class="ot">&lt;-</span> M.read v <span class="dv">0</span>
-    print x</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">import</span> <span class="kw">qualified</span> <span class="dt">Data.Vector.Unboxed.Mutable</span> <span class="kw">as</span> <span class="dt">M</span></a>
+<a class="sourceLine" id="cb7-2" title="2"></a>
+<a class="sourceLine" id="cb7-3" title="3">main <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb7-4" title="4">    v <span class="ot">&lt;-</span> M.new <span class="dv">10</span></a>
+<a class="sourceLine" id="cb7-5" title="5">    M.write v <span class="dv">0</span> (<span class="dv">3</span><span class="ot"> ::</span> <span class="dt">Int</span>)</a>
+<a class="sourceLine" id="cb7-6" title="6">    x <span class="ot">&lt;-</span> M.read v <span class="dv">0</span></a>
+<a class="sourceLine" id="cb7-7" title="7">    <span class="fu">print</span> x</a></code></pre></div>
 <h2 id="arrayref-hackage">ArrayRef <a href="http://hackage.haskell.org/package/ArrayRef-0.1.3.1/src/Examples/Array/Dynamic.hs">hackage</a></h2>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">Data.ArrayBZ.Dynamic</span>
-
-main <span class="fu">=</span> <span class="kw">do</span> <span class="co">-- This array will grow at least two times each time when index is out of bounds,</span>
-          <span class="co">-- because it is created using `newDynamicArray growTwoTimes`</span>
-          arr <span class="ot">&lt;-</span> newDynamicArray growTwoTimes (<span class="dv">0</span>,<span class="fu">-</span><span class="dv">1</span>) <span class="dv">99</span><span class="ot"> ::</span> <span class="dt">IO</span> (<span class="dt">DynamicIOArray</span> <span class="dt">Int</span> <span class="dt">Int</span>)
-          <span class="co">-- At this moment the array is empty</span>
-          printArray arr
-
-          <span class="co">-- During this cycle the array extended 3 times</span>
-          for [<span class="dv">0</span><span class="fu">..</span><span class="dv">5</span>] <span class="fu">$</span> \i <span class="ot">-&gt;</span>
-             writeArray arr i i
-          printArray arr
-
-          <span class="co">-- During this cycle the array extended one more time</span>
-          for [<span class="fu">-</span><span class="dv">5</span> <span class="fu">..</span> <span class="fu">-</span><span class="dv">1</span>] <span class="fu">$</span> \i <span class="ot">-&gt;</span>
-             writeArray arr i i
-          printArray arr
-
-          <span class="co">-- Operation that explicitly resizes the array</span>
-          resizeDynamicArray arr (<span class="dv">3</span>,<span class="dv">15</span>)
-          printArray arr
-
-          <span class="co">-- This array will not grow automatically because it is created using `newArray`,</span>
-          <span class="co">-- but it can be resized explicitly using `resizeDynamicArray`</span>
-          arr <span class="ot">&lt;-</span> newArray (<span class="dv">0</span>,<span class="fu">-</span><span class="dv">1</span>) <span class="dv">99</span><span class="ot"> ::</span> <span class="dt">IO</span> (<span class="dt">DynamicIOArray</span> <span class="dt">Int</span> <span class="dt">Int</span>)
-          resizeDynamicArray arr (<span class="dv">0</span>,<span class="dv">0</span>)
-          printArray arr
-          writeArray arr <span class="dv">1</span> <span class="dv">1</span>  <span class="co">-- this operation raises error</span>
-
-printArray arr <span class="fu">=</span> <span class="kw">do</span>
-          bounds   <span class="ot">&lt;-</span> getBounds arr
-          contents <span class="ot">&lt;-</span> getElems  arr
-          putStrLn (show bounds<span class="fu">++</span><span class="st">&quot; : &quot;</span><span class="fu">++</span>show contents)
-
-for list action <span class="fu">=</span> mapM_ action list</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">import</span> <span class="dt">Data.ArrayBZ.Dynamic</span></a>
+<a class="sourceLine" id="cb8-2" title="2"></a>
+<a class="sourceLine" id="cb8-3" title="3">main <span class="fu">=</span> <span class="kw">do</span> <span class="co">-- This array will grow at least two times each time when index is out of bounds,</span></a>
+<a class="sourceLine" id="cb8-4" title="4">          <span class="co">-- because it is created using `newDynamicArray growTwoTimes`</span></a>
+<a class="sourceLine" id="cb8-5" title="5">          arr <span class="ot">&lt;-</span> newDynamicArray growTwoTimes (<span class="dv">0</span>,<span class="fu">-</span><span class="dv">1</span>) <span class="dv">99</span><span class="ot"> ::</span> <span class="dt">IO</span> (<span class="dt">DynamicIOArray</span> <span class="dt">Int</span> <span class="dt">Int</span>)</a>
+<a class="sourceLine" id="cb8-6" title="6">          <span class="co">-- At this moment the array is empty</span></a>
+<a class="sourceLine" id="cb8-7" title="7">          printArray arr</a>
+<a class="sourceLine" id="cb8-8" title="8"></a>
+<a class="sourceLine" id="cb8-9" title="9">          <span class="co">-- During this cycle the array extended 3 times</span></a>
+<a class="sourceLine" id="cb8-10" title="10">          for [<span class="dv">0</span><span class="fu">..</span><span class="dv">5</span>] <span class="fu">$</span> \i <span class="ot">-&gt;</span></a>
+<a class="sourceLine" id="cb8-11" title="11">             writeArray arr i i</a>
+<a class="sourceLine" id="cb8-12" title="12">          printArray arr</a>
+<a class="sourceLine" id="cb8-13" title="13"></a>
+<a class="sourceLine" id="cb8-14" title="14">          <span class="co">-- During this cycle the array extended one more time</span></a>
+<a class="sourceLine" id="cb8-15" title="15">          for [<span class="fu">-</span><span class="dv">5</span> <span class="fu">..</span> <span class="fu">-</span><span class="dv">1</span>] <span class="fu">$</span> \i <span class="ot">-&gt;</span></a>
+<a class="sourceLine" id="cb8-16" title="16">             writeArray arr i i</a>
+<a class="sourceLine" id="cb8-17" title="17">          printArray arr</a>
+<a class="sourceLine" id="cb8-18" title="18"></a>
+<a class="sourceLine" id="cb8-19" title="19">          <span class="co">-- Operation that explicitly resizes the array</span></a>
+<a class="sourceLine" id="cb8-20" title="20">          resizeDynamicArray arr (<span class="dv">3</span>,<span class="dv">15</span>)</a>
+<a class="sourceLine" id="cb8-21" title="21">          printArray arr</a>
+<a class="sourceLine" id="cb8-22" title="22"></a>
+<a class="sourceLine" id="cb8-23" title="23">          <span class="co">-- This array will not grow automatically because it is created using `newArray`,</span></a>
+<a class="sourceLine" id="cb8-24" title="24">          <span class="co">-- but it can be resized explicitly using `resizeDynamicArray`</span></a>
+<a class="sourceLine" id="cb8-25" title="25">          arr <span class="ot">&lt;-</span> newArray (<span class="dv">0</span>,<span class="fu">-</span><span class="dv">1</span>) <span class="dv">99</span><span class="ot"> ::</span> <span class="dt">IO</span> (<span class="dt">DynamicIOArray</span> <span class="dt">Int</span> <span class="dt">Int</span>)</a>
+<a class="sourceLine" id="cb8-26" title="26">          resizeDynamicArray arr (<span class="dv">0</span>,<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb8-27" title="27">          printArray arr</a>
+<a class="sourceLine" id="cb8-28" title="28">          writeArray arr <span class="dv">1</span> <span class="dv">1</span>  <span class="co">-- this operation raises error</span></a>
+<a class="sourceLine" id="cb8-29" title="29"></a>
+<a class="sourceLine" id="cb8-30" title="30">printArray arr <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb8-31" title="31">          bounds   <span class="ot">&lt;-</span> getBounds arr</a>
+<a class="sourceLine" id="cb8-32" title="32">          contents <span class="ot">&lt;-</span> getElems  arr</a>
+<a class="sourceLine" id="cb8-33" title="33">          <span class="fu">putStrLn</span> (<span class="fu">show</span> bounds<span class="fu">++</span><span class="st">&quot; : &quot;</span><span class="fu">++show</span> contents)</a>
+<a class="sourceLine" id="cb8-34" title="34"></a>
+<a class="sourceLine" id="cb8-35" title="35">for list action <span class="fu">=</span> <span class="fu">mapM_</span> action list</a></code></pre></div>
 <h2 id="data.array.storable-hackage">Data.Array.Storable <a href="http://www.haskell.org/ghc/docs/latest/html/libraries/array/Data-Array-Storable.html">hackage</a></h2>
 <p>A storable array is an IO-mutable array which stores its contents in a contiguous memory block living in the C heap. Elements are stored according to the class Storable. You can obtain the pointer to the array contents to manipulate elements from languages like C.</p>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">{-# OPTIONS_GHC -fglasgow-exts #-}</span>
-<span class="kw">import </span><span class="dt">Data.Array.Storable</span>
-<span class="kw">import </span><span class="dt">Foreign.Ptr</span>
-<span class="kw">import </span><span class="dt">Foreign.C.Types</span>
- 
-main <span class="fu">=</span> <span class="kw">do</span> arr <span class="ot">&lt;-</span> newArray (<span class="dv">1</span>,<span class="dv">10</span>) <span class="dv">37</span><span class="ot"> ::</span> <span class="dt">IO</span> (<span class="dt">StorableArray</span> <span class="dt">Int</span> <span class="dt">Int</span>)
-           a <span class="ot">&lt;-</span> readArray arr <span class="dv">1</span>
-           withStorableArray arr 
-               (\ptr <span class="ot">-&gt;</span> memset ptr <span class="dv">0</span> <span class="dv">40</span>)
-           b <span class="ot">&lt;-</span> readArray arr <span class="dv">1</span>
-           print (a,b)
- 
-foreign <span class="kw">import </span>ccall unsafe &quot;string.h&quot; 
-<span class="ot">     memset  ::</span> <span class="dt">Ptr</span> a <span class="ot">-&gt;</span> <span class="dt">CInt</span> <span class="ot">-&gt;</span> <span class="dt">CSize</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb9-1" title="1"><span class="ot">{-# OPTIONS_GHC -fglasgow-exts #-}</span></a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="kw">import</span> <span class="dt">Data.Array.Storable</span></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="kw">import</span> <span class="dt">Foreign.Ptr</span></a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="kw">import</span> <span class="dt">Foreign.C.Types</span></a>
+<a class="sourceLine" id="cb9-5" title="5"> </a>
+<a class="sourceLine" id="cb9-6" title="6">main <span class="fu">=</span> <span class="kw">do</span> arr <span class="ot">&lt;-</span> newArray (<span class="dv">1</span>,<span class="dv">10</span>) <span class="dv">37</span><span class="ot"> ::</span> <span class="dt">IO</span> (<span class="dt">StorableArray</span> <span class="dt">Int</span> <span class="dt">Int</span>)</a>
+<a class="sourceLine" id="cb9-7" title="7">           a <span class="ot">&lt;-</span> readArray arr <span class="dv">1</span></a>
+<a class="sourceLine" id="cb9-8" title="8">           withStorableArray arr </a>
+<a class="sourceLine" id="cb9-9" title="9">               (\ptr <span class="ot">-&gt;</span> memset ptr <span class="dv">0</span> <span class="dv">40</span>)</a>
+<a class="sourceLine" id="cb9-10" title="10">           b <span class="ot">&lt;-</span> readArray arr <span class="dv">1</span></a>
+<a class="sourceLine" id="cb9-11" title="11">           <span class="fu">print</span> (a,b)</a>
+<a class="sourceLine" id="cb9-12" title="12"> </a>
+<a class="sourceLine" id="cb9-13" title="13">foreign <span class="kw">import</span> ccall unsafe &quot;string.h&quot; </a>
+<a class="sourceLine" id="cb9-14" title="14"><span class="ot">     memset  ::</span> <span class="dt">Ptr</span> a <span class="ot">-&gt;</span> <span class="dt">CInt</span> <span class="ot">-&gt;</span> <span class="dt">CSize</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a></code></pre></div>
 <h2 id="finally-lens">Finally <a href="http://hackage.haskell.org/package/lens-1.7/docs/Control-Lens-Setter.html">Lens</a></h2>
 <ul>
 <li><a href="http://www.haskell.org/haskellwiki/LensBeginnersCheatsheet">LensBeginnersCheatsheet</a></li>
 <li><a href="https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-week/basic-lensing">FPComplete: Basic Lensing</a></li>
 <li><a href="http://adit.io/posts/2013-07-22-lenses-in-pictures.html">Lenses In Pictures</a></li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Point</span> <span class="fu">=</span> <span class="dt">Point</span> { _x,<span class="ot"> _y   ::</span> <span class="dt">Double</span> }
-<span class="kw">data</span> <span class="dt">Mario</span> <span class="fu">=</span> <span class="dt">Mario</span> {<span class="ot"> _location ::</span> <span class="dt">Point</span> }
-
-player1 <span class="fu">=</span> <span class="dt">Mario</span> (<span class="dt">Point</span> <span class="dv">0</span> <span class="dv">0</span>)
-
-location<span class="fu">.</span>x <span class="ot">`over`</span> (<span class="fu">+</span><span class="dv">10</span>) <span class="fu">$</span> player1</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">data</span> <span class="dt">Point</span> <span class="fu">=</span> <span class="dt">Point</span> { _x,<span class="ot"> _y   ::</span> <span class="dt">Double</span> }</a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="kw">data</span> <span class="dt">Mario</span> <span class="fu">=</span> <span class="dt">Mario</span> {<span class="ot"> _location ::</span> <span class="dt">Point</span> }</a>
+<a class="sourceLine" id="cb10-3" title="3"></a>
+<a class="sourceLine" id="cb10-4" title="4">player1 <span class="fu">=</span> <span class="dt">Mario</span> (<span class="dt">Point</span> <span class="dv">0</span> <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb10-5" title="5"></a>
+<a class="sourceLine" id="cb10-6" title="6">location<span class="fu">.</span>x <span class="ot">`over`</span> (<span class="fu">+</span><span class="dv">10</span>) <span class="fu">$</span> player1</a></code></pre></div>
 <p>Check out also:</p>
 <ul>
 <li><a href="http://code.haskell.org/~slyfox/2014-04-27-haskell-intro.pdf">Haskell: the best imperative programming language</a></li>
