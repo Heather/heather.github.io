@@ -34,7 +34,7 @@
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 <entry>
-    <title>Modern logging with C++ and Elasticsearch</title>
+    <title>Boost Log to Elasticsearch</title>
     <link href="http://heather.github.io/posts/2015-10-12-Modern%20Logging.html" />
     <id>http://heather.github.io/posts/2015-10-12-Modern%20Logging.html</id>
     <published>2015-10-12T00:00:00Z</published>
@@ -74,7 +74,7 @@
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 <entry>
-    <title>Python SmartShell</title>
+    <title>Wrap Environment variables with Python</title>
     <link href="http://heather.github.io/posts/2014-12-29-Python%20SmartShell.html" />
     <id>http://heather.github.io/posts/2014-12-29-Python%20SmartShell.html</id>
     <published>2014-12-29T00:00:00Z</published>

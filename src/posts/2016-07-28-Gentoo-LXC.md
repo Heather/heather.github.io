@@ -53,7 +53,7 @@ lxc.rootfs.backend = dir
 lxc.arch = amd64
 
 # set the hostname
-lxc.utsname = Cloyster
+lxc.utsname = server
 lxc.tty = 1
 
 #container set with shared portage

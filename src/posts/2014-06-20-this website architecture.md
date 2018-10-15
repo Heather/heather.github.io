@@ -1,5 +1,5 @@
 ---
-title: Blog architecture
+title: Blog Architecture
 ---
 
 It's just my Blog where I run all the possible experiments...
@@ -33,10 +33,10 @@ create ["index.html"] $ do
 
 My CSS made with [Clay](https://github.com/sebastiaanvisser/clay)
 
-> Clay is a CSS preprocessor like LESS and Sass, 
-> but implemented as an embedded domain specific language (EDSL) in Haskell. 
-> 
-> This means that all CSS selectors and style rules are first class Haskell functions, 
+> Clay is a CSS preprocessor like LESS and Sass,
+> but implemented as an embedded domain specific language (EDSL) in Haskell.
+>
+> This means that all CSS selectors and style rules are first class Haskell functions,
 > which makes reuse and composability easy.
 
 ``` haskell

@@ -1,5 +1,5 @@
 ---
-title: Python SmartShell
+title: Wrap Environment variables with Python
 ---
 
 <b>Task:</b> save modified Environment variable during calling different scripts in python

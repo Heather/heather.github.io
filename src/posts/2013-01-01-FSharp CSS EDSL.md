@@ -1,5 +1,5 @@
 ---
-title: Failess ':' CSS EDSL in FSharp
+title: CSS EDSL in FSharp
 ---
 
 [Failess](https://github.com/Heather/Failess) features:

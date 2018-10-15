@@ -1,11 +1,11 @@
 ---
-title: Modern logging with C++ and Elasticsearch
+title: Boost Log to Elasticsearch
 ---
 
 Elasticsearch
 =============
 
-[Elasticsearch](https://www.elastic.co/) is modern search engine. It's opensource and used by ebay, stackoverflow, etc...
+[Elasticsearch](https://www.elastic.co/) is search engine. It's opensource and used by ebay, stackoverflow, etc...
 I've used their 2.x branch because 3.x (master) version has incompatibility issues with their Visualization portal (Kibana)
 And there is logging there is very simple but with good plugins architecture logging service [Logstash](https://www.elastic.co/products/logstash)
 which has out-from-box integration with Elasticsearch. Very simple Logstash config status may look like this:
@@ -47,7 +47,7 @@ typedef boost::log::sinks::asynchronous_sink< boost::log::sinks::text_ostream_ba
 void init() {
     /// get global logger
     src::severity_logger< boost::log::trivial::severity_level > lg = x_logger::get();
-    
+
     /// init sinks
     boost::shared_ptr< file_sink > sink1(new file_sink(
         keywords::file_name = "%Y%m%d_%H%M%S_%5N.xml",
@@ -63,7 +63,7 @@ void init() {
     stream->connect("127.0.0.1", "666");
     backend->add_stream(stream);
     backend->auto_flush(true);
-    
+
     /// set xml format for file logger
     sink->locked_backend()->set_file_collector(sinks::file::make_collector(
         keywords::target = path,                        /*< the target directory >*/
@@ -110,4 +110,3 @@ P.S.
 ====
 
 Additional thanks to Chris Allen for [bloodhound](https://github.com/bitemyapp/bloodhound) for making it easy to have Haskell clients to those logs :P
-
