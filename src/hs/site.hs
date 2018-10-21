@@ -1,7 +1,5 @@
-{-# LANGUAGE
-    OverloadedStrings
-  , UnicodeSyntax
-  #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE UnicodeSyntax     #-}
 
 import           Control.Applicative        ((<$>))
 import           Control.Monad              (liftM)
@@ -18,7 +16,7 @@ import           Hakyll
 
 import           Text.Jasmine
 
-main :: IO ()
+main ∷ IO ()
 main = hakyll $ do
 
     match "images/*.tex" $ do
@@ -89,53 +87,53 @@ main = hakyll $ do
     match "templates/*" $ compile templateCompiler
 
   where
-    changeExtension :: FilePath → String → FilePath
+    changeExtension ∷ FilePath → String → FilePath
     changeExtension path = addExtension (dropExtension path)
 
-    toSrc :: String → String
+    toSrc ∷ String → String
     toSrc p = "src" </> changeExtension p ".html"
 
-    runGHC :: Compiler (Item String)
+    runGHC ∷ Compiler (Item String)
     runGHC = getResourceString >>= withItemBody (unixFilter "runghc" [])
 
-    runStylus :: Compiler (Item String)
+    runStylus ∷ Compiler (Item String)
     runStylus = liftM (fmap compressCss)
       (getResourceString >>=
        withItemBody (unixFilter "stylus" ["-s", "--scss"]))
 
-    runSweet :: Compiler (Item String)
+    runSweet ∷ Compiler (Item String)
     runSweet = liftM (fmap compressCss)
       (getResourceString >>=
        withItemBody (unixFilter "stylus" ["-s", "--scss"]))
 
-    compressJsCompiler :: Compiler (Item String)
+    compressJsCompiler ∷ Compiler (Item String)
     compressJsCompiler = fmap jasmin <$> getResourceString
 
-    jasmin :: String → String
+    jasmin ∷ String → String
     jasmin src = LB.unpack $ minify
                            $ LB.fromChunks [E.encodeUtf8 $ T.pack src]
 
 
-homeCtx :: Context String
+homeCtx ∷ Context String
 homeCtx =
     constField "title" "Home" `mappend`
     postCtx
 
-postCtx :: Context String
+postCtx ∷ Context String
 postCtx =
     dateField "date" "%e %B %Y" `mappend`
     defaultContext
 
-feedConfiguration :: FeedConfiguration
+feedConfiguration ∷ FeedConfiguration
 feedConfiguration = FeedConfiguration
-    { feedTitle       = "Heather"
+    { feedTitle       = "Cynede"
     , feedDescription = "blog"
-    , feedAuthorName  = "Heather"
-    , feedAuthorEmail = "heather@live.ru"
-    , feedRoot        = "http://heather.github.io"
+    , feedAuthorName  = "Cynede"
+    , feedAuthorEmail = "cynede@gentoo.org"
+    , feedRoot        = "https://dev.gentoo.org/~cynede/blog"
     }
 
-pdflatex :: Item String → Compiler (Item TmpFile)
+pdflatex ∷ Item String → Compiler (Item TmpFile)
 pdflatex item = do
     TmpFile texPath ← newTmpFile "pdflatex.tex"
     let tmpDir  = takeDirectory texPath
@@ -154,7 +152,7 @@ pdflatex item = do
         return ()
     makeItem $ TmpFile pdfPath
 
-pdfToPng :: Item TmpFile → Compiler (Item TmpFile)
+pdfToPng ∷ Item TmpFile → Compiler (Item TmpFile)
 pdfToPng item = do
     let TmpFile pdfPath = itemBody item
         pngPath         = replaceExtension pdfPath "png"

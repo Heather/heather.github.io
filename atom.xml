@@ -1,90 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <title>Heather</title>
-    <link href="http://heather.github.io/atom.xml" rel="self" />
-    <link href="http://heather.github.io" />
-    <id>http://heather.github.io/atom.xml</id>
+    <title>Cynede</title>
+    <link href="https://dev.gentoo.org/~cynede/blog/atom.xml" rel="self" />
+    <link href="https://dev.gentoo.org/~cynede/blog" />
+    <id>https://dev.gentoo.org/~cynede/blog/atom.xml</id>
     <author>
-        <name>Heather</name>
-        <email>heather@live.ru</email>
+        <name>Cynede</name>
+        <email>cynede@gentoo.org</email>
     </author>
     <updated>2016-07-28T00:00:00Z</updated>
     <entry>
     <title>LXC Containers Server with Gentoo, NetworkManager and Systemd</title>
-    <link href="http://heather.github.io/posts/2016-07-28-Gentoo-LXC.html" />
-    <id>http://heather.github.io/posts/2016-07-28-Gentoo-LXC.html</id>
+    <link href="https://dev.gentoo.org/~cynede/blog/posts/2016-07-28-Gentoo-LXC.html" />
+    <id>https://dev.gentoo.org/~cynede/blog/posts/2016-07-28-Gentoo-LXC.html</id>
     <published>2016-07-28T00:00:00Z</published>
     <updated>2016-07-28T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 <entry>
     <title>Small haskell utils</title>
-    <link href="http://heather.github.io/posts/2016-02-09-Shake%20it%20off%20%26%20Sharingan.html" />
-    <id>http://heather.github.io/posts/2016-02-09-Shake%20it%20off%20%26%20Sharingan.html</id>
+    <link href="https://dev.gentoo.org/~cynede/blog/posts/2016-02-09-Shake%20it%20off%20%26%20Sharingan.html" />
+    <id>https://dev.gentoo.org/~cynede/blog/posts/2016-02-09-Shake%20it%20off%20%26%20Sharingan.html</id>
     <published>2016-02-09T00:00:00Z</published>
     <updated>2016-02-09T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 <entry>
     <title>Haskell disorder</title>
-    <link href="http://heather.github.io/posts/2016-01-16-Haskell%20disorder.html" />
-    <id>http://heather.github.io/posts/2016-01-16-Haskell%20disorder.html</id>
+    <link href="https://dev.gentoo.org/~cynede/blog/posts/2016-01-16-Haskell%20disorder.html" />
+    <id>https://dev.gentoo.org/~cynede/blog/posts/2016-01-16-Haskell%20disorder.html</id>
     <published>2016-01-16T00:00:00Z</published>
     <updated>2016-01-16T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 <entry>
     <title>Boost Log to Elasticsearch</title>
-    <link href="http://heather.github.io/posts/2015-10-12-Modern%20Logging.html" />
-    <id>http://heather.github.io/posts/2015-10-12-Modern%20Logging.html</id>
+    <link href="https://dev.gentoo.org/~cynede/blog/posts/2015-10-12-Modern%20Logging.html" />
+    <id>https://dev.gentoo.org/~cynede/blog/posts/2015-10-12-Modern%20Logging.html</id>
     <published>2015-10-12T00:00:00Z</published>
     <updated>2015-10-12T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 <entry>
     <title>F# Light</title>
-    <link href="http://heather.github.io/posts/2015-08-27-FSharp%20Light.html" />
-    <id>http://heather.github.io/posts/2015-08-27-FSharp%20Light.html</id>
+    <link href="https://dev.gentoo.org/~cynede/blog/posts/2015-08-27-FSharp%20Light.html" />
+    <id>https://dev.gentoo.org/~cynede/blog/posts/2015-08-27-FSharp%20Light.html</id>
     <published>2015-08-27T00:00:00Z</published>
     <updated>2015-08-27T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 <entry>
     <title>Selling dependent types</title>
-    <link href="http://heather.github.io/posts/2015-03-27-Dependent%20Types.html" />
-    <id>http://heather.github.io/posts/2015-03-27-Dependent%20Types.html</id>
+    <link href="https://dev.gentoo.org/~cynede/blog/posts/2015-03-27-Dependent%20Types.html" />
+    <id>https://dev.gentoo.org/~cynede/blog/posts/2015-03-27-Dependent%20Types.html</id>
     <published>2015-03-27T00:00:00Z</published>
     <updated>2015-03-27T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 <entry>
     <title>Boost Application Interprocess with Qt Quick</title>
-    <link href="http://heather.github.io/posts/2015-02-07-Perfume.html" />
-    <id>http://heather.github.io/posts/2015-02-07-Perfume.html</id>
+    <link href="https://dev.gentoo.org/~cynede/blog/posts/2015-02-07-Perfume.html" />
+    <id>https://dev.gentoo.org/~cynede/blog/posts/2015-02-07-Perfume.html</id>
     <published>2015-02-07T00:00:00Z</published>
     <updated>2015-02-07T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 <entry>
     <title>Idris YAML (Usage)</title>
-    <link href="http://heather.github.io/posts/2015-01-19-Idris%20Yaml.html" />
-    <id>http://heather.github.io/posts/2015-01-19-Idris%20Yaml.html</id>
+    <link href="https://dev.gentoo.org/~cynede/blog/posts/2015-01-19-Idris%20Yaml.html" />
+    <id>https://dev.gentoo.org/~cynede/blog/posts/2015-01-19-Idris%20Yaml.html</id>
     <published>2015-01-19T00:00:00Z</published>
     <updated>2015-01-19T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 <entry>
     <title>Wrap Environment variables with Python</title>
-    <link href="http://heather.github.io/posts/2014-12-29-Python%20SmartShell.html" />
-    <id>http://heather.github.io/posts/2014-12-29-Python%20SmartShell.html</id>
+    <link href="https://dev.gentoo.org/~cynede/blog/posts/2014-12-29-Python%20SmartShell.html" />
+    <id>https://dev.gentoo.org/~cynede/blog/posts/2014-12-29-Python%20SmartShell.html</id>
     <published>2014-12-29T00:00:00Z</published>
     <updated>2014-12-29T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 <entry>
     <title>hjsmin JavaScript minifier for Hakyll</title>
-    <link href="http://heather.github.io/posts/2014-10-30-hjsmin.html" />
-    <id>http://heather.github.io/posts/2014-10-30-hjsmin.html</id>
+    <link href="https://dev.gentoo.org/~cynede/blog/posts/2014-10-30-hjsmin.html" />
+    <id>https://dev.gentoo.org/~cynede/blog/posts/2014-10-30-hjsmin.html</id>
     <published>2014-10-30T00:00:00Z</published>
     <updated>2014-10-30T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>

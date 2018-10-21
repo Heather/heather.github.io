@@ -1,7 +1,5 @@
-{-# LANGUAGE
-    OverloadedStrings
-  , UnicodeSyntax
-  #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE UnicodeSyntax     #-}
 
 module Main where
 
@@ -12,7 +10,7 @@ import qualified Data.Text.Lazy.IO  as TXT
 import           Clay
 import           Prelude            hiding (div, span)
 
-main :: IO ()
+main ∷ IO ()
 main =
   do args ← getArgs
      case args of
@@ -20,7 +18,7 @@ main =
           → TXT.putStr (renderWith compact [] theStylesheet)
        _  → putCss theStylesheet
 
-theStylesheet :: Css
+theStylesheet ∷ Css
 theStylesheet = do -- Overall site-wide styling rules.
 
     body ? do color         "#333"

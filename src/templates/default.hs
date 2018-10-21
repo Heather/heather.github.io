@@ -38,7 +38,7 @@ page = do
       link_ [rel_ "stylesheet", type_ "text/css", media_ "all", href_ "/css/syntax.css"  ]
       link_ [rel_ "stylesheet", type_ "text/css", media_ "all", href_ "/css/default.css" ]
 
-      raw "<title>Heather - $title$</title>"
+      raw "<title>Cynede - $title$</title>"
 
       script "/js/auto.js"
 
@@ -52,13 +52,13 @@ page = do
       div_ [id_ "social"] $
         ul_ $ do
           li_ $
-            a_ [href_ "http://github.com/Heather", title_ "Github", target_ "_blank"] $
+            a_ [href_ "http://github.com/Cynede", title_ "Github", target_ "_blank"] $
               span_ [class_ "mega-octicon octicon-octoface"] ""
           li_ $
             a_ [href_ "http://twitter.com/Cynede", title_ "Twitter", target_ "_blank"] $
               span_ [class_ "mega-octicon octicon-star"] ""
           li_ $
-            a_ [href_ "mailto:heather@live.ru", title_ "mail", target_ "_blank"] $
+            a_ [href_ "mailto:cynede@gentoo.org", title_ "mail", target_ "_blank"] $
               span_ [class_ "mega-octicon octicon-mail-read"] ""
           li_ $
             a_ [href_ "http://www.last.fm/user/Cynede", title_ "Last.fm", target_ "_blank"] $
