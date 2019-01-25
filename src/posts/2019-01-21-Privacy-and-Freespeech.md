@@ -2,11 +2,6 @@
 title: Freedom of speech and Privacy
 ---
 
-Yet another boring post about it
-================================
-
-(Sorry for horrible English) I'm one of those who have own very important opinion on anything. For everything... Ranting on technolog but also very controversial social justice warrior, I'm tired of being like that already however I can't stop. I've actually removed my previous controversial post about pronounces...
-
 Motivation
 ==========
 
