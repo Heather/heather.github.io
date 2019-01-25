@@ -29,7 +29,7 @@ And I'm using mastodon but if I will share my account there I will lose privacy 
 Tools
 =====
 
-I'd suggest using whatever social network you want. You can use twitter or facebook, well, using fake name on facebook is not legal by their terms and you will get additional punishment if you will be catched for that. What you really need (WARNING: it's most likely not legal and you may have problems for it) is phone which was not bought by you or anyone who knows you, you will need phone number/sim card with same aspects, you will need to pay for that number in different terminals wearing full face helms and sure gloves, you will need using differe wifi cafes (using same helms) when you login and... I better will not write about that in details because if you've got whole idea you will find what you need by yourself.
+I'd suggest using whatever social network you want. You can use twitter or facebook. What you really need (WARNING: it's most likely not legal and you may have problems for it) is phone which was not bought by you or anyone who knows you, you will need phone number/sim card with same aspects, you will need to pay for that number in different terminals wearing full face helms and sure gloves, you will need using differe wifi cafes (using same helms) when you login and... I better will not write about that in details because if you've got whole idea you will find what you need by yourself.
 
 Conclusion
 ==========
