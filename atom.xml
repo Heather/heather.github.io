@@ -8,8 +8,16 @@
         <name>Cynede</name>
         <email>cynede@gentoo.org</email>
     </author>
-    <updated>2016-07-28T00:00:00Z</updated>
+    <updated>2019-01-21T00:00:00Z</updated>
     <entry>
+    <title>Freedom of speech and Privacy</title>
+    <link href="https://dev.gentoo.org/~cynede/blog/posts/2019-01-21-Privacy-and-Freespeech.html" />
+    <id>https://dev.gentoo.org/~cynede/blog/posts/2019-01-21-Privacy-and-Freespeech.html</id>
+    <published>2019-01-21T00:00:00Z</published>
+    <updated>2019-01-21T00:00:00Z</updated>
+    <summary type="html"><![CDATA[Heather]]></summary>
+</entry>
+<entry>
     <title>LXC Containers Server with Gentoo, NetworkManager and Systemd</title>
     <link href="https://dev.gentoo.org/~cynede/blog/posts/2016-07-28-Gentoo-LXC.html" />
     <id>https://dev.gentoo.org/~cynede/blog/posts/2016-07-28-Gentoo-LXC.html</id>
@@ -79,14 +87,6 @@
     <id>https://dev.gentoo.org/~cynede/blog/posts/2014-12-29-Python%20SmartShell.html</id>
     <published>2014-12-29T00:00:00Z</published>
     <updated>2014-12-29T00:00:00Z</updated>
-    <summary type="html"><![CDATA[Heather]]></summary>
-</entry>
-<entry>
-    <title>hjsmin JavaScript minifier for Hakyll</title>
-    <link href="https://dev.gentoo.org/~cynede/blog/posts/2014-10-30-hjsmin.html" />
-    <id>https://dev.gentoo.org/~cynede/blog/posts/2014-10-30-hjsmin.html</id>
-    <published>2014-10-30T00:00:00Z</published>
-    <updated>2014-10-30T00:00:00Z</updated>
     <summary type="html"><![CDATA[Heather]]></summary>
 </entry>
 
